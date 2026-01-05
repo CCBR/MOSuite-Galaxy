@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<tool id="spac_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files
+" version="2.0.0" profile="24.2">
+    <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="sample_meta_filepath" type="data" format="binary,tabular,csv" label="" help="path to text file with sample IDs and metadata for differential analysis.
+"/>
+        <param name="feature_counts_filepath" type="data" format="binary,tabular,csv" label="" help="path to text file of expected feature counts (e.g. gene counts from RSEM).
+"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file"/>
+            <param name="sample_id_colname" type="text" label="" value="" help="name of the column in `sample_metadata` that contains the sample IDs. (Default: `NULL` -
+first column in the sample metadata will be used.)
+"/>
+            <param name="feature_id_colname" type="text" label="" value="" help="name of the column in `counts_dat` that contains feature/gene IDs. (Default: `NULL` - first
+column in the count data will be used.)
+"/>
+            <param name="delim" type="text" label="" value="" help="Delimiter used in the input files. Any delimiter accepted by `readr::read_delim()` can be used.
+If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = '\t'`.
+">
+                <sanitizer>
+                    <valid initial="default">
+                        <add value=";"/>
+                    </valid>
+                </sanitizer>
+            </param>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="moo_output" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Moo_Output"/>
+    </outputs>
+    <help><![CDATA[
+
+**Create Multi-Omic Dataset from Files
+**
+Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
+**Outputs:**
+- moo_output: file (moo.rds)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>
