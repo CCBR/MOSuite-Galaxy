@@ -2,6 +2,11 @@
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
+Galaxy workflow configuration for
+[MOSuite](https://github.com/CCBR/MOSuite)
+
+[![build](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
+
 ## Installation
 
 ```bash
