@@ -30,6 +30,8 @@ import argparse
 import sys
 from collections import OrderedDict
 
+from .util import get_version
+
 
 class GalaxyXMLSynthesizer:
     """
@@ -892,6 +894,7 @@ def main():
         "--docker", default="spac:mvp", help="Docker image name (default: spac:mvp)"
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
+    parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
 
