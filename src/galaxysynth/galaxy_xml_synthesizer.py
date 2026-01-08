@@ -422,7 +422,7 @@ class GalaxyXMLSynthesizer:
                             default_list = json.loads(default_value)
                             if default_list and len(default_list) > 0:
                                 param.set("value", str(default_list[0]))
-                        except:
+                        except Exception:
                             param.set("value", default_value)
                     else:
                         param.set("value", default_value)
