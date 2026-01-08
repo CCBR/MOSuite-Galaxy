@@ -57,7 +57,7 @@ jobs:
 
       - uses: astral-sh/ruff-action@v3
         with:
-          args: --fix .
+          args: "format --check --diff"
       - name: pre-commit
         uses: pre-commit/action@v3.0.1
         continue-on-error: true
