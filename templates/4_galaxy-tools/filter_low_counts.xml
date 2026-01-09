@@ -1,0 +1,192 @@
+<?xml version="1.0" ?>
+<tool id="spac_filter_counts" name="Filter Low Counts
+" version="2.0.0" profile="24.2">
+    <description>This is often the first step in the QC portion of an analysis to filter out
+features that have very low raw counts across most or all of your samples.
+This function takes a multiOmicDataSet containing</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values use_cpm_counts_to_filter use_group_based_filtering add_label_to_pca color_histogram_by_group set_min_max_for_x_axis_for_histogram interactive_plots plot_corr_matrix_heatmap save_plots --list-values samples_to_rename samples_to_include --inject-outputs --outputs-config outputs_config.json && mosuite filter_counts --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file at the end of the function"/>
+        </section>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="count_type" type="text" label="Count Type" value="clean" help="the type of counts to use -- must be a name in the counts slot (`moo@counts`)
+"/>
+            <param name="feature_id_colname" type="text" label="Feature ID Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+            <repeat name="samples_to_include_repeat" title="Columns to Include">
+                <param name="value" type="text" label="Value" help="Which samples would you like to include? Usually, you will choose all sample columns, or
+you could choose to remove certain samples. Samples excluded here will be removed in this step and from further
+analysis downstream of this step. (Default: `NULL` - all sample IDs in `moo@sample_meta` will be used.)
+"/>
+            </repeat>
+            <param name="sample_id_colname" type="text" label="Sample Names Column" help="The column from the sample metadata containing the sample names. The names in this column
+must exactly match the names used as the sample column names of your input Counts Matrix. (Default: `NULL` - first
+column in the sample metadata will be used.)
+"/>
+            <param name="group_colname" type="text" label="Groups Column" value="Group" help="The column from the sample metadata containing the sample group information. This is usually a
+column showing to which experimental treatments each sample belongs (e.g. WildType, Knockout, Tumor, Normal,
+Before, After, etc.).
+"/>
+            <param name="label_colname" type="text" label="Labels Column" help="The column from the sample metadata containing the sample labels as you wish them to appear in
+the plots produced by this template. This can be the same Sample Names Column. However, you may desire different
+labels to display on your figure (e.g. shorter labels are sometimes preferred on plots). In that case, select the
+column with your preferred Labels here. The selected column should contain unique names for each sample. (Default:
+`NULL` -- `sample_id_colname` will be used.)
+"/>
+        </section>
+        <section name="filtering" title="Filtering" expanded="false">
+            <param name="use_cpm_counts_to_filter" type="boolean" label="Use CPM Counts to filter" truevalue="True" falsevalue="False" checked="true" help="If no transformation has been been performed on counts matrix (eg Raw Counts) set to
+TRUE. If TRUE counts will be transformed to CPM and filtered based on given criteria. If gene counts matrix has
+been transformed (eg log2, CPM, FPKM or some form of Normalization) set to FALSE. If FALSE no further
+transformation will be applied and features will be filtered as is. For RNAseq data RAW counts should be
+transformed to CPM in order to properly filter.
+"/>
+            <param name="minimum_count_value_to_be_considered_nonzero" type="float" label="Minimum Count Value to be Considered Nonzero" value="8" help="Minimum count value to be considered non-zero for a sample
+"/>
+            <param name="minimum_number_of_samples_with_nonzero_counts_in_total" type="float" label="Minimum Number of Samples with Nonzero Counts in Total" value="7" help="Minimum number of samples (total) with non-zero counts
+"/>
+            <param name="use_group_based_filtering" type="boolean" label="Use Group-Based Filtering" truevalue="True" falsevalue="False" checked="false" help="If TRUE, only keeps features (e.g. genes) that have at least a certain number of
+samples with nonzero CPM counts in at least one group
+"/>
+            <param name="minimum_number_of_samples_with_nonzero_counts_in_a_group" type="float" label="Minimum Number of Samples with Nonzero Counts in a Group" value="3" help="Only keeps genes that have at least this number of
+samples with nonzero CPM counts in at least one group
+"/>
+        </section>
+        <section name="pca" title="PCA" expanded="false">
+            <param name="principal_component_on_x_axis" type="float" label="Principal Component on X-axis" value="1" help="The principal component to plot on the x-axis for the PCA plot. Choices include
+1, 2, 3, ... (default: 1)
+"/>
+            <param name="principal_component_on_y_axis" type="float" label="Principal Component on Y-axis" value="2" help="The principal component to plot on the y-axis for the PCA plot. Choices include
+1, 2, 3, ... (default: 2)
+"/>
+            <param name="legend_position_for_pca" type="select" label="Legend Position for PCA" help="legend position for the PCA plot
+">
+                <option value="top" selected="true">top</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="none">none</option>
+            </param>
+            <param name="point_size_for_pca" type="float" label="Point Size for PCA" value="1" help="geom point size for the PCA plot
+"/>
+            <param name="add_label_to_pca" type="boolean" label="Add Labels to PCA" truevalue="True" falsevalue="False" checked="true" help="label points on the PCA plot
+"/>
+            <param name="label_font_size" type="float" label="Label Font Size for PCA" value="3" help="label font size for the PCA plot
+"/>
+            <param name="label_offset_x_" type="float" label="Label Offset (x)" value="2" help="label offset x for the PCA plot
+"/>
+            <param name="label_offset_y_" type="float" label="Label Offset (Y)" value="2" help="label offset y for the PCA plot
+"/>
+            <repeat name="samples_to_rename_repeat" title="Samples to Rename Manually on PCA">
+                <param name="value" type="text" label="Value" help="If you do not have a Plot Labels Column in your sample metadata table, you can use this
+parameter to rename samples manually for display on the PCA plot. Use &quot;Add item&quot; to add each additional sample for
+renaming. Use the following format to describe which old name (in your sample metadata table) you want to rename to
+which new name: old_name: new_name
+"/>
+            </repeat>
+        </section>
+        <section name="histogram" title="Histogram" expanded="false">
+            <param name="color_histogram_by_group" type="boolean" label="Color Histogram by Group" truevalue="True" falsevalue="False" checked="false" help="Set to FALSE to label histogram by Sample Names, or set to TRUE to label histogram by
+the column you select in the &quot;Group Column Used to Color Histogram&quot; parameter (below). Default is FALSE.
+"/>
+            <param name="set_min_max_for_x_axis_for_histogram" type="boolean" label="Set Min/Max for X-axis for Histogram" truevalue="True" falsevalue="False" checked="false" help="whether to set min/max value for histogram x-axis
+"/>
+            <param name="minimum_for_x_axis_for_histogram" type="float" label="Minimum for X-axis for Histogram" value="-1" help="x-axis minimum for histogram plot
+"/>
+            <param name="maximum_for_x_axis_for_histogram" type="float" label="Maximum for X-axis for Histogram" value="1" help="x-axis maximum for histogram plot
+"/>
+            <param name="legend_font_size_for_histogram" type="float" label="Legend Font Size for Histogram" value="10" help="legend font size for the histogram plot
+"/>
+            <param name="legend_position_for_histogram" type="select" label="Legend Position for Histogram" help="legend position for the histogram plot. consider setting to 'none' for a large
+number of samples.
+">
+                <option value="right">right</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="top" selected="true">top</option>
+                <option value="none">none</option>
+            </param>
+            <param name="number_of_histogram_legend_columns" type="float" label="Number of Histogram Legend Columns" value="6" help="number of columns for the histogram legend
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="colors_for_plots" type="select" label="Colors for Plots" multiple="true" optional="true" help="Colors for the PCA and histogram will be picked, in order, from this list. If you have &gt;12
+samples or groups, program will choose from a wide range of random colors
+">
+                <option value="indigo">indigo</option>
+                <option value="carrot">carrot</option>
+                <option value="lipstick">lipstick</option>
+                <option value="turquoise">turquoise</option>
+                <option value="lavender">lavender</option>
+                <option value="jade">jade</option>
+                <option value="coral">coral</option>
+                <option value="azure">azure</option>
+                <option value="green">green</option>
+                <option value="rum">rum</option>
+                <option value="orange">orange</option>
+                <option value="olive">olive</option>
+            </param>
+            <param name="interactive_plots" type="boolean" label="Interactive Plots" truevalue="True" falsevalue="False" checked="false" help="set to TRUE to make PCA and Histogram plots interactive with `plotly`, allowing you to hover
+your mouse over a point or line to view sample information. The similarity heat map will not display if this toggle
+is set to `TRUE`. Default is `FALSE`.
+"/>
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+        <section name="tcga" title="TCGA" expanded="false">
+            <param name="plot_corr_matrix_heatmap" type="boolean" label="Plot Correlation Matrix Heatmap" truevalue="True" falsevalue="False" checked="true" help="Datasets with a large number of samples may be too large to create a correlation
+matrix heatmap. If this function takes longer than 5 minutes to run, Set to `FALSE` and the correlation matrix will
+not be be created. Default is `TRUE`.
+"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
+            <discover_datasets pattern="__name_and_ext__" directory="figures/filt/" recurse="true"/>
+        </collection>
+    </outputs>
+    <help><![CDATA[
+
+**Filter Low Counts
+**
+This is often the first step in the QC portion of an analysis to filter out
+features that have very low raw counts across most or all of your samples.
+This function takes a multiOmicDataSet containing clean raw counts and a sample
+metadata table, and returns the multiOmicDataSet object with filtered counts.
+It also produces an image consisting of three QC plots.
+You can tune the threshold for tuning how low counts for a given gene are
+before they are deemed "too low" and filtered out of downstream analysis. By
+default, this parameter is set to 1, meaning any raw count value less than 1
+will count as "too low".
+The QC plots are provided to help you assess: (1) PCA Plot: the within and
+between group variance in expression after dimensionality reduction; (2)
+Count Density Histogram: the dis/similarity of count distributions between
+samples; and (3) Similarity Heatmap: the overall similarity of samples to one
+another based on unsupervised clustering.
+**Outputs:**
+- analysis: file (moo.rds)
+- figures: directory (figures/filt/)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>

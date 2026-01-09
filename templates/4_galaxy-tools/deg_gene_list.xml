@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<tool id="spac_filter_diff" name="DEG Gene List
+" version="2.0.0" profile="24.2">
+    <description>Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
+adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in additi</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values round_estimates pie_chart_in_3d draw_bar_border save_plots --list-values contrasts groups --inject-outputs --outputs-config outputs_config.json && mosuite filter_diff --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file at the end of the function"/>
+        </section>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="significance_column" type="select" label="Significance Column" help="Column name for significance, e.g. `&quot;pval&quot;` or `&quot;pvaladj&quot;` (default)
+">
+                <option value="adjpval" selected="true">adjpval</option>
+                <option value="pval">pval</option>
+            </param>
+            <param name="significance_cutoff" type="float" label="Significance Cutoff" value="0.05" help="Features will only be kept if their `significance_column` is less then this cutoff
+threshold
+"/>
+            <param name="change_column" type="select" label="Change Column" help="Column name for change, e.g. `&quot;logFC&quot;` (default)
+">
+                <option value="FC">FC</option>
+                <option value="logFC" selected="true">logFC</option>
+                <option value="tstat">tstat</option>
+            </param>
+            <param name="change_cutoff" type="float" label="Change Cutoff" value="1" help="Features will only be kept if the absolute value of their `change_column` is greater than or
+equal to this cutoff threshold
+"/>
+            <param name="filtering_mode" type="select" label="Filtering Mode" help="Accepted values: `&quot;any&quot;` or `&quot;all&quot;` to include features that meet the criteria in *any*contrast or in *all* contrasts
+">
+                <option value="any" selected="true">any</option>
+                <option value="all">all</option>
+            </param>
+            <param name="feature_id_colname" type="text" label="Gene Names Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+        </section>
+        <section name="advanced" title="Advanced" expanded="false">
+            <param name="include_estimates" type="select" label="Include Estimates" multiple="true" optional="true" help="Column names of estimates to include. Default: `c(&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;)`">
+                <option value="mean">mean</option>
+                <option value="sd">sd</option>
+                <option value="FC">FC</option>
+                <option value="logFC">logFC</option>
+                <option value="tstat">tstat</option>
+                <option value="pval">pval</option>
+                <option value="adjpval">adjpval</option>
+            </param>
+            <param name="round_estimates" type="boolean" label="Round Estimates" truevalue="True" falsevalue="False" checked="true" help="Whether to round estimates. Default: `TRUE`"/>
+            <param name="rounding_decimal_for_percent_cells" type="float" label="Rounding Decimal for Percent Calls" value="0" help="Decimal place to use when rounding Percent cells
+"/>
+        </section>
+        <section name="filter" title="Filter" expanded="false">
+            <param name="contrast_filter" type="select" label="Contrasts Filter" help="Whether to filter `contrasts` in or our of analysis. If `&quot;keep&quot;`, only the contrast names
+listed in `contrasts` will be included. If `&quot;remove`, the contrast names listed by `contrasts` will be removed. If
+`&quot;none&quot;`, all contrasts in the dataset are used. Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`">
+                <option value="none" selected="true">none</option>
+                <option value="keep">keep</option>
+                <option value="remove">remove</option>
+            </param>
+            <repeat name="contrasts_repeat" title="Contrasts">
+                <param name="value" type="text" label="Value" help="Contrast names to filter by `contrast_filter`. If `contrast_filter` is `&quot;none&quot;`, this parameter has
+no effect.
+"/>
+            </repeat>
+            <param name="groups_filter" type="select" label="Groups Filter" help="Whether to filter `groups` in or out of analysis. If `&quot;keep&quot;`, only the group names listed in
+`groups` will be included. If `&quot;remove&quot;`, the group names listed by `groups` will be removed. If `&quot;none&quot;`, all
+groups in the dataset are used.
+">
+                <option value="none" selected="true">none</option>
+                <option value="keep">keep</option>
+                <option value="remove">remove</option>
+            </param>
+            <repeat name="groups_repeat" title="Groups">
+                <param name="value" type="text" label="Value" help="Group names to filter by `groups_filter`. If `groups_filter` is `&quot;none&quot;`, this parameter has no effect.
+Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
+            </repeat>
+        </section>
+        <section name="label" title="Label" expanded="false">
+            <param name="label_font_size" type="float" label="Label Font Size" value="6" help="Font size for labels in the plot (default: 6)
+"/>
+            <param name="label_distance" type="float" label="Label Distance" value="1" help="Distance of labels from the bars (default: 1)
+"/>
+            <param name="plot_titles_fontsize" type="float" label="Font Size for Plot Titles" value="12" help="Font size for plot titles (default: 12)
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="y_axis_expansion" type="float" label="Y-Axis Expansion" value="0.08" help="Expansion of the y-axis (default: 0.08)
+"/>
+            <param name="fill_colors" type="select" label="Fill Colors " multiple="true" optional="true" help="Fill colors for the bars (default: c(&quot;steelblue1&quot;, &quot;whitesmoke&quot;))
+">
+                <option value="aliceblue">aliceblue</option>
+                <option value="antiquewhite4">antiquewhite4</option>
+                <option value="darkorange">darkorange</option>
+                <option value="gold">gold</option>
+                <option value="red3">red3</option>
+                <option value="springgreen">springgreen</option>
+                <option value="steelblue1">steelblue1</option>
+                <option value="blue2">blue2</option>
+                <option value="violetred3">violetred3</option>
+                <option value="whitesmoke">whitesmoke</option>
+                <option value="gray60">gray60</option>
+                <option value="gray90">gray90</option>
+                <option value="black">black</option>
+                <option value="white">white</option>
+            </param>
+            <param name="pie_chart_in_3d" type="boolean" label="Pie Chart in 3D" truevalue="True" falsevalue="False" checked="true" help="Whether to draw pie charts in 3D (default: TRUE)
+"/>
+            <param name="bar_width" type="float" label="Bar Width" value="0.4" help="Width of the bars (default: 0.4)
+"/>
+            <param name="draw_bar_border" type="boolean" label="Draw Bar Border" truevalue="True" falsevalue="False" checked="true" help="Whether to draw borders around bars (default: TRUE)
+"/>
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
+            <discover_datasets pattern="__name_and_ext__" directory="figures/diff/filt/" recurse="true"/>
+        </collection>
+    </outputs>
+    <help><![CDATA[
+
+**DEG Gene List
+**
+Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
+adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in addition allows for selection of DEG
+estimates and for sub-setting of contrasts and groups included in the output gene list.
+**Outputs:**
+- analysis: file (moo.rds)
+- figures: directory (figures/diff/filt/)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>

@@ -1,0 +1,30 @@
+---
+title: "MOSuite-Galaxy"
+format: gfm
+---
+
+<!-- README.md is generated from README.qmd. Please edit that file -->
+
+Galaxy workflow configuration for [MOSuite](https://github.com/CCBR/MOSuite)
+
+[![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
+
+## Installation
+
+```bash
+pip install git+https://github.com/CCBR/MOSuite-Galaxy
+```
+
+## Usage
+
+```bash
+galaxysynth --help
+```
+```{python}
+#| echo: false
+!galaxysynth --help
+```
+
+```bash
+galaxysynth  "templates/2_blueprints/*.json" --docker nciccbr/mosuite:latest --outdir templates/3_galaxy-tools
+```
