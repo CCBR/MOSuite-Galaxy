@@ -5,11 +5,10 @@
 Galaxy workflow configuration for
 [MOSuite](https://github.com/CCBR/MOSuite)
 
-<figure>
-<a
-href="https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml"><img
-src="https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg" /></a>
-</figure>
+[![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
+
+MOSuite Workflow on Galaxy:
+<http://k8s-galaxy-b671dd4f69-710212292.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite>
 
 ## Installation
 
