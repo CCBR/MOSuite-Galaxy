@@ -26,10 +26,12 @@ pip install git+https://github.com/CCBR/MOSuite-Galaxy
 galaxysynth --help
 ```
 
-    usage: galaxysynth [-h] [-o OUTPUT] [--docker DOCKER] [--debug] [-v] blueprint
+    usage: galaxysynth [-h] [-o OUTPUT] [--docker DOCKER] [--citation CITATION]
+                       [--debug] [-v]
+                       blueprint
 
-    Generate Galaxy tool XML from SPAC blueprint JSON files with sanitizer and
-    section support
+    Generate Galaxy tool XML from blueprint JSON files with sanitizer and section
+    support
 
     positional arguments:
       blueprint             Path to blueprint JSON file or pattern (e.g.,
@@ -39,7 +41,8 @@ galaxysynth --help
       -h, --help            show this help message and exit
       -o OUTPUT, --output OUTPUT
                             Output directory for XML files (default: galaxy_tools)
-      --docker DOCKER       Docker image name (default: spac:mvp)
+      --docker DOCKER       Docker image name (default: nciccbr/mosuite:latest)
+      --citation CITATION   Citation DOI (default: 10.5281/zenodo.16371580)
       --debug               Enable debug output
       -v, --version         show program's version number and exit
 
