@@ -4,7 +4,7 @@
     <description>Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in additi</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
@@ -39,8 +39,8 @@ equal to this cutoff threshold
 "/>
             <param name="filtering_mode" type="select" label="Filtering Mode" help="Accepted values: `&quot;any&quot;` or `&quot;all&quot;` to include features that meet the criteria in *any*contrast or in *all* contrasts
 ">
-                <option value="any" selected="true">any</option>
-                <option value="all">all</option>
+                <option value="in any contrast">in any contrast</option>
+                <option value="in all contrasts">in all contrasts</option>
             </param>
             <param name="feature_id_colname" type="text" label="Gene Names Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
 This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts

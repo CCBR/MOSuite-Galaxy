@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<tool id="spac_plot_volcano_enhanced" name="Plot Volcano - Enhanced
+" version="2.0.0" profile="24.2">
+    <description>Uses 
+list(list(&quot;https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html&quot;), list(&quot;Bioconductor's Enhanced Volcano Plot&quot;))
+.</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values use_only_addition_labels use_custom_lab save_plots --list-values signif_colname change_colname --inject-outputs --outputs-config outputs_config.json && mosuite plot_volcano_enhanced --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="Plot output Rds" value="enhanced_volcano_plot.rds" help="File path to output the plot object as an Rds file"/>
+        </section>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="signif_threshold" type="float" label="P-Value Threshold" value="0.05" help="Numeric value specifying the significance cutoff for p-values (i.e. filters on
+`signif_colname`)
+"/>
+            <param name="change_threshold" type="float" label="Log2 Fold Change Threshold" value="1" help="Numeric value specifying the fold change cutoff for significance (i.e. filters on
+`change_colname`)
+"/>
+            <param name="feature_id_colname" type="text" label="Column with Feature ID" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+            <repeat name="signif_colname_repeat" title="Significance Column">
+                <param name="value" type="text" label="Value" help="column name of significance values (e.g., adjusted p-values or FDR). This column will be used
+to determine which points are considered significant in the volcano plot.
+" value="B-A_adjpval"/>
+            </repeat>
+            <repeat name="change_colname_repeat" title="Log2 Fold Change Column">
+                <param name="value" type="text" label="Value" help="column name of fold change values.
+" value="B-A_logFC"/>
+            </repeat>
+        </section>
+        <section name="label" title="Label" expanded="false">
+            <param name="value_to_sort_the_output_dataset" type="select" label="How to sort the output dataset" help="How to sort the output dataset. Options are &quot;fold-change&quot; or &quot;p-value&quot;.
+">
+                <option value="p-value" selected="true">p-value</option>
+                <option value="fold-change">fold-change</option>
+            </param>
+            <param name="num_features_to_label" type="float" label="Number of Features to Label" value="30" help="Number of top features/genes to label in the volcano plot. Default is 30.
+"/>
+            <param name="use_only_addition_labels" type="boolean" label="Label Only My Feature List" truevalue="True" falsevalue="False" checked="false" help="If `TRUE`, only the additional labels specified in `additional_labels` will be used
+for labeling in the volcano plot, ignoring the top features.
+"/>
+            <param name="additional_labels" type="text" label="My Feature List" value="" help="comma-separated string of feature names or IDs to include in the volcano plot.
+"/>
+            <param name="lab_size" type="float" label="Label Size" value="4" help="Size of the labels in the volcano plot.
+"/>
+        </section>
+        <section name="title_and_axis_labels" title="Title and Axis labels" expanded="false">
+            <param name="change_sig_name" type="text" label="Custom Significance Label" value="p-value" help="Name for the significance column in the plot. Default is &quot;p-value&quot;.
+"/>
+            <param name="change_lfc_name" type="text" label="Custom Log Fold Change Label" value="log2FC" help="Name for the fold change column in the plot. Default is &quot;log2FC&quot;.
+"/>
+            <param name="title" type="text" label="Plot Title" value="Volcano Plots" help="Title of the plot. Default is &quot;Volcano Plots&quot;.
+"/>
+        </section>
+        <section name="title_and_axis_labels" title="Title and Axis Labels" expanded="false">
+            <param name="use_custom_lab" type="boolean" label="Use Custom Labels" truevalue="True" falsevalue="False" checked="false" help="If TRUE, uses custom labels for the plot (set by `change_sig_name` and `change_lfc_name`)
+"/>
+        </section>
+        <section name="plot" title="Plot" expanded="false">
+            <param name="ylim" type="float" label="Y-Limit" value="0" help="Y-axis limits for the plot.
+"/>
+            <param name="custom_xlim" type="text" label="Custom X-axis limits" value="" help="Custom X-axis limits for the plot.
+"/>
+            <param name="xlim_additional" type="float" label="X-Limit Padding" value="0" help="Additional space to add to the X-axis limits.
+"/>
+            <param name="ylim_additional" type="float" label="Y-Limit Padding" value="0" help="Additional space to add to the Y-axis limits.
+"/>
+            <param name="axis_lab_size" type="float" label="Axis Label Size" value="24" help="Size of the axis labels.
+"/>
+            <param name="point_size" type="float" label="Point Size" value="2" help="Size of the points in the plot.
+"/>
+        </section>
+        <section name="image" title="Image" expanded="false">
+            <param name="image_width" type="float" label="Image Width" value="3000" help="output image width in pixels - only used if save_plots is TRUE
+"/>
+            <param name="image_height" type="float" label="Image Height" value="3000" help="output image height in pixels - only used if save_plots is TRUE
+"/>
+            <param name="dpi" type="float" label="Image Resolution (DPI)" value="300" help="dots-per-inch of the output image (see `ggsave()`) - only used if save_plots is TRUE
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="analysis" format="rds" from_work_dir="enhanced_volcano_plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="figures" format="png" from_work_dir="figures/diff/volcano_enhanced.png" label="${tool.name} on ${on_string}: Figures"/>
+    </outputs>
+    <help><![CDATA[
+
+**Plot Volcano - Enhanced
+**
+Uses 
+list(list("https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html"), list("Bioconductor's Enhanced Volcano Plot"))
+.
+**Outputs:**
+- analysis: file (enhanced_volcano_plot.rds)
+- figures: file (figures/diff/volcano_enhanced.png)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>

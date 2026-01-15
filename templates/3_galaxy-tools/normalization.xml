@@ -3,7 +3,7 @@
 " version="2.0.0" profile="24.2">
     <description>Normalize counts</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
@@ -117,8 +117,8 @@ number of samples.
 "/>
         </section>
         <section name="visualization" title="Visualization" expanded="false">
-            <param name="colors_for_plots" type="select" label="Colors for Plots" multiple="true" optional="true" help="Colors for the PCA and histogram will be picked, in order, from this list. If you have &gt;12
-samples or groups, program will choose from a wide range of random colors
+            <param name="colors_for_plots" type="select" label="Colors for Plots" multiple="true" optional="true" help="Colors for the PCA and histogram will be picked, in order, from this list.
+Colors must either be names in `grDevices::colors()` or valid hex codes.
 ">
                 <option value="indigo">indigo</option>
                 <option value="carrot">carrot</option>
