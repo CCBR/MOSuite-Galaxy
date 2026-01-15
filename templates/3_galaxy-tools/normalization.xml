@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="spac_normalize_counts" name="Normalization
+<tool id="mosuite_normalize_counts" name="Normalization
 " version="2.0.0" profile="24.2">
     <description>Normalize counts</description>
     <requirements>
@@ -166,6 +166,6 @@ Normalize counts
 
 ]]></help>
     <citations>
-        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+        <citation type="doi">10.5281/zenodo.16371580</citation>
     </citations>
 </tool>

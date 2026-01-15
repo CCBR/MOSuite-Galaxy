@@ -48,9 +48,15 @@ class GalaxyXMLSynthesizer:
         # Add other parameters that need special characters here
     }
 
-    def __init__(self, blueprint: Dict[str, Any], docker_image: str = "spac:latest"):
+    def __init__(
+        self,
+        blueprint: Dict[str, Any],
+        docker_image: str = "nciccbr/mosuite:latest",
+        citation_doi: str = "10.5281/zenodo.16371580",
+    ):
         self.blueprint = blueprint
         self.docker_image = docker_image
+        self.citation_doi = citation_doi
 
     def synthesize(self) -> str:
         """Generate Galaxy tool XML from blueprint."""
@@ -98,16 +104,16 @@ class GalaxyXMLSynthesizer:
         citations = ET.SubElement(tool, "citations")
         citation = ET.SubElement(citations, "citation")
         citation.set("type", "doi")
-        citation.text = "10.1038/s41586-019-1876-x"
+        citation.text = self.citation_doi
 
         return self._format_xml(tool)
 
-    def _make_tool_id(self, title: str) -> str:
+    def _make_tool_id(self, title: str, tool_prefix: str = "mosuite") -> str:
         """Generate tool ID from title."""
         # Remove brackets and clean
         clean_title = re.sub(r"\[.*?\]", "", title).strip()
         tool_id = clean_title.lower().replace(" ", "_")
-        return f"spac_{tool_id}"
+        return f"{tool_prefix}_{tool_id}"
 
     def _clean_text(self, text: str) -> str:
         """Clean text from markdown and escapes."""
@@ -164,7 +170,9 @@ class GalaxyXMLSynthesizer:
             add_elem = ET.SubElement(valid, "add")
             add_elem.set("value", ";")
 
-    def _add_command(self, tool: ET.Element, tool_id: str):
+    def _add_command(
+        self, tool: ET.Element, tool_id: str, tool_prefix: str = "mosuite"
+    ):
         """Add command section - FIXED to use single-line commands."""
         # Collect parameter types for format_values.py
         bool_params = []
@@ -187,7 +195,7 @@ class GalaxyXMLSynthesizer:
                 list_params.append(column.get("key"))
 
         # Build command as a SINGLE LINE
-        template_name = tool_id.replace("spac_", "")
+        template_name = tool_id.replace(f"{tool_prefix}_", "")
 
         # Build command parts
         cmd_parts = []
@@ -759,7 +767,10 @@ class GalaxyXMLSynthesizer:
 
 
 def process_blueprint(
-    blueprint_path: Path, output_dir: Path, docker_image: str = "spac:mvp"
+    blueprint_path: Path,
+    output_dir: Path,
+    docker_image: str = "nciccbr/mosuite:latest",
+    citation_doi: str = "10.5281/zenodo.16371580",
 ):
     """Process a single blueprint to generate Galaxy XML."""
     print(f"Processing: {blueprint_path.name}")
@@ -769,7 +780,7 @@ def process_blueprint(
         blueprint = json.load(f)
 
     # Generate XML
-    synthesizer = GalaxyXMLSynthesizer(blueprint, docker_image)
+    synthesizer = GalaxyXMLSynthesizer(blueprint, docker_image, citation_doi)
     xml_content = synthesizer.synthesize()
 
     # Extract tool name from blueprint
@@ -807,7 +818,12 @@ def process_blueprint(
     return xml_path
 
 
-def batch_process(input_pattern: str, output_dir: str, docker_image: str = "spac:mvp"):
+def batch_process(
+    input_pattern: str,
+    output_dir: str,
+    docker_image: str = "nciccbr/mosuite:latest",
+    citation_doi: str = "10.5281/zenodo.16371580",
+):
     """Process multiple blueprint files matching a pattern."""
     input_path = Path(input_pattern)
     output_path = Path(output_dir)
@@ -837,7 +853,9 @@ def batch_process(input_pattern: str, output_dir: str, docker_image: str = "spac
 
     for blueprint_file in sorted(blueprint_files):
         try:
-            xml_file = process_blueprint(blueprint_file, output_path, docker_image)
+            xml_file = process_blueprint(
+                blueprint_file, output_path, docker_image, citation_doi
+            )
             generated_files.append(xml_file)
 
             # Check features in generated XML
@@ -879,7 +897,7 @@ def batch_process(input_pattern: str, output_dir: str, docker_image: str = "spac
 def main():
     """Main entry point for the synthesizer."""
     parser = argparse.ArgumentParser(
-        description="Generate Galaxy tool XML from SPAC blueprint JSON files with sanitizer and section support"
+        description="Generate Galaxy tool XML from blueprint JSON files with sanitizer and section support"
     )
     parser.add_argument(
         "blueprint",
@@ -892,14 +910,21 @@ def main():
         help="Output directory for XML files (default: galaxy_tools)",
     )
     parser.add_argument(
-        "--docker", default="spac:mvp", help="Docker image name (default: spac:mvp)"
+        "--docker",
+        default="nciccbr/mosuite:latest",
+        help="Docker image name (default: nciccbr/mosuite:latest)",
+    )
+    parser.add_argument(
+        "--citation",
+        default="10.5281/zenodo.16371580",
+        help="Citation DOI (default: 10.5281/zenodo.16371580)",
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
     parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
 
-    return batch_process(args.blueprint, args.output, args.docker)
+    return batch_process(args.blueprint, args.output, args.docker, args.citation)
 
 
 if __name__ == "__main__":
