@@ -10,10 +10,6 @@ Galaxy workflow configuration for
 MOSuite Workflow on Galaxy:
 <http://k8s-galaxy-b671dd4f69-710212292.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite>
 
-<iframe title="Galaxy Workflow Embed" style="width: 100%; height: 700px; border: none;" src="http://k8s-galaxy-b671dd4f69-710212292.us-east-1.elb.amazonaws.com/published/workflow?id=20fa8e9e9d317df4&amp;embed=true&amp;buttons=true&amp;about=false&amp;heading=false&amp;minimap=true&amp;zoom_controls=true&amp;initialX=-20&amp;initialY=-20&amp;zoom=1">
-
-</iframe>
-
 ## Installation
 
 ```bash
