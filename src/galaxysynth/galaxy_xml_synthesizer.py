@@ -376,9 +376,10 @@ class GalaxyXMLSynthesizer:
 
         # Map data types
         data_type = dataset.get("dataType", "")
-        if "DATAFRAME" in data_type.upper():
+        date_type_upper = data_type.upper()
+        if "DATAFRAME" in date_type_upper or "TABULAR" in date_type_upper:
             param.set("format", "tabular,csv,tsv,txt")
-        elif "PYTHON" in data_type.upper() or "ANNDATA" in data_type.upper():
+        elif "PYTHON" in date_type_upper or "ANNDATA" in date_type_upper:
             param.set("format", "h5ad,binary,pickle")
         else:
             param.set("format", "binary")
