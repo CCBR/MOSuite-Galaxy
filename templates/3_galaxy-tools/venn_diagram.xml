@@ -1,0 +1,868 @@
+<?xml version="1.0" ?>
+<tool id="spac_plot_venn_diagram" name="Venn Diagram
+" version="2.0.0" profile="24.2">
+    <description>generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
+tested contrasts). This Venn diagram is available for up to five sets; Intersection plo</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values venn_force_unique display_empty_intersections save_plots --list-values select_contrasts intersection_ids venn_category_names_distance venn_category_names_position --inject-outputs --outputs-config outputs_config.json && mosuite plot_venn_diagram --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="Plot output Rds" value="venn_diagram_plot.rds" help="File path to output the plot object as an Rds file"/>
+        </section>
+        <section name="advanced" title="Advanced" expanded="false">
+            <repeat name="select_contrasts_repeat" title="Selected Categories">
+                <param name="value" type="text" label="Value" help="A vector of contrast names to select for the plot. If empty, all contrasts are used.
+"/>
+            </repeat>
+            <param name="plot_type" type="select" label="Select Plot Type" help="Type of plot to generate: &quot;Venn diagram&quot; or &quot;Intersection plot&quot;. Default: &quot;Venn diagram&quot;
+">
+                <option value="Venn diagram" selected="true">Venn diagram</option>
+                <option value="Intersection plot">Intersection plot</option>
+                <option value="Intersection table">Intersection table</option>
+            </param>
+            <repeat name="intersection_ids_repeat" title="Intersection IDs">
+                <param name="value" type="text" label="Value" help="A vector of intersection IDs to select for the plot. If empty, all intersections are used.
+"/>
+            </repeat>
+        </section>
+        <section name="venn_diagram" title="Venn Diagram" expanded="false">
+            <param name="venn_force_unique" type="boolean" label="Venn Force Unique" truevalue="True" falsevalue="False" checked="true" help="If TRUE, forces unique elements in the Venn diagram. Default: TRUE
+"/>
+            <param name="venn_numbers_format" type="select" label="Venn Numbers Format" help="Format for the numbers in the Venn diagram. Options: &quot;raw&quot;, &quot;percent&quot;, &quot;raw-percent&quot;,
+&quot;percent-raw&quot;. Default: &quot;raw&quot;
+">
+                <option value="raw" selected="true">raw</option>
+                <option value="percent">percent</option>
+                <option value="raw-percent">raw-percent</option>
+                <option value="percent-raw">percent-raw</option>
+            </param>
+            <param name="venn_significant_digits" type="float" label="Venn Significant Digits" value="2" help="Number of significant digits for the Venn diagram numbers. Default: 2
+"/>
+            <param name="venn_fill_colors" type="select" label="Venn Fill Colors" multiple="true" optional="true" help="A vector of colors to fill the Venn diagram categories. Default: c(&quot;darkgoldenrod2&quot;,
+&quot;darkolivegreen2&quot;, &quot;mediumpurple3&quot;, &quot;darkorange2&quot;, &quot;lightgreen&quot;)
+">
+                <option value="white">white</option>
+                <option value="aliceblue">aliceblue</option>
+                <option value="antiquewhite">antiquewhite</option>
+                <option value="antiquewhite1">antiquewhite1</option>
+                <option value="antiquewhite2">antiquewhite2</option>
+                <option value="antiquewhite3">antiquewhite3</option>
+                <option value="antiquewhite4">antiquewhite4</option>
+                <option value="aquamarine">aquamarine</option>
+                <option value="aquamarine1">aquamarine1</option>
+                <option value="aquamarine2">aquamarine2</option>
+                <option value="aquamarine3">aquamarine3</option>
+                <option value="aquamarine4">aquamarine4</option>
+                <option value="azure">azure</option>
+                <option value="azure1">azure1</option>
+                <option value="azure2">azure2</option>
+                <option value="azure3">azure3</option>
+                <option value="azure4">azure4</option>
+                <option value="beige">beige</option>
+                <option value="bisque">bisque</option>
+                <option value="bisque1">bisque1</option>
+                <option value="bisque2">bisque2</option>
+                <option value="bisque3">bisque3</option>
+                <option value="bisque4">bisque4</option>
+                <option value="black">black</option>
+                <option value="blanchedalmond">blanchedalmond</option>
+                <option value="blue">blue</option>
+                <option value="blue1">blue1</option>
+                <option value="blue2">blue2</option>
+                <option value="blue3">blue3</option>
+                <option value="blue4">blue4</option>
+                <option value="blueviolet">blueviolet</option>
+                <option value="brown">brown</option>
+                <option value="brown1">brown1</option>
+                <option value="brown2">brown2</option>
+                <option value="brown3">brown3</option>
+                <option value="brown4">brown4</option>
+                <option value="burlywood">burlywood</option>
+                <option value="burlywood1">burlywood1</option>
+                <option value="burlywood2">burlywood2</option>
+                <option value="burlywood3">burlywood3</option>
+                <option value="burlywood4">burlywood4</option>
+                <option value="cadetblue">cadetblue</option>
+                <option value="cadetblue1">cadetblue1</option>
+                <option value="cadetblue2">cadetblue2</option>
+                <option value="cadetblue3">cadetblue3</option>
+                <option value="cadetblue4">cadetblue4</option>
+                <option value="chartreuse">chartreuse</option>
+                <option value="chartreuse1">chartreuse1</option>
+                <option value="chartreuse2">chartreuse2</option>
+                <option value="chartreuse3">chartreuse3</option>
+                <option value="chartreuse4">chartreuse4</option>
+                <option value="chocolate">chocolate</option>
+                <option value="chocolate1">chocolate1</option>
+                <option value="chocolate2">chocolate2</option>
+                <option value="chocolate3">chocolate3</option>
+                <option value="chocolate4">chocolate4</option>
+                <option value="coral">coral</option>
+                <option value="coral1">coral1</option>
+                <option value="coral2">coral2</option>
+                <option value="coral3">coral3</option>
+                <option value="coral4">coral4</option>
+                <option value="cornflowerblue">cornflowerblue</option>
+                <option value="cornsilk">cornsilk</option>
+                <option value="cornsilk1">cornsilk1</option>
+                <option value="cornsilk2">cornsilk2</option>
+                <option value="cornsilk3">cornsilk3</option>
+                <option value="cornsilk4">cornsilk4</option>
+                <option value="cyan">cyan</option>
+                <option value="cyan1">cyan1</option>
+                <option value="cyan2">cyan2</option>
+                <option value="cyan3">cyan3</option>
+                <option value="cyan4">cyan4</option>
+                <option value="darkblue">darkblue</option>
+                <option value="darkcyan">darkcyan</option>
+                <option value="darkgoldenrod">darkgoldenrod</option>
+                <option value="darkgoldenrod1">darkgoldenrod1</option>
+                <option value="darkgoldenrod2">darkgoldenrod2</option>
+                <option value="darkgoldenrod3">darkgoldenrod3</option>
+                <option value="darkgoldenrod4">darkgoldenrod4</option>
+                <option value="darkgray">darkgray</option>
+                <option value="darkgreen">darkgreen</option>
+                <option value="darkgrey">darkgrey</option>
+                <option value="darkkhaki">darkkhaki</option>
+                <option value="darkmagenta">darkmagenta</option>
+                <option value="darkolivegreen">darkolivegreen</option>
+                <option value="darkolivegreen1">darkolivegreen1</option>
+                <option value="darkolivegreen2">darkolivegreen2</option>
+                <option value="darkolivegreen3">darkolivegreen3</option>
+                <option value="darkolivegreen4">darkolivegreen4</option>
+                <option value="darkorange">darkorange</option>
+                <option value="darkorange1">darkorange1</option>
+                <option value="darkorange2">darkorange2</option>
+                <option value="darkorange3">darkorange3</option>
+                <option value="darkorange4">darkorange4</option>
+                <option value="darkorchid">darkorchid</option>
+                <option value="darkorchid1">darkorchid1</option>
+                <option value="darkorchid2">darkorchid2</option>
+                <option value="darkorchid3">darkorchid3</option>
+                <option value="darkorchid4">darkorchid4</option>
+                <option value="darkred">darkred</option>
+                <option value="darksalmon">darksalmon</option>
+                <option value="darkseagreen">darkseagreen</option>
+                <option value="darkseagreen1">darkseagreen1</option>
+                <option value="darkseagreen2">darkseagreen2</option>
+                <option value="darkseagreen3">darkseagreen3</option>
+                <option value="darkseagreen4">darkseagreen4</option>
+                <option value="darkslateblue">darkslateblue</option>
+                <option value="darkslategray">darkslategray</option>
+                <option value="darkslategray1">darkslategray1</option>
+                <option value="darkslategray2">darkslategray2</option>
+                <option value="darkslategray3">darkslategray3</option>
+                <option value="darkslategray4">darkslategray4</option>
+                <option value="darkslategrey">darkslategrey</option>
+                <option value="darkturquoise">darkturquoise</option>
+                <option value="darkviolet">darkviolet</option>
+                <option value="deeppink">deeppink</option>
+                <option value="deeppink1">deeppink1</option>
+                <option value="deeppink2">deeppink2</option>
+                <option value="deeppink3">deeppink3</option>
+                <option value="deeppink4">deeppink4</option>
+                <option value="deepskyblue">deepskyblue</option>
+                <option value="deepskyblue1">deepskyblue1</option>
+                <option value="deepskyblue2">deepskyblue2</option>
+                <option value="deepskyblue3">deepskyblue3</option>
+                <option value="deepskyblue4">deepskyblue4</option>
+                <option value="dimgray">dimgray</option>
+                <option value="dimgrey">dimgrey</option>
+                <option value="dodgerblue">dodgerblue</option>
+                <option value="dodgerblue1">dodgerblue1</option>
+                <option value="dodgerblue2">dodgerblue2</option>
+                <option value="dodgerblue3">dodgerblue3</option>
+                <option value="dodgerblue4">dodgerblue4</option>
+                <option value="firebrick">firebrick</option>
+                <option value="firebrick1">firebrick1</option>
+                <option value="firebrick2">firebrick2</option>
+                <option value="firebrick3">firebrick3</option>
+                <option value="firebrick4">firebrick4</option>
+                <option value="floralwhite">floralwhite</option>
+                <option value="forestgreen">forestgreen</option>
+                <option value="gainsboro">gainsboro</option>
+                <option value="ghostwhite">ghostwhite</option>
+                <option value="gold">gold</option>
+                <option value="gold1">gold1</option>
+                <option value="gold2">gold2</option>
+                <option value="gold3">gold3</option>
+                <option value="gold4">gold4</option>
+                <option value="goldenrod">goldenrod</option>
+                <option value="goldenrod1">goldenrod1</option>
+                <option value="goldenrod2">goldenrod2</option>
+                <option value="goldenrod3">goldenrod3</option>
+                <option value="goldenrod4">goldenrod4</option>
+                <option value="gray">gray</option>
+                <option value="gray0">gray0</option>
+                <option value="gray1">gray1</option>
+                <option value="gray2">gray2</option>
+                <option value="gray3">gray3</option>
+                <option value="gray4">gray4</option>
+                <option value="gray5">gray5</option>
+                <option value="gray6">gray6</option>
+                <option value="gray7">gray7</option>
+                <option value="gray8">gray8</option>
+                <option value="gray9">gray9</option>
+                <option value="gray10">gray10</option>
+                <option value="gray11">gray11</option>
+                <option value="gray12">gray12</option>
+                <option value="gray13">gray13</option>
+                <option value="gray14">gray14</option>
+                <option value="gray15">gray15</option>
+                <option value="gray16">gray16</option>
+                <option value="gray17">gray17</option>
+                <option value="gray18">gray18</option>
+                <option value="gray19">gray19</option>
+                <option value="gray20">gray20</option>
+                <option value="gray21">gray21</option>
+                <option value="gray22">gray22</option>
+                <option value="gray23">gray23</option>
+                <option value="gray24">gray24</option>
+                <option value="gray25">gray25</option>
+                <option value="gray26">gray26</option>
+                <option value="gray27">gray27</option>
+                <option value="gray28">gray28</option>
+                <option value="gray29">gray29</option>
+                <option value="gray30">gray30</option>
+                <option value="gray31">gray31</option>
+                <option value="gray32">gray32</option>
+                <option value="gray33">gray33</option>
+                <option value="gray34">gray34</option>
+                <option value="gray35">gray35</option>
+                <option value="gray36">gray36</option>
+                <option value="gray37">gray37</option>
+                <option value="gray38">gray38</option>
+                <option value="gray39">gray39</option>
+                <option value="gray40">gray40</option>
+                <option value="gray41">gray41</option>
+                <option value="gray42">gray42</option>
+                <option value="gray43">gray43</option>
+                <option value="gray44">gray44</option>
+                <option value="gray45">gray45</option>
+                <option value="gray46">gray46</option>
+                <option value="gray47">gray47</option>
+                <option value="gray48">gray48</option>
+                <option value="gray49">gray49</option>
+                <option value="gray50">gray50</option>
+                <option value="gray51">gray51</option>
+                <option value="gray52">gray52</option>
+                <option value="gray53">gray53</option>
+                <option value="gray54">gray54</option>
+                <option value="gray55">gray55</option>
+                <option value="gray56">gray56</option>
+                <option value="gray57">gray57</option>
+                <option value="gray58">gray58</option>
+                <option value="gray59">gray59</option>
+                <option value="gray60">gray60</option>
+                <option value="gray61">gray61</option>
+                <option value="gray62">gray62</option>
+                <option value="gray63">gray63</option>
+                <option value="gray64">gray64</option>
+                <option value="gray65">gray65</option>
+                <option value="gray66">gray66</option>
+                <option value="gray67">gray67</option>
+                <option value="gray68">gray68</option>
+                <option value="gray69">gray69</option>
+                <option value="gray70">gray70</option>
+                <option value="gray71">gray71</option>
+                <option value="gray72">gray72</option>
+                <option value="gray73">gray73</option>
+                <option value="gray74">gray74</option>
+                <option value="gray75">gray75</option>
+                <option value="gray76">gray76</option>
+                <option value="gray77">gray77</option>
+                <option value="gray78">gray78</option>
+                <option value="gray79">gray79</option>
+                <option value="gray80">gray80</option>
+                <option value="gray81">gray81</option>
+                <option value="gray82">gray82</option>
+                <option value="gray83">gray83</option>
+                <option value="gray84">gray84</option>
+                <option value="gray85">gray85</option>
+                <option value="gray86">gray86</option>
+                <option value="gray87">gray87</option>
+                <option value="gray88">gray88</option>
+                <option value="gray89">gray89</option>
+                <option value="gray90">gray90</option>
+                <option value="gray91">gray91</option>
+                <option value="gray92">gray92</option>
+                <option value="gray93">gray93</option>
+                <option value="gray94">gray94</option>
+                <option value="gray95">gray95</option>
+                <option value="gray96">gray96</option>
+                <option value="gray97">gray97</option>
+                <option value="gray98">gray98</option>
+                <option value="gray99">gray99</option>
+                <option value="gray100">gray100</option>
+                <option value="green">green</option>
+                <option value="green1">green1</option>
+                <option value="green2">green2</option>
+                <option value="green3">green3</option>
+                <option value="green4">green4</option>
+                <option value="greenyellow">greenyellow</option>
+                <option value="grey">grey</option>
+                <option value="grey0">grey0</option>
+                <option value="grey1">grey1</option>
+                <option value="grey2">grey2</option>
+                <option value="grey3">grey3</option>
+                <option value="grey4">grey4</option>
+                <option value="grey5">grey5</option>
+                <option value="grey6">grey6</option>
+                <option value="grey7">grey7</option>
+                <option value="grey8">grey8</option>
+                <option value="grey9">grey9</option>
+                <option value="grey10">grey10</option>
+                <option value="grey11">grey11</option>
+                <option value="grey12">grey12</option>
+                <option value="grey13">grey13</option>
+                <option value="grey14">grey14</option>
+                <option value="grey15">grey15</option>
+                <option value="grey16">grey16</option>
+                <option value="grey17">grey17</option>
+                <option value="grey18">grey18</option>
+                <option value="grey19">grey19</option>
+                <option value="grey20">grey20</option>
+                <option value="grey21">grey21</option>
+                <option value="grey22">grey22</option>
+                <option value="grey23">grey23</option>
+                <option value="grey24">grey24</option>
+                <option value="grey25">grey25</option>
+                <option value="grey26">grey26</option>
+                <option value="grey27">grey27</option>
+                <option value="grey28">grey28</option>
+                <option value="grey29">grey29</option>
+                <option value="grey30">grey30</option>
+                <option value="grey31">grey31</option>
+                <option value="grey32">grey32</option>
+                <option value="grey33">grey33</option>
+                <option value="grey34">grey34</option>
+                <option value="grey35">grey35</option>
+                <option value="grey36">grey36</option>
+                <option value="grey37">grey37</option>
+                <option value="grey38">grey38</option>
+                <option value="grey39">grey39</option>
+                <option value="grey40">grey40</option>
+                <option value="grey41">grey41</option>
+                <option value="grey42">grey42</option>
+                <option value="grey43">grey43</option>
+                <option value="grey44">grey44</option>
+                <option value="grey45">grey45</option>
+                <option value="grey46">grey46</option>
+                <option value="grey47">grey47</option>
+                <option value="grey48">grey48</option>
+                <option value="grey49">grey49</option>
+                <option value="grey50">grey50</option>
+                <option value="grey51">grey51</option>
+                <option value="grey52">grey52</option>
+                <option value="grey53">grey53</option>
+                <option value="grey54">grey54</option>
+                <option value="grey55">grey55</option>
+                <option value="grey56">grey56</option>
+                <option value="grey57">grey57</option>
+                <option value="grey58">grey58</option>
+                <option value="grey59">grey59</option>
+                <option value="grey60">grey60</option>
+                <option value="grey61">grey61</option>
+                <option value="grey62">grey62</option>
+                <option value="grey63">grey63</option>
+                <option value="grey64">grey64</option>
+                <option value="grey65">grey65</option>
+                <option value="grey66">grey66</option>
+                <option value="grey67">grey67</option>
+                <option value="grey68">grey68</option>
+                <option value="grey69">grey69</option>
+                <option value="grey70">grey70</option>
+                <option value="grey71">grey71</option>
+                <option value="grey72">grey72</option>
+                <option value="grey73">grey73</option>
+                <option value="grey74">grey74</option>
+                <option value="grey75">grey75</option>
+                <option value="grey76">grey76</option>
+                <option value="grey77">grey77</option>
+                <option value="grey78">grey78</option>
+                <option value="grey79">grey79</option>
+                <option value="grey80">grey80</option>
+                <option value="grey81">grey81</option>
+                <option value="grey82">grey82</option>
+                <option value="grey83">grey83</option>
+                <option value="grey84">grey84</option>
+                <option value="grey85">grey85</option>
+                <option value="grey86">grey86</option>
+                <option value="grey87">grey87</option>
+                <option value="grey88">grey88</option>
+                <option value="grey89">grey89</option>
+                <option value="grey90">grey90</option>
+                <option value="grey91">grey91</option>
+                <option value="grey92">grey92</option>
+                <option value="grey93">grey93</option>
+                <option value="grey94">grey94</option>
+                <option value="grey95">grey95</option>
+                <option value="grey96">grey96</option>
+                <option value="grey97">grey97</option>
+                <option value="grey98">grey98</option>
+                <option value="grey99">grey99</option>
+                <option value="grey100">grey100</option>
+                <option value="honeydew">honeydew</option>
+                <option value="honeydew1">honeydew1</option>
+                <option value="honeydew2">honeydew2</option>
+                <option value="honeydew3">honeydew3</option>
+                <option value="honeydew4">honeydew4</option>
+                <option value="hotpink">hotpink</option>
+                <option value="hotpink1">hotpink1</option>
+                <option value="hotpink2">hotpink2</option>
+                <option value="hotpink3">hotpink3</option>
+                <option value="hotpink4">hotpink4</option>
+                <option value="indianred">indianred</option>
+                <option value="indianred1">indianred1</option>
+                <option value="indianred2">indianred2</option>
+                <option value="indianred3">indianred3</option>
+                <option value="indianred4">indianred4</option>
+                <option value="ivory">ivory</option>
+                <option value="ivory1">ivory1</option>
+                <option value="ivory2">ivory2</option>
+                <option value="ivory3">ivory3</option>
+                <option value="ivory4">ivory4</option>
+                <option value="khaki">khaki</option>
+                <option value="khaki1">khaki1</option>
+                <option value="khaki2">khaki2</option>
+                <option value="khaki3">khaki3</option>
+                <option value="khaki4">khaki4</option>
+                <option value="lavender">lavender</option>
+                <option value="lavenderblush">lavenderblush</option>
+                <option value="lavenderblush1">lavenderblush1</option>
+                <option value="lavenderblush2">lavenderblush2</option>
+                <option value="lavenderblush3">lavenderblush3</option>
+                <option value="lavenderblush4">lavenderblush4</option>
+                <option value="lawngreen">lawngreen</option>
+                <option value="lemonchiffon">lemonchiffon</option>
+                <option value="lemonchiffon1">lemonchiffon1</option>
+                <option value="lemonchiffon2">lemonchiffon2</option>
+                <option value="lemonchiffon3">lemonchiffon3</option>
+                <option value="lemonchiffon4">lemonchiffon4</option>
+                <option value="lightblue">lightblue</option>
+                <option value="lightblue1">lightblue1</option>
+                <option value="lightblue2">lightblue2</option>
+                <option value="lightblue3">lightblue3</option>
+                <option value="lightblue4">lightblue4</option>
+                <option value="lightcoral">lightcoral</option>
+                <option value="lightcyan">lightcyan</option>
+                <option value="lightcyan1">lightcyan1</option>
+                <option value="lightcyan2">lightcyan2</option>
+                <option value="lightcyan3">lightcyan3</option>
+                <option value="lightcyan4">lightcyan4</option>
+                <option value="lightgoldenrod">lightgoldenrod</option>
+                <option value="lightgoldenrod1">lightgoldenrod1</option>
+                <option value="lightgoldenrod2">lightgoldenrod2</option>
+                <option value="lightgoldenrod3">lightgoldenrod3</option>
+                <option value="lightgoldenrod4">lightgoldenrod4</option>
+                <option value="lightgoldenrodyellow">lightgoldenrodyellow</option>
+                <option value="lightgray">lightgray</option>
+                <option value="lightgreen">lightgreen</option>
+                <option value="lightgrey">lightgrey</option>
+                <option value="lightpink">lightpink</option>
+                <option value="lightpink1">lightpink1</option>
+                <option value="lightpink2">lightpink2</option>
+                <option value="lightpink3">lightpink3</option>
+                <option value="lightpink4">lightpink4</option>
+                <option value="lightsalmon">lightsalmon</option>
+                <option value="lightsalmon1">lightsalmon1</option>
+                <option value="lightsalmon2">lightsalmon2</option>
+                <option value="lightsalmon3">lightsalmon3</option>
+                <option value="lightsalmon4">lightsalmon4</option>
+                <option value="lightseagreen">lightseagreen</option>
+                <option value="lightskyblue">lightskyblue</option>
+                <option value="lightskyblue1">lightskyblue1</option>
+                <option value="lightskyblue2">lightskyblue2</option>
+                <option value="lightskyblue3">lightskyblue3</option>
+                <option value="lightskyblue4">lightskyblue4</option>
+                <option value="lightslateblue">lightslateblue</option>
+                <option value="lightslategray">lightslategray</option>
+                <option value="lightslategrey">lightslategrey</option>
+                <option value="lightsteelblue">lightsteelblue</option>
+                <option value="lightsteelblue1">lightsteelblue1</option>
+                <option value="lightsteelblue2">lightsteelblue2</option>
+                <option value="lightsteelblue3">lightsteelblue3</option>
+                <option value="lightsteelblue4">lightsteelblue4</option>
+                <option value="lightyellow">lightyellow</option>
+                <option value="lightyellow1">lightyellow1</option>
+                <option value="lightyellow2">lightyellow2</option>
+                <option value="lightyellow3">lightyellow3</option>
+                <option value="lightyellow4">lightyellow4</option>
+                <option value="limegreen">limegreen</option>
+                <option value="linen">linen</option>
+                <option value="magenta">magenta</option>
+                <option value="magenta1">magenta1</option>
+                <option value="magenta2">magenta2</option>
+                <option value="magenta3">magenta3</option>
+                <option value="magenta4">magenta4</option>
+                <option value="maroon">maroon</option>
+                <option value="maroon1">maroon1</option>
+                <option value="maroon2">maroon2</option>
+                <option value="maroon3">maroon3</option>
+                <option value="maroon4">maroon4</option>
+                <option value="mediumaquamarine">mediumaquamarine</option>
+                <option value="mediumblue">mediumblue</option>
+                <option value="mediumorchid">mediumorchid</option>
+                <option value="mediumorchid1">mediumorchid1</option>
+                <option value="mediumorchid2">mediumorchid2</option>
+                <option value="mediumorchid3">mediumorchid3</option>
+                <option value="mediumorchid4">mediumorchid4</option>
+                <option value="mediumpurple">mediumpurple</option>
+                <option value="mediumpurple1">mediumpurple1</option>
+                <option value="mediumpurple2">mediumpurple2</option>
+                <option value="mediumpurple3">mediumpurple3</option>
+                <option value="mediumpurple4">mediumpurple4</option>
+                <option value="mediumseagreen">mediumseagreen</option>
+                <option value="mediumslateblue">mediumslateblue</option>
+                <option value="mediumspringgreen">mediumspringgreen</option>
+                <option value="mediumturquoise">mediumturquoise</option>
+                <option value="mediumvioletred">mediumvioletred</option>
+                <option value="midnightblue">midnightblue</option>
+                <option value="mintcream">mintcream</option>
+                <option value="mistyrose">mistyrose</option>
+                <option value="mistyrose1">mistyrose1</option>
+                <option value="mistyrose2">mistyrose2</option>
+                <option value="mistyrose3">mistyrose3</option>
+                <option value="mistyrose4">mistyrose4</option>
+                <option value="moccasin">moccasin</option>
+                <option value="navajowhite">navajowhite</option>
+                <option value="navajowhite1">navajowhite1</option>
+                <option value="navajowhite2">navajowhite2</option>
+                <option value="navajowhite3">navajowhite3</option>
+                <option value="navajowhite4">navajowhite4</option>
+                <option value="navy">navy</option>
+                <option value="navyblue">navyblue</option>
+                <option value="oldlace">oldlace</option>
+                <option value="olivedrab">olivedrab</option>
+                <option value="olivedrab1">olivedrab1</option>
+                <option value="olivedrab2">olivedrab2</option>
+                <option value="olivedrab3">olivedrab3</option>
+                <option value="olivedrab4">olivedrab4</option>
+                <option value="orange">orange</option>
+                <option value="orange1">orange1</option>
+                <option value="orange2">orange2</option>
+                <option value="orange3">orange3</option>
+                <option value="orange4">orange4</option>
+                <option value="orangered">orangered</option>
+                <option value="orangered1">orangered1</option>
+                <option value="orangered2">orangered2</option>
+                <option value="orangered3">orangered3</option>
+                <option value="orangered4">orangered4</option>
+                <option value="orchid">orchid</option>
+                <option value="orchid1">orchid1</option>
+                <option value="orchid2">orchid2</option>
+                <option value="orchid3">orchid3</option>
+                <option value="orchid4">orchid4</option>
+                <option value="palegoldenrod">palegoldenrod</option>
+                <option value="palegreen">palegreen</option>
+                <option value="palegreen1">palegreen1</option>
+                <option value="palegreen2">palegreen2</option>
+                <option value="palegreen3">palegreen3</option>
+                <option value="palegreen4">palegreen4</option>
+                <option value="paleturquoise">paleturquoise</option>
+                <option value="paleturquoise1">paleturquoise1</option>
+                <option value="paleturquoise2">paleturquoise2</option>
+                <option value="paleturquoise3">paleturquoise3</option>
+                <option value="paleturquoise4">paleturquoise4</option>
+                <option value="palevioletred">palevioletred</option>
+                <option value="palevioletred1">palevioletred1</option>
+                <option value="palevioletred2">palevioletred2</option>
+                <option value="palevioletred3">palevioletred3</option>
+                <option value="palevioletred4">palevioletred4</option>
+                <option value="papayawhip">papayawhip</option>
+                <option value="peachpuff">peachpuff</option>
+                <option value="peachpuff1">peachpuff1</option>
+                <option value="peachpuff2">peachpuff2</option>
+                <option value="peachpuff3">peachpuff3</option>
+                <option value="peachpuff4">peachpuff4</option>
+                <option value="peru">peru</option>
+                <option value="pink">pink</option>
+                <option value="pink1">pink1</option>
+                <option value="pink2">pink2</option>
+                <option value="pink3">pink3</option>
+                <option value="pink4">pink4</option>
+                <option value="plum">plum</option>
+                <option value="plum1">plum1</option>
+                <option value="plum2">plum2</option>
+                <option value="plum3">plum3</option>
+                <option value="plum4">plum4</option>
+                <option value="powderblue">powderblue</option>
+                <option value="purple">purple</option>
+                <option value="purple1">purple1</option>
+                <option value="purple2">purple2</option>
+                <option value="purple3">purple3</option>
+                <option value="purple4">purple4</option>
+                <option value="red">red</option>
+                <option value="red1">red1</option>
+                <option value="red2">red2</option>
+                <option value="red3">red3</option>
+                <option value="red4">red4</option>
+                <option value="rosybrown">rosybrown</option>
+                <option value="rosybrown1">rosybrown1</option>
+                <option value="rosybrown2">rosybrown2</option>
+                <option value="rosybrown3">rosybrown3</option>
+                <option value="rosybrown4">rosybrown4</option>
+                <option value="royalblue">royalblue</option>
+                <option value="royalblue1">royalblue1</option>
+                <option value="royalblue2">royalblue2</option>
+                <option value="royalblue3">royalblue3</option>
+                <option value="royalblue4">royalblue4</option>
+                <option value="saddlebrown">saddlebrown</option>
+                <option value="salmon">salmon</option>
+                <option value="salmon1">salmon1</option>
+                <option value="salmon2">salmon2</option>
+                <option value="salmon3">salmon3</option>
+                <option value="salmon4">salmon4</option>
+                <option value="sandybrown">sandybrown</option>
+                <option value="seagreen">seagreen</option>
+                <option value="seagreen1">seagreen1</option>
+                <option value="seagreen2">seagreen2</option>
+                <option value="seagreen3">seagreen3</option>
+                <option value="seagreen4">seagreen4</option>
+                <option value="seashell">seashell</option>
+                <option value="seashell1">seashell1</option>
+                <option value="seashell2">seashell2</option>
+                <option value="seashell3">seashell3</option>
+                <option value="seashell4">seashell4</option>
+                <option value="sienna">sienna</option>
+                <option value="sienna1">sienna1</option>
+                <option value="sienna2">sienna2</option>
+                <option value="sienna3">sienna3</option>
+                <option value="sienna4">sienna4</option>
+                <option value="skyblue">skyblue</option>
+                <option value="skyblue1">skyblue1</option>
+                <option value="skyblue2">skyblue2</option>
+                <option value="skyblue3">skyblue3</option>
+                <option value="skyblue4">skyblue4</option>
+                <option value="slateblue">slateblue</option>
+                <option value="slateblue1">slateblue1</option>
+                <option value="slateblue2">slateblue2</option>
+                <option value="slateblue3">slateblue3</option>
+                <option value="slateblue4">slateblue4</option>
+                <option value="slategray">slategray</option>
+                <option value="slategray1">slategray1</option>
+                <option value="slategray2">slategray2</option>
+                <option value="slategray3">slategray3</option>
+                <option value="slategray4">slategray4</option>
+                <option value="slategrey">slategrey</option>
+                <option value="snow">snow</option>
+                <option value="snow1">snow1</option>
+                <option value="snow2">snow2</option>
+                <option value="snow3">snow3</option>
+                <option value="snow4">snow4</option>
+                <option value="springgreen">springgreen</option>
+                <option value="springgreen1">springgreen1</option>
+                <option value="springgreen2">springgreen2</option>
+                <option value="springgreen3">springgreen3</option>
+                <option value="springgreen4">springgreen4</option>
+                <option value="steelblue">steelblue</option>
+                <option value="steelblue1">steelblue1</option>
+                <option value="steelblue2">steelblue2</option>
+                <option value="steelblue3">steelblue3</option>
+                <option value="steelblue4">steelblue4</option>
+                <option value="tan">tan</option>
+                <option value="tan1">tan1</option>
+                <option value="tan2">tan2</option>
+                <option value="tan3">tan3</option>
+                <option value="tan4">tan4</option>
+                <option value="thistle">thistle</option>
+                <option value="thistle1">thistle1</option>
+                <option value="thistle2">thistle2</option>
+                <option value="thistle3">thistle3</option>
+                <option value="thistle4">thistle4</option>
+                <option value="tomato">tomato</option>
+                <option value="tomato1">tomato1</option>
+                <option value="tomato2">tomato2</option>
+                <option value="tomato3">tomato3</option>
+                <option value="tomato4">tomato4</option>
+                <option value="turquoise">turquoise</option>
+                <option value="turquoise1">turquoise1</option>
+                <option value="turquoise2">turquoise2</option>
+                <option value="turquoise3">turquoise3</option>
+                <option value="turquoise4">turquoise4</option>
+                <option value="violet">violet</option>
+                <option value="violetred">violetred</option>
+                <option value="violetred1">violetred1</option>
+                <option value="violetred2">violetred2</option>
+                <option value="violetred3">violetred3</option>
+                <option value="violetred4">violetred4</option>
+                <option value="wheat">wheat</option>
+                <option value="wheat1">wheat1</option>
+                <option value="wheat2">wheat2</option>
+                <option value="wheat3">wheat3</option>
+                <option value="wheat4">wheat4</option>
+                <option value="whitesmoke">whitesmoke</option>
+                <option value="yellow">yellow</option>
+                <option value="yellow1">yellow1</option>
+                <option value="yellow2">yellow2</option>
+                <option value="yellow3">yellow3</option>
+                <option value="yellow4">yellow4</option>
+                <option value="yellowgreen">yellowgreen</option>
+            </param>
+            <param name="venn_fill_transparency" type="text" label="Venn Fill Transparency" value="0.2" help="Transparency level for the Venn diagram fill colors. Default: 0.2
+"/>
+            <param name="venn_border_colors" type="select" label="Venn Border Colors" help="Colors for the borders of the Venn diagram categories. Default: &quot;fill colors&quot; (uses the
+same colors as `venn_fill_colors`)
+">
+                <option value="black">black</option>
+                <option value="fill colors" selected="true">fill colors</option>
+            </param>
+            <param name="venn_font_size_for_category_names" type="float" label="Venn Font Size for Category Names" value="3" help="Font size for the category names in the Venn diagram. Default: 3
+"/>
+            <repeat name="venn_category_names_distance_repeat" title="Venn Category Names Distance">
+                <param name="value" type="text" label="Value" help="Distance of the category names from the Venn diagram circles. Default: c()
+"/>
+            </repeat>
+            <repeat name="venn_category_names_position_repeat" title="Venn Category Names Position">
+                <param name="value" type="text" label="Value" help="Position of the category names in the Venn diagram. Default: c()
+"/>
+            </repeat>
+            <param name="venn_font_size_for_counts" type="float" label="Venn Font Size for Counts" value="6" help="Font size for the counts in the Venn diagram. Default: 6
+"/>
+            <param name="venn_outer_margin" type="float" label="Venn Outer Margin" value="0" help="Outer margin for the Venn diagram. Default: 0
+"/>
+        </section>
+        <section name="intersection_plot" title="Intersection Plot" expanded="false">
+            <param name="intersections_order" type="select" label="Intersections Order" help="Order of the intersections in the plot. Default: &quot;by size&quot;
+">
+                <option value="degree" selected="true">degree</option>
+                <option value="freq">freq</option>
+            </param>
+            <param name="display_empty_intersections" type="boolean" label="Display Empty Intersections" truevalue="True" falsevalue="False" checked="false" help="If TRUE, displays empty intersections in the plot. Default: FALSE
+"/>
+            <param name="intersection_bar_color" type="select" label="Intersection Bar Color" help="Color for the intersection bars in the plot. Default: &quot;lightgray&quot;
+">
+                <option value="steelblue4" selected="true">steelblue4</option>
+                <option value="aquamarine3">aquamarine3</option>
+                <option value="salmon1">salmon1</option>
+                <option value="lightskyblue3">lightskyblue3</option>
+                <option value="plum3">plum3</option>
+                <option value="darkolivegreen3">darkolivegreen3</option>
+                <option value="goldenrod1">goldenrod1</option>
+                <option value="burlywood2">burlywood2</option>
+                <option value="gray70">gray70</option>
+                <option value="firebrick2">firebrick2</option>
+                <option value="steelblue">steelblue</option>
+                <option value="palegreen4">palegreen4</option>
+                <option value="orchid4">orchid4</option>
+                <option value="darkorange1">darkorange1</option>
+                <option value="yellow">yellow</option>
+                <option value="sienna">sienna</option>
+                <option value="palevioletred1">palevioletred1</option>
+                <option value="gray60">gray60</option>
+                <option value="cyan4">cyan4</option>
+                <option value="darkorange3">darkorange3</option>
+                <option value="mediumpurple3">mediumpurple3</option>
+                <option value="violetred2">violetred2</option>
+                <option value="olivedrab">olivedrab</option>
+                <option value="darkgoldenrod2">darkgoldenrod2</option>
+                <option value="darkgoldenrod">darkgoldenrod</option>
+                <option value="gray40">gray40</option>
+                <option value="palegreen3">palegreen3</option>
+                <option value="thistle3">thistle3</option>
+                <option value="khaki1">khaki1</option>
+                <option value="deeppink2">deeppink2</option>
+                <option value="chocolate3">chocolate3</option>
+                <option value="paleturquoise3">paleturquoise3</option>
+                <option value="wheat1">wheat1</option>
+                <option value="lightsteelblue">lightsteelblue</option>
+                <option value="salmon">salmon</option>
+                <option value="sandybrown">sandybrown</option>
+                <option value="darkolivegreen2">darkolivegreen2</option>
+                <option value="thistle2">thistle2</option>
+                <option value="gray85">gray85</option>
+                <option value="orchid3">orchid3</option>
+                <option value="darkseagreen1">darkseagreen1</option>
+                <option value="lightgoldenrod1">lightgoldenrod1</option>
+                <option value="lightskyblue2">lightskyblue2</option>
+                <option value="dodgerblue3">dodgerblue3</option>
+                <option value="darkseagreen3">darkseagreen3</option>
+                <option value="forestgreen">forestgreen</option>
+                <option value="lightpink2">lightpink2</option>
+                <option value="mediumpurple4">mediumpurple4</option>
+                <option value="lightpink1">lightpink1</option>
+                <option value="thistle">thistle</option>
+                <option value="navajowhite">navajowhite</option>
+                <option value="lemonchiffon">lemonchiffon</option>
+                <option value="bisque2">bisque2</option>
+                <option value="mistyrose">mistyrose</option>
+                <option value="gray95">gray95</option>
+                <option value="lightcyan3">lightcyan3</option>
+                <option value="peachpuff2">peachpuff2</option>
+                <option value="lightsteelblue2">lightsteelblue2</option>
+                <option value="lightyellow2">lightyellow2</option>
+                <option value="moccasin">moccasin</option>
+                <option value="antiquewhite2">antiquewhite2</option>
+                <option value="gray80">gray80</option>
+                <option value="lightgrey">lightgrey</option>
+            </param>
+            <param name="intersection_line_width" type="float" label="Intersection Line Width" value="0.7" help="Width of the lines in the intersection plot. Default: 0.5
+"/>
+            <param name="intersection_point_size" type="float" label="Intersection Point Size" value="2.2" help="Size of the points in the intersection plot. Default: 2
+"/>
+        </section>
+        <section name="table" title="Table" expanded="false">
+            <param name="table_font_size" type="float" label="Table Font Size" value="0.7" help="Font size for the table in the plot. Default: 3
+"/>
+            <param name="table_content" type="select" label="Table Content" help="Content of the table in the plot. Default: NULL
+">
+                <option value="all intersections" selected="true">all intersections</option>
+                <option value="returned intersections">returned intersections</option>
+            </param>
+        </section>
+        <section name="image" title="Image" expanded="false">
+            <param name="dpi" type="float" label="Image Resolution" value="300" help="dots-per-inch of the output image (see `ggsave()`) - only used if save_plots is TRUE
+"/>
+            <param name="image_height" type="float" label="Image Height" value="3000" help="output image height in pixels - only used if save_plots is TRUE
+"/>
+            <param name="image_width" type="float" label="Image Width" value="4000" help="output image width in pixels - only used if save_plots is TRUE
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="feature_id_colname" type="text" label="Elements Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+            <param name="contrasts_colname" type="text" label="Categories Column" value="Contrast" help="Name of the column in `moo_diff_summary_dat` that contains the contrast names (default:
+&quot;Contrast&quot;)
+"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="analysis" format="rds" from_work_dir="plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="figures" format="png" from_work_dir="figures/diff/venn_diagram.png" label="${tool.name} on ${on_string}: Figures"/>
+    </outputs>
+    <help><![CDATA[
+
+**Venn Diagram
+**
+generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
+tested contrasts). This Venn diagram is available for up to five sets; Intersection plot is available for any number
+of sets. Specific sets can be selected for the visualizations and the returned dataset may include all (default) or
+specified intersections.
+**Outputs:**
+- analysis: file (plot.rds)
+- figures: file (figures/diff/venn_diagram.png)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>

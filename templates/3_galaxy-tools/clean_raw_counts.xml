@@ -1,8 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="spac_clean_raw_counts" name="Clean Raw Counts" version="2.0.0" profile="24.2">
-    <description>Clean Raw Counts</description>
+<tool id="spac_clean_raw_counts" name="Clean Raw Counts
+" version="2.0.0" profile="24.2">
+    <description>This function checks the input raw counts matrix for common formatting problems with feature identifiers and sample
+names. If feature IDs contain multiple IDs separated by special characters (| - , or</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
@@ -18,40 +20,47 @@ python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_para
             <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file at the end of the function"/>
         </section>
         <section name="basic" title="Basic" expanded="false">
-            <param name="count_type" type="text" label="Count Type" value="raw" help="the type of counts to use -- must be a name in the counts slot (\code{moo@counts})"/>
+            <param name="count_type" type="text" label="Count Type" value="raw" help="the type of counts to use -- must be a name in the counts slot (`moo@counts`)
+"/>
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
             <param name="feature_id_colname" type="text" label="Feature ID Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
 This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
-Matrix will be available to select for this parameter. (Default: \code{NULL} - first column in the counts matrix will be
-used.)"/>
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
             <param name="sample_id_colname" type="text" label="Sample ID Column" help="The column from the sample metadata containing the sample names. The names in this column
-must exactly match the names used as the sample column names of your input Counts Matrix. (Default: \code{NULL} - first
-column in the sample metadata will be used.)"/>
+must exactly match the names used as the sample column names of your input Counts Matrix. (Default: `NULL` - first
+column in the sample metadata will be used.)
+"/>
         </section>
         <section name="advanced" title="Advanced" expanded="false">
             <repeat name="samples_to_rename_repeat" title="Samples to Rename">
                 <param name="value" type="text" label="Value" help="If you do not have a Plot Labels Column in your sample metadata table, you can use this
 parameter to rename samples manually for display on the PCA plot. Use &quot;Add item&quot; to add each additional sample for
 renaming. Use the following format to describe which old name (in your sample metadata table) you want to rename to
-which new name: old_name: new_name"/>
+which new name: old_name: new_name
+"/>
             </repeat>
             <param name="cleanup_column_names" type="boolean" label="Cleanup Column Names" truevalue="True" falsevalue="False" checked="true" help="Invalid raw counts column names can cause errors
-in the downstream analysis. If this is \code{TRUE}, any invalid column names
+in the downstream analysis. If this is `TRUE`, any invalid column names
 will be automatically altered to a correct format. These format changes
 will include adding an &quot;X&quot; as the first character in any column name that
 began with a numeral and replacing some special characters (&quot;-,:. &quot;) with
 underscores (&quot;_&quot;). Invalid sample names and any changes made will be
-detailed in the template log."/>
-            <param name="split_gene_name" type="boolean" label="Split Feature ID" truevalue="True" falsevalue="False" checked="true" help="If \code{TRUE}, split the gene name column by any of these special characters: \verb{,|_-:}"/>
+detailed.
+"/>
+            <param name="split_gene_name" type="boolean" label="Split Feature ID" truevalue="True" falsevalue="False" checked="true" help="If `TRUE`, split the gene name column by any of these special characters: `,|_-:`"/>
             <param name="aggregate_rows_with_duplicate_gene_names" type="boolean" label="Aggregate Rows with Duplicate Feature Names" truevalue="True" falsevalue="False" checked="true" help="If a Feature ID (from the
 &quot;Cleanup Column Names&quot; parameter above) is found to be duplicated on
 multiple rows of the raw counts, the Log will report these Feature IDs.
-Using the default behavior (\code{TRUE}), the counts for all rows with a
+Using the default behavior (`TRUE`), the counts for all rows with a
 duplicate Feature IDs are aggregated into a single row. Counts are summed
 across duplicate Feature ID rows within each sample. Additional identifier
 columns, if present (e.g. Ensembl IDs), will be preserved and multiple
 matching identifiers in such additional columns will appear as
-comma-separated values in an aggregated row."/>
-            <param name="save_plots" type="boolean" label="Save plots" truevalue="True" falsevalue="False" checked="true" help="If TRUE, save the plots to files"/>
+comma-separated values in an aggregated row.
+"/>
             <param name="gene_name_column_to_use_for_collapsing_duplicates" type="text" label="Column Used to Aggregate Duplicates Feature IDs" value="" help="Select the column
 with Feature IDs to use as grouping elements to collapse the counts matrix.
 The log output will list the columns available to identify duplicate row
@@ -61,24 +70,30 @@ If left blank your &quot;Feature ID&quot; Column will be used to Aggregate Rows.
 will be used to aggregate duplicate IDs. If &quot;Feature ID&quot; column does not
 contain Ensembl IDs the split Feature IDs will be named 'Feature_id_1' and
 'Feature_id_2'. For this case an error will occur and you will have
-to manually enter the Column ID for this field."/>
+to manually enter the Column ID for this field.
+"/>
         </section>
     </inputs>
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="moo_output" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Moo_Output"/>
+        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
         <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
-            <discover_datasets pattern="__name_and_ext__" directory="figures/clean" recurse="true"/>
+            <discover_datasets pattern="__name_and_ext__" directory="figures/clean/" recurse="true"/>
         </collection>
     </outputs>
     <help><![CDATA[
 
-**Clean Raw Counts**
-Clean Raw Counts
+**Clean Raw Counts
+**
+This function checks the input raw counts matrix for common formatting problems with feature identifiers and sample
+names. If feature IDs contain multiple IDs separated by special characters (| - , or space) they will be split into
+multiple columns. If duplicate feature IDs are detected the counts are summed across duplicate feature ID rows
+within each sample. Invalid sample names will also be reported and can be automatically
+corrected. If your sample names are corrected here, be sure to make equivalent changes to your metadata table.
 **Outputs:**
-- moo_output: file (moo.rds)
-- figures: directory (figures/clean)
+- analysis: file (moo.rds)
+- figures: directory (figures/clean/)
 
 ]]></help>
     <citations>

@@ -1,0 +1,243 @@
+<?xml version="1.0" ?>
+<tool id="spac_plot_expr_heatmap" name="Plot Expression Heatmap
+" version="2.0.0" profile="24.2">
+    <description>The samples (i.e. the columns) are clustered in an unsupervised fashion based
+on how similar their expression profiles are across the included genes. This
+can help identify samples that are non cluste</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+    </requirements>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <command detect_errors="exit_code"><![CDATA[
+
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values include_all_genes filter_top_genes_by_variance cluster_genes display_gene_dendrograms display_gene_names center_and_rescale_expression cluster_samples arrange_sample_columns order_by_gene_expression display_smpl_dendrograms reorder_dendrogram display_sample_names assign_group_colors autoscale_heatmap_color display_numbers save_plots --list-values assign_color_to_sample_groups samples_to_include reorder_dendrogram_order group_colname --inject-outputs --outputs-config outputs_config.json && mosuite plot_expr_heatmap --json=cleaned_params.json
+
+]]></command>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="basic" expanded="false">
+            <param name="moo_output_rds" type="text" label="Plot output Rds" value="expr_heatmap_plot.rds" help="File path to output the plot object as an Rds file"/>
+        </section>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="count_type" type="text" label="Count Type" value="" help="the type of counts to use. Must be a name in the counts slot (`names(moo@counts)`).
+"/>
+            <param name="sub_count_type" type="text" label="Sub Count Type" value="" help="used if `count_type` is a list in the counts slot: specify the sub count type within the list.
+Must be a name in `names(moo@counts[[count_type]])`.
+"/>
+        </section>
+        <section name="gene" title="Gene" expanded="false">
+            <param name="include_all_genes" type="boolean" label="Include All Genes" truevalue="True" falsevalue="False" checked="false" help="Set to TRUE if all genes are to be included. Set to FALSE if you want to filter genes by
+variance and/or provide a list of specific genes that will appear in the heatmap.
+"/>
+            <param name="filter_top_genes_by_variance" type="boolean" label="Filter Top Genes by Variance" truevalue="True" falsevalue="False" checked="true" help="Set to TRUE if you want to only include the top genes by variance. Set to FALSE
+if you do not want to filter genes by variance.
+"/>
+            <param name="top_genes_by_variance_to_include" type="float" label="Top Genes by Variance to Include" value="500" help="The number of genes to include if filtering genes by variance. This parameter
+is ignored if &quot;Filter top genes by variance&quot; is set to FALSE.
+"/>
+            <param name="specific_genes_to_include_in_heatmap" type="text" label="Specific Genes to Include in Heatmap" value="None" help="Enter the gene symbols to be included in the heatmap, with each gene
+symbol separated with a space from the others. Alternatively, paste in a column of gene names from any spreadsheet
+application. This parameter is ignored if &quot;Include all genes&quot; is set to TRUE.
+"/>
+            <param name="cluster_genes" type="boolean" label="Cluster Genes" truevalue="True" falsevalue="False" checked="true" help="Choose whether to cluster the rows (genes). If TRUE, rows will have clustering applied. If
+FALSE, clustering will not be applied to rows.
+"/>
+            <param name="gene_clustering_method" type="select" label="Gene Clustering Method" help="Clustering method metric to be used in clustering samples. (TODO document options)
+">
+                <option value="ward.D">ward.D</option>
+                <option value="ward.D2">ward.D2</option>
+                <option value="single">single</option>
+                <option value="complete">complete</option>
+                <option value="average" selected="true">average</option>
+                <option value="mcquitty">mcquitty</option>
+                <option value="median">median</option>
+                <option value="centroid">centroid</option>
+            </param>
+            <param name="gene_distance_metric" type="select" label="Gene Distance Metric" help="Distance metric to be used in clustering genes. (TODO document options)
+">
+                <option value="euclidean">euclidean</option>
+                <option value="maximum">maximum</option>
+                <option value="manhattan">manhattan</option>
+                <option value="canberra">canberra</option>
+                <option value="binary">binary</option>
+                <option value="minkowski">minkowski</option>
+                <option value="correlation" selected="true">correlation</option>
+            </param>
+            <param name="display_gene_dendrograms" type="boolean" label="Display Gene Dendrogram" truevalue="True" falsevalue="False" checked="true" help="Set to TRUE to show gene dendrograms. Set to FALSE to hide dendrograms.
+"/>
+            <param name="display_gene_names" type="boolean" label="Display Gene Names" truevalue="True" falsevalue="False" checked="false" help="Set to TRUE to display gene names on the right side of the heatmap. Set to FALSE to hide
+gene names.
+"/>
+            <param name="center_and_rescale_expression" type="boolean" label="Center and Rescale Expression" truevalue="True" falsevalue="False" checked="true" help="Center and rescale expression for each gene across all included samples.
+"/>
+        </section>
+        <section name="sample" title="Sample" expanded="false">
+            <param name="cluster_samples" type="boolean" label="Cluster Samples" truevalue="True" falsevalue="False" checked="false" help="Choose whether to cluster the columns (samples). If TRUE, columns will have clustering
+applied. If FALSE, clustering will not be applied to columns.
+"/>
+            <param name="arrange_sample_columns" type="boolean" label="Arrange Sample Columns" truevalue="True" falsevalue="False" checked="true" help="If TRUE, arranges columns by annotation groups. If FALSE, and &quot;Cluster Samples&quot; is
+FALSE, samples will appear in the order of input (samples to include)
+"/>
+            <param name="order_by_gene_expression" type="boolean" label="Order by Gene Expression" truevalue="True" falsevalue="False" checked="false" help="If TRUE, set gene name below and direction for ordering
+"/>
+            <param name="gene_to_order_columns" type="text" label="Gene to Order Columns" value=" " help="Gene to order columns by expression levels
+"/>
+            <param name="gene_expression_order" type="select" label="Gene Expression Order" help="Choose direction for gene order
+">
+                <option value="low_to_high" selected="true">low_to_high</option>
+                <option value="high_to_low">high_to_low</option>
+            </param>
+            <param name="smpl_clustering_method" type="select" label="Sample Clustering Method" help="Clustering method to be used in clustering samples.  (TODO document options)
+">
+                <option value="ward.D">ward.D</option>
+                <option value="ward.D2">ward.D2</option>
+                <option value="single">single</option>
+                <option value="complete">complete</option>
+                <option value="average" selected="true">average</option>
+                <option value="mcquitty">mcquitty</option>
+                <option value="median">median</option>
+                <option value="centroid">centroid</option>
+            </param>
+            <param name="smpl_distance_metric" type="select" label="Sample Distance Metric" help="Distance metric to be used in clustering samples.  (TODO document options)
+">
+                <option value="euclidean">euclidean</option>
+                <option value="maximum">maximum</option>
+                <option value="manhattan">manhattan</option>
+                <option value="canberra">canberra</option>
+                <option value="binary">binary</option>
+                <option value="minkowski">minkowski</option>
+                <option value="correlation" selected="true">correlation</option>
+            </param>
+            <param name="display_smpl_dendrograms" type="boolean" label="Display Sample Dendrograms" truevalue="True" falsevalue="False" checked="true" help="Set to TRUE to show sample dendrograms. Set to FALSE to hide dendrogram.
+"/>
+            <param name="reorder_dendrogram" type="boolean" label="Reorder Sample Dendrogram" truevalue="True" falsevalue="False" checked="false" help="If TRUE, set the order of the dendrogram (below)
+"/>
+            <param name="display_sample_names" type="boolean" label="Display Sample Names" truevalue="True" falsevalue="False" checked="true" help="Set to TRUE if you want sample names to be displayed on the plot. Set to FALSE to hide
+sample names.
+"/>
+            <repeat name="reorder_dendrogram_order_repeat" title="Reorder Sample Dendrogram Order">
+                <param name="value" type="text" label="Value" help="Reorder the samples (columns) of the dendrogram by name, e.g.
+“sample2”,“sample3&quot;,“sample1&quot;.
+"/>
+            </repeat>
+        </section>
+        <section name="annotation" title="Annotation" expanded="false">
+            <param name="assign_group_colors" type="boolean" label="Assign Group Colors" truevalue="True" falsevalue="False" checked="false" help="If TRUE, set the groups assigned colors (below)
+"/>
+            <repeat name="assign_color_to_sample_groups_repeat" title="Assign Color to Sample Groups">
+                <param name="value" type="text" label="Value" help="Enter each sample to color in the format: group_name: color This parameter is
+ignored if &quot;Assign Colors&quot; is set to FALSE.
+"/>
+            </repeat>
+            <param name="group_colors" type="select" label="Group Colors" multiple="true" optional="true" help="Set group annotation colors.
+">
+                <option value="indigo">indigo</option>
+                <option value="carrot">carrot</option>
+                <option value="lipstick">lipstick</option>
+                <option value="turquoise">turquoise</option>
+                <option value="lavender">lavender</option>
+                <option value="jade">jade</option>
+                <option value="coral">coral</option>
+                <option value="azure">azure</option>
+                <option value="green">green</option>
+                <option value="rum">rum</option>
+                <option value="orange">orange</option>
+                <option value="olive">olive</option>
+            </param>
+            <repeat name="group_colname_repeat" title="Group Columns">
+                <param name="value" type="text" label="Value" help="The column from the sample metadata containing the sample group information. This is usually a
+column showing to which experimental treatments each sample belongs (e.g. WildType, Knockout, Tumor, Normal,
+Before, After, etc.).
+" value="Group"/>
+            </repeat>
+        </section>
+        <section name="visual" title="Visual" expanded="false">
+            <param name="heatmap_color_scheme" type="select" label="Heatmap Color Scheme" help="color scheme (TODO document options)
+">
+                <option value="Default" selected="true">Default</option>
+                <option value="Blue to Red">Blue to Red</option>
+                <option value="Red to Vanilla">Red to Vanilla</option>
+                <option value="Violet to Pink">Violet to Pink</option>
+                <option value="Bu Yl Rd">Bu Yl Rd</option>
+                <option value="Bu Wt Rd">Bu Wt Rd</option>
+            </param>
+            <param name="autoscale_heatmap_color" type="boolean" label="Autoscale Heatmap Color" truevalue="True" falsevalue="False" checked="true" help="Set to TRUE to autoscale the heatmap colors between the maximum and minimum heatmap
+color parameters. If FALSE, set the heatmap colors between &quot;Set max heatmap color&quot; and &quot;Set min heatmap color&quot;
+(below).
+"/>
+            <param name="set_max_heatmap_color" type="float" label="Set Max Heatmap Color" value="2" help="If Autoscale heatmap color is set to FALSE, set the maximum heatmap z-score value.
+"/>
+            <param name="set_min_heatmap_color" type="float" label="Set Min Heatmap Color" value="-2" help="If Autoscale heatmap color is set to FALSE, set the minimum heatmap z-score value
+"/>
+            <param name="aspect_ratio" type="text" label="Aspect Ratio" value="Auto" help="Set figure Aspect Ratio. Ratio refers to entire figure including legend. If set to Auto figure
+size is based on number of rows and columns form counts matrix. default - Auto
+"/>
+            <param name="display_numbers" type="boolean" label="Display Numbers" truevalue="True" falsevalue="False" checked="false" help="Setting to FALSE (default) will not display numerical value of heat on heatmap. Set to TRUE if
+you want to see these numbers on the plot.
+"/>
+            <param name="gene_name_font_size" type="float" label="Gene Name Font Size" value="4" help="Font size for gene names. If you don't want gene labels to show, toggle &quot;Display Gene
+Names&quot; below to FALSE
+"/>
+            <param name="legend_font_size" type="float" label="Legend Font Size" value="10" help="Set Font size for figure legend. Default is 10.
+"/>
+            <param name="sample_name_font_size" type="float" label="Sample Name Font Size" value="8" help="Font size for sample names. If you don't want to display samples names, toggle &quot;Display
+sample names&quot; (below) to FALSE
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+        <section name="data_setup" title="Data Setup" expanded="false">
+            <param name="feature_id_colname" type="text" label="Gene Column Name" help="The column from the counts dataa containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+            <param name="sample_id_colname" type="text" label="Sample Name Column" help="The column from the sample metadata containing the sample names. The names in this column
+must exactly match the names used as the sample column names of your input Counts Matrix. (Default: `NULL` - first
+column in the sample metadata will be used.)
+"/>
+            <param name="label_colname" type="text" label="Sample Labels Column" help="The column from the sample metadata containing the sample labels as you wish them to appear in
+the plots produced by this template. This can be the same Sample Names Column. However, you may desire different
+labels to display on your figure (e.g. shorter labels are sometimes preferred on plots). In that case, select the
+column with your preferred Labels here. The selected column should contain unique names for each sample. (Default:
+`NULL` -- `sample_id_colname` will be used.)
+"/>
+            <repeat name="samples_to_include_repeat" title="Samples to Include">
+                <param name="value" type="text" label="Value" help="Which samples would you like to include? Usually, you will choose all sample columns, or
+you could choose to remove certain samples. Samples excluded here will be removed in this step and from further
+analysis downstream of this step. (Default: `NULL` - all sample IDs in `moo@sample_meta` will be used.)
+"/>
+            </repeat>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="analysis" format="rds" from_work_dir="expr_heatmap_plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="figures" format="png" from_work_dir="figures/heatmap/expr_heatmap.png" label="${tool.name} on ${on_string}: Figures"/>
+    </outputs>
+    <help><![CDATA[
+
+**Plot Expression Heatmap
+**
+The samples (i.e. the columns) are clustered in an unsupervised fashion based
+on how similar their expression profiles are across the included genes. This
+can help identify samples that are non clustering with their group as you
+might expect based on the experimental design.
+By default, the top 500 genes by variance are used, as these are
+generally going to include those genes that most distinguish your samples
+from one another. You can change this as well as many other parameters about
+this heatmap if you explore the advanced options.
+**Outputs:**
+- analysis: file (expr_heatmap_plot.rds)
+- figures: file (figures/heatmap/expr_heatmap.png)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+    </citations>
+</tool>

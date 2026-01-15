@@ -5,11 +5,7 @@
 Galaxy workflow configuration for
 [MOSuite](https://github.com/CCBR/MOSuite)
 
-<figure>
-<a
-href="https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml"><img
-src="https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg" /></a>
-</figure>
+[![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
 
 ## Installation
 
@@ -41,5 +37,7 @@ galaxysynth --help
       -v, --version         show program's version number and exit
 
 ```bash
-galaxysynth  "templates/2_blueprints/*.json" --docker nciccbr/mosuite:latest --outdir templates/3_galaxy-tools
+galaxysynth  "templates/2_blueprints/*.json" \
+    --docker nciccbr/mosuite:v0.2.1 \
+    --output templates/3_galaxy-tools
 ```

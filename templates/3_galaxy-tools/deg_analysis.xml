@@ -3,7 +3,7 @@
 " version="2.0.0" profile="24.2">
     <description>Differential expression analysis</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.0.9000_4f89685</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
