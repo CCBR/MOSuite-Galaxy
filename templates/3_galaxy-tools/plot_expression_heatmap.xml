@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="spac_plot_expr_heatmap" name="Plot Expression Heatmap
+<tool id="mosuite_plot_expr_heatmap" name="Plot Expression Heatmap
 " version="2.0.0" profile="24.2">
     <description>The samples (i.e. the columns) are clustered in an unsupervised fashion based
 on how similar their expression profiles are across the included genes. This
@@ -238,6 +238,6 @@ this heatmap if you explore the advanced options.
 
 ]]></help>
     <citations>
-        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+        <citation type="doi">10.5281/zenodo.16371580</citation>
     </citations>
 </tool>

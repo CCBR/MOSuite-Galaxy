@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="spac_filter_diff" name="DEG Gene List
+<tool id="mosuite_filter_diff" name="DEG Gene List
 " version="2.0.0" profile="24.2">
     <description>Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in additi</description>
@@ -147,6 +147,6 @@ estimates and for sub-setting of contrasts and groups included in the output gen
 
 ]]></help>
     <citations>
-        <citation type="doi">10.1038/s41586-019-1876-x</citation>
+        <citation type="doi">10.5281/zenodo.16371580</citation>
     </citations>
 </tool>
