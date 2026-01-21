@@ -195,7 +195,13 @@ class GalaxyXMLSynthesizer:
                 list_params.append(column.get("key"))
 
         # Build command as a SINGLE LINE
-        template_name = tool_id.replace(f"{tool_prefix}_", "")
+        # Preserve the exact case of the R function name for the CLI subcommand
+        r_function_name = self.blueprint.get("r_function")
+        if isinstance(r_function_name, str) and r_function_name.strip():
+            template_name = r_function_name.strip()
+        else:
+            # Fallback to deriving from tool_id if r_function is missing
+            template_name = tool_id.replace(f"{tool_prefix}_", "")
 
         # Build command parts
         cmd_parts = []
@@ -382,12 +388,12 @@ class GalaxyXMLSynthesizer:
         param.set("name", dataset["key"])
         param.set("type", "data")
 
-        # Map data types
-        data_type = dataset.get("dataType", "")
-        date_type_upper = data_type.upper()
-        if "DATAFRAME" in date_type_upper or "TABULAR" in date_type_upper:
+        # Map data types - check paramType first (from blueprints), then dataType (from other sources)
+        data_type = dataset.get("paramType") or dataset.get("dataType", "")
+        data_type_upper = data_type.upper()
+        if "TABULAR" in data_type_upper or "DATAFRAME" in data_type_upper:
             param.set("format", "tabular,csv,tsv,txt")
-        elif "PYTHON" in date_type_upper or "ANNDATA" in date_type_upper:
+        elif "PYTHON" in data_type_upper or "ANNDATA" in data_type_upper:
             param.set("format", "h5ad,binary,pickle")
         else:
             param.set("format", "binary")

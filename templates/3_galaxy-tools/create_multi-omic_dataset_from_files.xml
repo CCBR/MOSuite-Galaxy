@@ -10,7 +10,7 @@
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiomicdataset_from_files --json=cleaned_params.json
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 
 ]]></command>
     <inputs>
@@ -19,7 +19,7 @@ python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_para
         <param name="feature_counts_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file of expected feature counts (e.g. gene counts from RSEM).
 "/>
         <section name="basic" title="basic" expanded="false">
-            <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file at the end of the function"/>
+            <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file"/>
             <param name="sample_id_colname" type="text" label="" value="" help="name of the column in `sample_metadata` that contains the sample IDs. (Default: `NULL` -
 first column in the sample metadata will be used.)
 "/>
