@@ -13,6 +13,8 @@ ref: CCBR/MOSuite-Galaxy@b05a8f0
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 
+echo 'galaxy_params.json'
+cat galaxy_params.json
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 
 ]]></command>
