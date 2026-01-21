@@ -28,6 +28,7 @@ from typing import Dict, List, Any, Optional
 import re
 import argparse
 import sys
+import subprocess
 from collections import OrderedDict
 
 from .util import get_version
@@ -53,10 +54,12 @@ class GalaxyXMLSynthesizer:
         blueprint: Dict[str, Any],
         docker_image: str = "nciccbr/mosuite:latest",
         citation_doi: str = "10.5281/zenodo.16371580",
+        repo_name: str = "CCBR/MOSuite-Galaxy",
     ):
         self.blueprint = blueprint
         self.docker_image = docker_image
         self.citation_doi = citation_doi
+        self.repo_name = repo_name
 
     def synthesize(self) -> str:
         """Generate Galaxy tool XML from blueprint."""
@@ -67,12 +70,17 @@ class GalaxyXMLSynthesizer:
         tool_id = self._make_tool_id(self.blueprint.get("r_function", "tool"))
         tool.set("id", tool_id)
         tool.set("name", self.blueprint.get("title", "Tool"))
-        tool.set("version", "2.0.0")
+        tool.set("version", self._extract_docker_tag(self.docker_image))
         tool.set("profile", "24.2")
 
         # Description
         desc = ET.SubElement(tool, "description")
-        desc.text = self._clean_text(self.blueprint.get("description", ""))[:200]
+        base_desc = self._clean_text(self.blueprint.get("description", ""))[:200]
+        desc_lines = [base_desc, f"\n\ndocker: {self.docker_image}"]
+        git_sha = self._get_git_short_sha()
+        if git_sha:
+            desc_lines.append(f"ref: {self.repo_name}@{git_sha}\n")
+        desc.text = "\n".join(desc_lines)
 
         # Requirements
         reqs = ET.SubElement(tool, "requirements")
@@ -120,6 +128,35 @@ class GalaxyXMLSynthesizer:
         text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
         text = text.replace("\\n", " ")
         return text.strip()
+
+    def _extract_docker_tag(self, docker_image: str) -> Optional[str]:
+        """Grab the tag portion from the docker image string."""
+        if not docker_image:
+            return None
+
+        last_segment = docker_image.split("/")[-1]
+        if ":" in last_segment:
+            tag = last_segment.split(":", 1)[1]
+            return tag or None
+
+        # No explicit tag present; assume latest
+        return "latest"
+
+    def _get_git_short_sha(self) -> Optional[str]:
+        """Return short git SHA for the repo; None if unavailable."""
+        repo_root = Path(__file__).resolve().parents[2]
+
+        try:
+            sha = (
+                subprocess.check_output(
+                    ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
+                )
+                .decode()
+                .strip()
+            )
+            return sha or None
+        except Exception:
+            return None
 
     def _add_sanitizer(
         self,
