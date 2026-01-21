@@ -69,7 +69,7 @@ class GalaxyXMLSynthesizer:
         # tool_id = self._make_tool_id(self.blueprint.get('title', 'tool'))
         tool_id = self._make_tool_id(self.blueprint.get("r_function", "tool"))
         tool.set("id", tool_id)
-        tool.set("name", self.blueprint.get("title", "Tool"))
+        tool.set("name", self.blueprint.get("title", "Tool").strip())
         tool.set("version", self._extract_docker_tag(self.docker_image))
         tool.set("profile", "24.2")
 
