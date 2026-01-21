@@ -1,10 +1,6 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files
-" version="v0.2.1" profile="24.2">
-    <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
-docker: nciccbr/mosuite:v0.2.1
-ref: CCBR/MOSuite-Galaxy@b05a8f0
-</description>
+<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.2.1" profile="24.2">
+    <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
@@ -13,8 +9,6 @@ ref: CCBR/MOSuite-Galaxy@b05a8f0
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 
-echo 'galaxy_params.json'
-cat galaxy_params.json
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 
 ]]></command>
@@ -52,6 +46,8 @@ If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = 
 **Create Multi-Omic Dataset from Files
 **
 Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
+docker: nciccbr/mosuite:v0.2.1
+ref: CCBR/MOSuite-Galaxy@0b18c3f
 **Outputs:**
 - analysis: file (moo.rds)
 

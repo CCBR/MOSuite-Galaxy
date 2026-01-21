@@ -10,11 +10,10 @@ names. If feature IDs contain multiple IDs separated by special characters (| - 
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
-
-echo 'galaxy_params.json'
-cat galaxy_params.json
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values cleanup_column_names split_gene_name aggregate_rows_with_duplicate_gene_names save_plots --list-values samples_to_rename --inject-outputs --outputs-config outputs_config.json && mosuite clean_raw_counts --json=cleaned_params.json
-
+echo 'galaxy_params.json' && cat galaxy_params.json &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values cleanup_column_names split_gene_name aggregate_rows_with_duplicate_gene_names save_plots --list-values samples_to_rename --inject-outputs --outputs-config outputs_config.json &&
+echo 'cleaned_params.json' && cat cleaned_params.json &&
+mosuite clean_raw_counts --json=cleaned_params.json
 ]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
