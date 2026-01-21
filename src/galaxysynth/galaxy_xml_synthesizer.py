@@ -75,12 +75,7 @@ class GalaxyXMLSynthesizer:
 
         # Description
         desc = ET.SubElement(tool, "description")
-        base_desc = self._clean_text(self.blueprint.get("description", ""))[:200]
-        desc_lines = [base_desc, f"\n\ndocker: {self.docker_image}"]
-        git_sha = self._get_git_short_sha()
-        if git_sha:
-            desc_lines.append(f"ref: {self.repo_name}@{git_sha}\n")
-        desc.text = "\n".join(desc_lines)
+        desc.text = self._clean_text(self.blueprint.get("description", ""))[:200]
 
         # Requirements
         reqs = ET.SubElement(tool, "requirements")
@@ -719,6 +714,17 @@ class GalaxyXMLSynthesizer:
 
         help_lines = [f"**{title}**", desc]
 
+        docker_line = f"\ndocker: {self.docker_image}" if self.docker_image else None
+        git_sha = self._get_git_short_sha()
+        ref_line = f"\nref: {self.repo_name}@{git_sha}" if git_sha else None
+
+        if docker_line or ref_line:
+            help_lines.append("")
+        if docker_line:
+            help_lines.append(docker_line)
+        if ref_line:
+            help_lines.append(ref_line)
+
         # Check if we have parameters that need special characters
         has_special_params = False
         for param in self.blueprint.get("parameters", []):
@@ -754,7 +760,7 @@ class GalaxyXMLSynthesizer:
                     ]
                 )
 
-        help_lines.extend(["**Outputs:**"])
+        help_lines.extend(["**Outputs:**\n"])
 
         outputs = self.blueprint.get("outputs", {})
         for key, config in outputs.items():
