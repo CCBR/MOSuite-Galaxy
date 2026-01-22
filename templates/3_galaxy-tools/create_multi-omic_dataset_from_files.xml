@@ -4,9 +4,6 @@
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
@@ -17,6 +14,9 @@ cat 'cleaned_params.json' &&
 echo '' &&
 mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="sample_meta_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file with sample IDs and metadata for differential analysis.
 "/>
@@ -61,7 +61,7 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@981d219](https://github.com/CCBR/MOSuite-Galaxy/tree/981d219)
+- GitHub: [CCBR/MOSuite-Galaxy@56ed6e0](https://github.com/CCBR/MOSuite-Galaxy/tree/56ed6e0)
 
 ]]></help>
     <citations>

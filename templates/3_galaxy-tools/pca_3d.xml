@@ -4,9 +4,6 @@
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
@@ -18,6 +15,9 @@ cat 'cleaned_params.json' &&
 echo '' &&
 mosuite plot_pca_3d --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -156,7 +156,7 @@ Runs [MOSuite::plot_pca_3d()](https://ccbr.github.io/MOSuite/reference/plot_pca_
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@981d219](https://github.com/CCBR/MOSuite-Galaxy/tree/981d219)
+- GitHub: [CCBR/MOSuite-Galaxy@56ed6e0](https://github.com/CCBR/MOSuite-Galaxy/tree/56ed6e0)
 
 ]]></help>
     <citations>

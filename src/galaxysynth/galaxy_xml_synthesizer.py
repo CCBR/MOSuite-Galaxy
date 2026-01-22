@@ -87,15 +87,15 @@ class GalaxyXMLSynthesizer:
         container.set("type", "docker")
         container.text = self.docker_image
 
+        # Command (must come before configfiles per Galaxy best practices)
+        self._add_command(tool, tool_id)
+
         # Configfiles - Galaxy serializes inputs to JSON
         configfiles = ET.SubElement(tool, "configfiles")
         inputs_config = ET.SubElement(configfiles, "inputs")
         inputs_config.set("name", "params_json")
         inputs_config.set("filename", "galaxy_params.json")
         inputs_config.set("data_style", "paths")
-
-        # Command
-        self._add_command(tool, tool_id)
 
         # Inputs with section support
         self._add_inputs(tool)
