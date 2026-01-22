@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <tool id="mosuite_batch_correct_counts" name="Batch Correction" version="v0.2.1" profile="24.2">
-    <description>using 
-list(&quot;sva::ComBat()&quot;)</description>
+    <description>Perform batch correction using sva::ComBat()</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
@@ -102,8 +101,7 @@ Colors must either be names in `grDevices::colors()` or valid hex codes.
 
 Runs [MOSuite::batch_correct_counts()](https://ccbr.github.io/MOSuite/reference/batch_correct_counts.html)
 
-using 
-list("sva::ComBat()")
+Perform batch correction using sva::ComBat()
 
 **Outputs:**
 
@@ -113,7 +111,7 @@ list("sva::ComBat()")
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
+- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
 
 ]]></help>
     <citations>

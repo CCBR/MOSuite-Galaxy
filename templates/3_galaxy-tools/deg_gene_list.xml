@@ -69,26 +69,11 @@ used.)
 "/>
         </section>
         <section name="filter" title="Filter" expanded="false">
-            <param name="contrast_filter" type="select" label="Contrasts Filter" help="Whether to filter `contrasts` in or our of analysis. If `&quot;keep&quot;`, only the contrast names
-listed in `contrasts` will be included. If `&quot;remove`, the contrast names listed by `contrasts` will be removed. If
-`&quot;none&quot;`, all contrasts in the dataset are used. Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`">
-                <option value="none" selected="true">none</option>
-                <option value="keep">keep</option>
-                <option value="remove">remove</option>
-            </param>
             <repeat name="contrasts_repeat" title="Contrasts">
                 <param name="value" type="text" label="Value" help="Contrast names to filter by `contrast_filter`. If `contrast_filter` is `&quot;none&quot;`, this parameter has
 no effect.
 "/>
             </repeat>
-            <param name="groups_filter" type="select" label="Groups Filter" help="Whether to filter `groups` in or out of analysis. If `&quot;keep&quot;`, only the group names listed in
-`groups` will be included. If `&quot;remove&quot;`, the group names listed by `groups` will be removed. If `&quot;none&quot;`, all
-groups in the dataset are used.
-">
-                <option value="none" selected="true">none</option>
-                <option value="keep">keep</option>
-                <option value="remove">remove</option>
-            </param>
             <repeat name="groups_repeat" title="Groups">
                 <param name="value" type="text" label="Value" help="Group names to filter by `groups_filter`. If `groups_filter` is `&quot;none&quot;`, this parameter has no effect.
 Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
@@ -158,7 +143,7 @@ estimates and for sub-setting of contrasts and groups included in the output gen
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
+- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
 
 ]]></help>
     <citations>
