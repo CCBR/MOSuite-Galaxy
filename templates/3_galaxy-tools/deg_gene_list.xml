@@ -129,7 +129,7 @@ Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Multiomicdataset"/>
         <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
             <discover_datasets pattern="__name_and_ext__" directory="figures/diff/filt/" recurse="true"/>
         </collection>
@@ -142,7 +142,7 @@ Outputs dataset of significant genes from DEG table; filters genes based on stat
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in addition allows for selection of DEG
 estimates and for sub-setting of contrasts and groups included in the output gene list.
 **Outputs:**
-- analysis: file (moo.rds)
+- multiOmicDataSet: file (moo.rds)
 - figures: directory (figures/diff/filt/)
 
 ]]></help>

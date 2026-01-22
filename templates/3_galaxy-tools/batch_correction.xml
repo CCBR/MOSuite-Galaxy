@@ -1,8 +1,7 @@
 <?xml version="1.0" ?>
 <tool id="mosuite_batch_correct_counts" name="Batch Correction
 " version="2.0.0" profile="24.2">
-    <description>using 
-list(&quot;sva::ComBat()&quot;)</description>
+    <description>Perform batch correction using sva::ComBat()</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
     </requirements>
@@ -65,18 +64,18 @@ column with your preferred Labels here. The selected column should contain uniqu
             <param name="colors_for_plots" type="select" label="Colors for plots" multiple="true" optional="true" help="Colors for the PCA and histogram will be picked, in order, from this list.
 Colors must either be names in `grDevices::colors()` or valid hex codes.
 ">
-                <option value="indigo">indigo</option>
-                <option value="carrot">carrot</option>
-                <option value="lipstick">lipstick</option>
-                <option value="turquoise">turquoise</option>
-                <option value="lavender">lavender</option>
-                <option value="jade">jade</option>
-                <option value="coral">coral</option>
-                <option value="azure">azure</option>
-                <option value="green">green</option>
-                <option value="rum">rum</option>
-                <option value="orange">orange</option>
-                <option value="olive">olive</option>
+                <option value="#5954d6">#5954d6</option>
+                <option value="#e1562c">#e1562c</option>
+                <option value="#b80058">#b80058</option>
+                <option value="#00c6f8">#00c6f8</option>
+                <option value="#d163e6">#d163e6</option>
+                <option value="#00a76c">#00a76c</option>
+                <option value="#ff9287">#ff9287</option>
+                <option value="#008cf9">#008cf9</option>
+                <option value="#006e00">#006e00</option>
+                <option value="#796880">#796880</option>
+                <option value="#FFA500">#FFA500</option>
+                <option value="#878500">#878500</option>
             </param>
             <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
 "/>
@@ -85,7 +84,7 @@ Colors must either be names in `grDevices::colors()` or valid hex codes.
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Multiomicdataset"/>
         <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
             <discover_datasets pattern="__name_and_ext__" directory="figures/batch/" recurse="true"/>
         </collection>
@@ -94,10 +93,9 @@ Colors must either be names in `grDevices::colors()` or valid hex codes.
 
 **Batch Correction
 **
-using 
-list("sva::ComBat()")
+Perform batch correction using sva::ComBat()
 **Outputs:**
-- analysis: file (moo.rds)
+- multiOmicDataSet: file (moo.rds)
 - figures: directory (figures/batch/)
 
 ]]></help>
