@@ -103,10 +103,10 @@
             "paramType": "SELECT",
             "paramGroup": "Basic",
             "paramValues": [
-                "in any contrast",
-                "in all contrasts"
+                "any",
+                "all"
             ],
-            "defaultValue": "in any contrast",
+            "defaultValue": "any",
             "condition": null,
             "content": null,
             "objectPropertyReference": null
@@ -144,6 +144,22 @@
             "objectPropertyReference": null
         },
         {
+            "key": "contrast_filter",
+            "displayName": "Contrasts Filter",
+            "description": "",
+            "paramType": "SELECT",
+            "paramGroup": "Filter",
+            "paramValues": [
+                "none",
+                "keep",
+                "remove"
+            ],
+            "defaultValue": "none",
+            "condition": null,
+            "content": null,
+            "objectPropertyReference": null
+        },
+        {
             "key": "contrasts",
             "displayName": "Contrasts",
             "description": "",
@@ -151,6 +167,22 @@
             "paramGroup": "Filter",
             "paramValues": null,
             "defaultValue": "c()",
+            "condition": null,
+            "content": null,
+            "objectPropertyReference": null
+        },
+        {
+            "key": "groups_filter",
+            "displayName": "Groups Filter",
+            "description": "",
+            "paramType": "SELECT",
+            "paramGroup": "Filter",
+            "paramValues": [
+                "none",
+                "keep",
+                "remove"
+            ],
+            "defaultValue": "none",
             "condition": null,
             "content": null,
             "objectPropertyReference": null
