@@ -14,8 +14,7 @@ cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --bool-values venn_force_unique display_empty_intersections save_plots
-    --list-values select_contrasts intersection_ids venn_category_names_distance venn_category_names_position
-    --inject-outputs --outputs-config outputs_config.json &&
+    --list-values select_contrasts intersection_ids venn_category_names_distance venn_category_names_position &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
@@ -875,7 +874,7 @@ specified intersections.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
+- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
 
 ]]></help>
     <citations>

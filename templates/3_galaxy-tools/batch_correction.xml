@@ -14,8 +14,7 @@ cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --bool-values save_plots
-    --list-values samples_to_include covariates_colnames
-    --inject-outputs --outputs-config outputs_config.json &&
+    --list-values samples_to_include covariates_colnames &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
@@ -114,7 +113,7 @@ list("sva::ComBat()")
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
+- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
 
 ]]></help>
     <citations>

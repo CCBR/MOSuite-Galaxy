@@ -12,8 +12,7 @@ echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
-    --bool-values save_plots
-    --inject-outputs --outputs-config outputs_config.json &&
+    --bool-values save_plots &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
@@ -157,7 +156,7 @@ Runs [MOSuite::plot_pca_3d()](https://ccbr.github.io/MOSuite/reference/plot_pca_
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
+- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
 
 ]]></help>
     <citations>

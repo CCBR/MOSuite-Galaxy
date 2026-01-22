@@ -15,8 +15,7 @@ cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --bool-values use_only_addition_labels use_custom_lab save_plots
-    --list-values signif_colname change_colname
-    --inject-outputs --outputs-config outputs_config.json &&
+    --list-values signif_colname change_colname &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
@@ -128,7 +127,7 @@ list(list("https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.h
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
+- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
 
 ]]></help>
     <citations>

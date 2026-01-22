@@ -249,8 +249,8 @@ class GalaxyXMLSynthesizer:
             format_cmd += f"\n    --list-values {' '.join(list_params)}"
 
         # Add output injection flags if outputs exist
-        if "outputs" in self.blueprint:
-            format_cmd += "\n    --inject-outputs --outputs-config outputs_config.json"
+        # if "outputs" in self.blueprint:
+        #     format_cmd += "\n    --inject-outputs --outputs-config outputs_config.json"
 
         cmd_parts.append(format_cmd)
 

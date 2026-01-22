@@ -14,8 +14,7 @@ echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
-    --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit add_deg_columns use_default_grid_layout save_plots
-    --inject-outputs --outputs-config outputs_config.json &&
+    --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit add_deg_columns use_default_grid_layout save_plots &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
@@ -4772,7 +4771,7 @@ useful to the Venn diagram template downstream.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
+- GitHub: [CCBR/MOSuite-Galaxy@39eadea](https://github.com/CCBR/MOSuite-Galaxy/tree/39eadea)
 
 ]]></help>
     <citations>
