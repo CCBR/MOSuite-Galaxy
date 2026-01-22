@@ -9,11 +9,16 @@ adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
+echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --bool-values round_estimates pie_chart_in_3d draw_bar_border save_plots
     --list-values contrasts groups
     --inject-outputs --outputs-config outputs_config.json &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
 mosuite filter_diff --json=cleaned_params.json
 ]]></command>
     <inputs>
@@ -152,7 +157,7 @@ estimates and for sub-setting of contrasts and groups included in the output gen
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub ref: CCBR/MOSuite-Galaxy@efe2c84
+- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
 
 ]]></help>
     <citations>

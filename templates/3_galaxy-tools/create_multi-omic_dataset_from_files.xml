@@ -8,9 +8,14 @@
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
+echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --inject-outputs --outputs-config outputs_config.json &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
 mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 ]]></command>
     <inputs>
@@ -55,7 +60,7 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub ref: CCBR/MOSuite-Galaxy@efe2c84
+- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
 
 ]]></help>
     <citations>

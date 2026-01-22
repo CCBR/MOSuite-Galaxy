@@ -10,11 +10,16 @@ can help identify samples that are non cluste</description>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
+echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
     --bool-values include_all_genes filter_top_genes_by_variance cluster_genes display_gene_dendrograms display_gene_names center_and_rescale_expression cluster_samples arrange_sample_columns order_by_gene_expression display_smpl_dendrograms reorder_dendrogram display_sample_names assign_group_colors autoscale_heatmap_color display_numbers save_plots
     --list-values assign_color_to_sample_groups samples_to_include reorder_dendrogram_order group_colname
     --inject-outputs --outputs-config outputs_config.json &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
 mosuite plot_expr_heatmap --json=cleaned_params.json
 ]]></command>
     <inputs>
@@ -243,7 +248,7 @@ this heatmap if you explore the advanced options.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub ref: CCBR/MOSuite-Galaxy@efe2c84
+- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
 
 ]]></help>
     <citations>

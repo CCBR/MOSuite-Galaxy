@@ -236,7 +236,7 @@ class GalaxyXMLSynthesizer:
             template_name = tool_id.replace(f"{tool_prefix}_", "")
 
         # Build command parts
-        cmd_parts = ["cat 'galaxy_params.json'"]
+        cmd_parts = ["echo 'galaxy_params.json'", "cat 'galaxy_params.json'", "echo ''"]
 
         # Build format_values.py command
         format_cmd = "python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'"
@@ -251,6 +251,10 @@ class GalaxyXMLSynthesizer:
             format_cmd += "\n    --inject-outputs --outputs-config outputs_config.json"
 
         cmd_parts.append(format_cmd)
+
+        cmd_parts.extend(
+            ["echo 'cleaned_params.json'", "cat 'cleaned_params.json'", "echo ''"]
+        )
 
         # Add template command
         cmd_parts.append(f"mosuite {template_name} --json=cleaned_params.json")
@@ -759,7 +763,11 @@ class GalaxyXMLSynthesizer:
             else None
         )
         git_sha = self._get_git_short_sha()
-        ref_line = f"- GitHub ref: {self.repo_name}@{git_sha}" if git_sha else None
+        ref_line = (
+            f"- GitHub: [{self.repo_name}@{git_sha}](https://github.com/{self.repo_name}/tree/{git_sha})"
+            if git_sha
+            else ""
+        )
         if docker_line or ref_line:
             help_lines.append("")
         if docker_line:
