@@ -27,7 +27,8 @@ galaxysynth --help
 ```
 
     usage: galaxysynth [-h] [-o OUTPUT] [--docker DOCKER] [--citation CITATION]
-                       [--debug] [-v]
+                       [--repo-name REPO_NAME] [--cli-command CLI_COMMAND]
+                       [--pkg-name PKG_NAME] [--debug] [-v]
                        blueprint
 
     Generate Galaxy tool XML from blueprint JSON files with sanitizer and section
@@ -35,7 +36,7 @@ galaxysynth --help
 
     positional arguments:
       blueprint             Path to blueprint JSON file or pattern (e.g.,
-                            'template_json_*.json')
+                            'templates/3_galaxy-tools/*.json')
 
     options:
       -h, --help            show this help message and exit
@@ -43,6 +44,13 @@ galaxysynth --help
                             Output directory for XML files (default: galaxy_tools)
       --docker DOCKER       Docker image name (default: nciccbr/mosuite:latest)
       --citation CITATION   Citation DOI (default: 10.5281/zenodo.16371580)
+      --repo-name REPO_NAME
+                            Repository name used for references (default:
+                            CCBR/MOSuite-Galaxy)
+      --cli-command CLI_COMMAND
+                            CLI command to invoke templates (default: mosuite)
+      --pkg-name PKG_NAME   R package name for documentation links (default:
+                            MOSuite)
       --debug               Enable debug output
       -v, --version         show program's version number and exit
 
