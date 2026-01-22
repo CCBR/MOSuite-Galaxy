@@ -715,7 +715,7 @@ class GalaxyXMLSynthesizer:
         help_lines = [f"**{title}**\n"]
         r_function = self.blueprint.get("r_function", "tool")
         help_lines.append(
-            f"Runs [{self.pkg_name}::{r_function}()](https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html)\n"
+            f"Runs `{self.pkg_name}::{r_function}()` - https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html`\n"
         )
         help_lines.append(desc)
 
@@ -773,7 +773,7 @@ class GalaxyXMLSynthesizer:
         )
         git_sha = self._get_git_short_sha()
         ref_line = (
-            f"- GitHub: [{self.repo_name}@{git_sha}](https://github.com/{self.repo_name}/tree/{git_sha})"
+            f"- GitHub: {self.repo_name} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
             if git_sha
             else ""
         )

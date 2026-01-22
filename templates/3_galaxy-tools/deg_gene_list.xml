@@ -144,7 +144,7 @@ Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
 
 **DEG Gene List**
 
-Runs [MOSuite::filter_diff()](https://ccbr.github.io/MOSuite/reference/filter_diff.html)
+Runs `MOSuite::filter_diff()` - https://ccbr.github.io/MOSuite/reference/filter_diff.html`
 
 Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in addition allows for selection of DEG
@@ -158,7 +158,7 @@ estimates and for sub-setting of contrasts and groups included in the output gen
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@56ed6e0](https://github.com/CCBR/MOSuite-Galaxy/tree/56ed6e0)
+- GitHub: CCBR/MOSuite-Galaxy @ `7f6691f` - https://github.com/CCBR/MOSuite-Galaxy/tree/7f6691f
 
 ]]></help>
     <citations>
