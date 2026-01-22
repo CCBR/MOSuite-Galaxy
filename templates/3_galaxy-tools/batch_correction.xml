@@ -101,6 +101,8 @@ Colors must either be names in `grDevices::colors()` or valid hex codes.
 
 **Batch Correction**
 
+Runs [MOSuite::batch_correct_counts()](https://ccbr.github.io/MOSuite/reference/batch_correct_counts.html)
+
 using 
 list("sva::ComBat()")
 
@@ -112,7 +114,7 @@ list("sva::ComBat()")
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
+- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
 
 ]]></help>
     <citations>

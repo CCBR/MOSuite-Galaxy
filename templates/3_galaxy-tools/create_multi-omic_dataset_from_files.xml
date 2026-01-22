@@ -51,6 +51,8 @@ If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = 
 
 **Create Multi-Omic Dataset from Files**
 
+Runs [MOSuite::create_multiOmicDataSet_from_files()](https://ccbr.github.io/MOSuite/reference/create_multiOmicDataSet_from_files.html)
+
 Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 
 **Outputs:**
@@ -60,7 +62,7 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
+- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
 
 ]]></help>
     <citations>

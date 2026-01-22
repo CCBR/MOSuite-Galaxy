@@ -55,8 +55,12 @@ class GalaxyXMLSynthesizer:
         docker_image: str = "nciccbr/mosuite:latest",
         citation_doi: str = "10.5281/zenodo.16371580",
         repo_name: str = "CCBR/MOSuite-Galaxy",
+        cli_command: str = "mosuite",
+        pkg_name: str = "MOSuite",
     ):
         self.blueprint = blueprint
+        self.cli_command = cli_command
+        self.pkg_name = pkg_name
         self.docker_image = docker_image
         self.citation_doi = citation_doi
         self.repo_name = repo_name
@@ -111,12 +115,12 @@ class GalaxyXMLSynthesizer:
 
         return self._format_xml(tool)
 
-    def _make_tool_id(self, title: str, tool_prefix: str = "mosuite") -> str:
+    def _make_tool_id(self, title: str) -> str:
         """Generate tool ID from title."""
         # Remove brackets and clean
         clean_title = re.sub(r"\[.*?\]", "", title).strip()
         tool_id = clean_title.lower().replace(" ", "_")
-        return f"{tool_prefix}_{tool_id}"
+        return f"{self.cli_command}_{tool_id}"
 
     def _clean_text(self, text: str) -> str:
         """Clean text from markdown and escapes."""
@@ -202,9 +206,7 @@ class GalaxyXMLSynthesizer:
             add_elem = ET.SubElement(valid, "add")
             add_elem.set("value", ";")
 
-    def _add_command(
-        self, tool: ET.Element, tool_id: str, tool_prefix: str = "mosuite"
-    ):
+    def _add_command(self, tool: ET.Element, tool_id: str):
         """Add command section - FIXED to use single-line commands."""
         # Collect parameter types for format_values.py
         bool_params = []
@@ -233,7 +235,7 @@ class GalaxyXMLSynthesizer:
             template_name = r_function_name.strip()
         else:
             # Fallback to deriving from tool_id if r_function is missing
-            template_name = tool_id.replace(f"{tool_prefix}_", "")
+            template_name = tool_id.replace(f"{self.cli_command}_", "")
 
         # Build command parts
         cmd_parts = ["echo 'galaxy_params.json'", "cat 'galaxy_params.json'", "echo ''"]
@@ -257,7 +259,9 @@ class GalaxyXMLSynthesizer:
         )
 
         # Add template command
-        cmd_parts.append(f"mosuite {template_name} --json=cleaned_params.json")
+        cmd_parts.append(
+            f"{self.cli_command} {template_name} --json=cleaned_params.json"
+        )
 
         # Join all parts with && on a SINGLE LINE
         full_command = " &&\n".join(cmd_parts)
@@ -708,7 +712,12 @@ class GalaxyXMLSynthesizer:
         title = self.blueprint.get("title", "Tool").strip()
         desc = self._clean_text(self.blueprint.get("description", ""))
 
-        help_lines = [f"**{title}**\n", desc]
+        help_lines = [f"**{title}**\n"]
+        r_function = self.blueprint.get("r_function", "tool")
+        help_lines.append(
+            f"Runs [{self.pkg_name}::{r_function}()](https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html)\n"
+        )
+        help_lines.append(desc)
 
         # Check if we have parameters that need special characters
         has_special_params = False
@@ -833,7 +842,9 @@ def process_blueprint(
         blueprint = json.load(f)
 
     # Generate XML
-    synthesizer = GalaxyXMLSynthesizer(blueprint, docker_image, citation_doi)
+    synthesizer = GalaxyXMLSynthesizer(
+        blueprint=blueprint, docker_image=docker_image, citation_doi=citation_doi
+    )
     xml_content = synthesizer.synthesize()
 
     # Extract tool name from blueprint

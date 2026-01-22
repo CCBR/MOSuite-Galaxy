@@ -231,6 +231,8 @@ analysis downstream of this step. (Default: `NULL` - all sample IDs in `moo@samp
 
 **Plot Expression Heatmap**
 
+Runs [MOSuite::plot_expr_heatmap()](https://ccbr.github.io/MOSuite/reference/plot_expr_heatmap.html)
+
 The samples (i.e. the columns) are clustered in an unsupervised fashion based
 on how similar their expression profiles are across the included genes. This
 can help identify samples that are non clustering with their group as you
@@ -248,7 +250,7 @@ this heatmap if you explore the advanced options.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
+- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
 
 ]]></help>
     <citations>

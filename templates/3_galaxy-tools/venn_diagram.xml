@@ -860,6 +860,8 @@ used.)
 
 **Venn Diagram**
 
+Runs [MOSuite::plot_venn_diagram()](https://ccbr.github.io/MOSuite/reference/plot_venn_diagram.html)
+
 generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
 tested contrasts). This Venn diagram is available for up to five sets; Intersection plot is available for any number
 of sets. Specific sets can be selected for the visualizations and the returned dataset may include all (default) or
@@ -873,7 +875,7 @@ specified intersections.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
+- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
 
 ]]></help>
     <citations>

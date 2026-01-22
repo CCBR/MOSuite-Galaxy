@@ -93,6 +93,8 @@ to manually enter the Column ID for this field.
 
 **Clean Raw Counts**
 
+Runs [MOSuite::clean_raw_counts()](https://ccbr.github.io/MOSuite/reference/clean_raw_counts.html)
+
 This function checks the input raw counts matrix for common formatting problems with feature identifiers and sample
 names. If feature IDs contain multiple IDs separated by special characters (| - , or space) they will be split into
 multiple columns. If duplicate feature IDs are detected the counts are summed across duplicate feature ID rows
@@ -107,7 +109,7 @@ corrected. If your sample names are corrected here, be sure to make equivalent c
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@6da0977](https://github.com/CCBR/MOSuite-Galaxy/tree/6da0977)
+- GitHub: [CCBR/MOSuite-Galaxy@0d1ac9c](https://github.com/CCBR/MOSuite-Galaxy/tree/0d1ac9c)
 
 ]]></help>
     <citations>
