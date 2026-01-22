@@ -61,7 +61,7 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: CCBR/MOSuite-Galaxy @ `7f6691f` - https://github.com/CCBR/MOSuite-Galaxy/tree/7f6691f
+- GitHub: CCBR/MOSuite-Galaxy @ `36ad845` - https://github.com/CCBR/MOSuite-Galaxy/tree/36ad845
 
 ]]></help>
     <citations>

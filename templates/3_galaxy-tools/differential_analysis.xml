@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_diff_counts" name="Differential Counts Analysis" version="v0.2.1" profile="24.2">
+<tool id="mosuite_diff_counts" name="Differential Analysis" version="v0.2.1" profile="24.2">
     <description>Differential expression analysis</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
@@ -91,7 +91,7 @@ contrast(s)
     </outputs>
     <help><![CDATA[
 
-**Differential Counts Analysis**
+**Differential Analysis**
 
 Runs `MOSuite::diff_counts()` - https://ccbr.github.io/MOSuite/reference/diff_counts.html`
 
@@ -105,7 +105,7 @@ Differential expression analysis
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.2.1
-- GitHub: CCBR/MOSuite-Galaxy @ `22b4161` - https://github.com/CCBR/MOSuite-Galaxy/tree/22b4161
+- GitHub: CCBR/MOSuite-Galaxy @ `36ad845` - https://github.com/CCBR/MOSuite-Galaxy/tree/36ad845
 
 ]]></help>
     <citations>
