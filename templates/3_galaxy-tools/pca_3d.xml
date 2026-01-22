@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_pca_3d" name="PCA 3D
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_pca_3d" name="PCA 3D" version="v0.2.1" profile="24.2">
     <description>3D PCA for counts dataframe</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1</container>
@@ -9,9 +8,11 @@
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values save_plots --inject-outputs --outputs-config outputs_config.json && mosuite plot_pca_3d --json=cleaned_params.json
-
+cat 'galaxy_params.json' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values save_plots
+    --inject-outputs --outputs-config outputs_config.json &&
+mosuite plot_pca_3d --json=cleaned_params.json
 ]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
@@ -132,17 +133,24 @@ column with your preferred Labels here. The selected column should contain uniqu
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
-        <data name="figures" format="auto" from_work_dir="figures/pca/pca_3D.html" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="plot.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
+        <data name="figures" format="auto" from_work_dir="figures/pca/pca_3D.html" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**PCA 3D
-**
+**PCA 3D**
+
 3D PCA for counts dataframe
+
 **Outputs:**
-- analysis: file (plot.rds)
+
+- multiOmicDataSet: file (plot.rds)
 - figures: file (figures/pca/pca_3D.html)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.2.1
+- GitHub ref: CCBR/MOSuite-Galaxy@bfde350
 
 ]]></help>
     <citations>

@@ -8,9 +8,10 @@
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
-
+cat 'galaxy_params.json' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --inject-outputs --outputs-config outputs_config.json &&
+mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 ]]></command>
     <inputs>
         <param name="sample_meta_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file with sample IDs and metadata for differential analysis.
@@ -39,17 +40,22 @@ If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = 
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
     </outputs>
     <help><![CDATA[
 
-**Create Multi-Omic Dataset from Files
-**
+**Create Multi-Omic Dataset from Files**
+
 Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
-docker: nciccbr/mosuite:v0.2.1
-ref: CCBR/MOSuite-Galaxy@0b18c3f
+
 **Outputs:**
-- analysis: file (moo.rds)
+
+- multiOmicDataSet: file (moo.rds)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.2.1
+- GitHub ref: CCBR/MOSuite-Galaxy@bfde350
 
 ]]></help>
     <citations>

@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced" version="v0.2.1" profile="24.2">
     <description>Uses 
 list(list(&quot;https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html&quot;), list(&quot;Bioconductor's Enhanced Volcano Plot&quot;))
 .</description>
@@ -11,9 +10,12 @@ list(list(&quot;https://bioconductor.org/packages/release/bioc/html/EnhancedVolc
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
     <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values use_only_addition_labels use_custom_lab save_plots --list-values signif_colname change_colname --inject-outputs --outputs-config outputs_config.json && mosuite plot_volcano_enhanced --json=cleaned_params.json
-
+cat 'galaxy_params.json' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values use_only_addition_labels use_custom_lab save_plots
+    --list-values signif_colname change_colname
+    --inject-outputs --outputs-config outputs_config.json &&
+mosuite plot_volcano_enhanced --json=cleaned_params.json
 ]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
@@ -100,19 +102,26 @@ for labeling in the volcano plot, ignoring the top features.
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="enhanced_volcano_plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
-        <data name="figures" format="png" from_work_dir="figures/diff/volcano_enhanced.png" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="enhanced_volcano_plot.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
+        <data name="figures" format="png" from_work_dir="figures/diff/volcano_enhanced.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**Plot Volcano - Enhanced
-**
+**Plot Volcano - Enhanced**
+
 Uses 
 list(list("https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html"), list("Bioconductor's Enhanced Volcano Plot"))
 .
+
 **Outputs:**
-- analysis: file (enhanced_volcano_plot.rds)
+
+- multiOmicDataSet: file (enhanced_volcano_plot.rds)
 - figures: file (figures/diff/volcano_enhanced.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.2.1
+- GitHub ref: CCBR/MOSuite-Galaxy@bfde350
 
 ]]></help>
     <citations>

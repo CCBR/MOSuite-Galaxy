@@ -236,25 +236,19 @@ class GalaxyXMLSynthesizer:
             template_name = tool_id.replace(f"{tool_prefix}_", "")
 
         # Build command parts
-        cmd_parts = []
-
-        # Add output config creation if needed
-        # if 'outputs' in self.blueprint:
-        #     # Create JSON string with proper escaping for shell
-        #     outputs_json = json.dumps(self.blueprint['outputs'])
-        #     cmd_parts.append(f"echo '{outputs_json}' > outputs_config.json")
+        cmd_parts = ["cat 'galaxy_params.json'"]
 
         # Build format_values.py command
         format_cmd = "python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'"
 
         if bool_params:
-            format_cmd += f" --bool-values {' '.join(bool_params)}"
+            format_cmd += f"\n    --bool-values {' '.join(bool_params)}"
         if list_params:
-            format_cmd += f" --list-values {' '.join(list_params)}"
+            format_cmd += f"\n    --list-values {' '.join(list_params)}"
 
         # Add output injection flags if outputs exist
         if "outputs" in self.blueprint:
-            format_cmd += " --inject-outputs --outputs-config outputs_config.json"
+            format_cmd += "\n    --inject-outputs --outputs-config outputs_config.json"
 
         cmd_parts.append(format_cmd)
 
@@ -262,11 +256,11 @@ class GalaxyXMLSynthesizer:
         cmd_parts.append(f"mosuite {template_name} --json=cleaned_params.json")
 
         # Join all parts with && on a SINGLE LINE
-        full_command = " && ".join(cmd_parts)
+        full_command = " &&\n".join(cmd_parts)
 
         command = ET.SubElement(tool, "command")
         command.set("detect_errors", "exit_code")
-        command.text = f"<![CDATA[\n\n{full_command}\n\n]]>"
+        command.text = f"<![CDATA[{full_command}]]>"
 
     def _group_parameters(self) -> Dict[Optional[str], List[Dict]]:
         """Group parameters by their paramGroup field."""
@@ -677,9 +671,7 @@ class GalaxyXMLSynthesizer:
                 collection = ET.SubElement(outputs_elem, "collection")
                 collection.set("name", key)
                 collection.set("type", "list")
-                collection.set(
-                    "label", f"${{tool.name}} on ${{on_string}}: {key.title()}"
-                )
+                collection.set("label", f"${{tool.name}} on ${{on_string}}: {key}")
 
                 discover = ET.SubElement(collection, "discover_datasets")
                 discover.set("pattern", "__name_and_ext__")
@@ -705,25 +697,14 @@ class GalaxyXMLSynthesizer:
                     data.set("format", "auto")
 
                 data.set("from_work_dir", output_name)
-                data.set("label", f"${{tool.name}} on ${{on_string}}: {key.title()}")
+                data.set("label", f"${{tool.name}} on ${{on_string}}: {key}")
 
     def _generate_help(self) -> str:
         """Generate help text with sanitizer info for special parameters."""
-        title = self.blueprint.get("title", "Tool")
+        title = self.blueprint.get("title", "Tool").strip()
         desc = self._clean_text(self.blueprint.get("description", ""))
 
-        help_lines = [f"**{title}**", desc]
-
-        docker_line = f"\ndocker: {self.docker_image}" if self.docker_image else None
-        git_sha = self._get_git_short_sha()
-        ref_line = f"\nref: {self.repo_name}@{git_sha}" if git_sha else None
-
-        if docker_line or ref_line:
-            help_lines.append("")
-        if docker_line:
-            help_lines.append(docker_line)
-        if ref_line:
-            help_lines.append(ref_line)
+        help_lines = [f"**{title}**\n", desc]
 
         # Check if we have parameters that need special characters
         has_special_params = False
@@ -760,7 +741,7 @@ class GalaxyXMLSynthesizer:
                     ]
                 )
 
-        help_lines.extend(["**Outputs:**\n"])
+        help_lines.append("\n**Outputs:**\n")
 
         outputs = self.blueprint.get("outputs", {})
         for key, config in outputs.items():
@@ -770,6 +751,21 @@ class GalaxyXMLSynthesizer:
                 help_lines.append(f"- {key}: {output_type} ({output_name})")
             else:
                 help_lines.append(f"- {key}: {config}")
+
+        # Add docker and git ref info
+        docker_line = (
+            f"**Version info**\n\n- Docker: {self.docker_image}"
+            if self.docker_image
+            else None
+        )
+        git_sha = self._get_git_short_sha()
+        ref_line = f"- GitHub ref: {self.repo_name}@{git_sha}" if git_sha else None
+        if docker_line or ref_line:
+            help_lines.append("")
+        if docker_line:
+            help_lines.append(docker_line)
+        if ref_line:
+            help_lines.append(ref_line)
 
         return "\n".join(help_lines)
 
@@ -782,8 +778,8 @@ class GalaxyXMLSynthesizer:
         dom = minidom.parseString(rough)
         pretty = dom.toprettyxml(indent="    ")
 
-        # Clean up extra whitespace
-        lines = [line for line in pretty.split("\n") if line.strip()]
+        # Clean up extra whitespace while preserving blank lines
+        lines = pretty.split("\n")
 
         # Skip XML declaration
         if lines[0].startswith("<?xml"):
