@@ -1,25 +1,25 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary" version="v0.2.1" profile="24.2">
+<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary" version="v0.2.1.9001_5808374" profile="24.2">
     <description>Produces one volcano plot for each tested contrast in the input DEG table.
 It can be sorted by either fold change, t-statistic, or p-value. The returned dataset includes one row for each
 significant g</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
-    --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit add_deg_columns use_default_grid_layout save_plots &&
+    --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit use_default_grid_layout save_plots &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
 mosuite plot_volcano_summary --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -4724,8 +4724,13 @@ B-A. Default: FALSE
 "/>
         </section>
         <section name="table" title="Table" expanded="false">
-            <param name="add_deg_columns" type="boolean" label="Add DEG Columns to Output Table" truevalue="True" falsevalue="False" checked="false" help="Add additional columns from the DEG analysis to the output dataset. Default: FALSE
-"/>
+            <param name="add_deg_columns" type="select" label="Add DEG Columns to Output Table" multiple="true" optional="true" help="Add additional columns from the DEG analysis to the output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;`">
+                <option value="FC">FC</option>
+                <option value="logFC">logFC</option>
+                <option value="tstat">tstat</option>
+                <option value="pval">pval</option>
+                <option value="adjpval">adjpval</option>
+            </param>
         </section>
         <section name="image" title="Image" expanded="false">
             <param name="image_width" type="float" label="Image Width" value="15" help="output image width in pixels - only used if save_plots is TRUE
@@ -4749,14 +4754,14 @@ B-A. Default: FALSE
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="multiOmicDataSet" format="rds" from_work_dir="summary_data.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
+        <data name="DataFrame" format="rds" from_work_dir="summary_dataframe.rds" label="${tool.name} on ${on_string}: DataFrame"/>
         <data name="figures" format="png" from_work_dir="figures/diff/volcano_summary.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
 **Plot Volcano - Summary**
 
-Runs [MOSuite::plot_volcano_summary()](https://ccbr.github.io/MOSuite/reference/plot_volcano_summary.html)
+Runs `MOSuite::plot_volcano_summary()` - https://ccbr.github.io/MOSuite/reference/plot_volcano_summary.html`
 
 Produces one volcano plot for each tested contrast in the input DEG table.
 It can be sorted by either fold change, t-statistic, or p-value. The returned dataset includes one row for each
@@ -4765,13 +4770,13 @@ useful to the Venn diagram template downstream.
 
 **Outputs:**
 
-- multiOmicDataSet: file (summary_data.rds)
+- DataFrame: file (summary_dataframe.rds)
 - figures: file (figures/diff/volcano_summary.png)
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
+- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
+- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
 
 ]]></help>
     <citations>

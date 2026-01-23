@@ -1,12 +1,9 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.2.1" profile="24.2">
+<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.2.1.9001_5808374" profile="24.2">
     <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
@@ -17,6 +14,9 @@ cat 'cleaned_params.json' &&
 echo '' &&
 mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="sample_meta_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file with sample IDs and metadata for differential analysis.
 "/>
@@ -50,7 +50,7 @@ If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = 
 
 **Create Multi-Omic Dataset from Files**
 
-Runs [MOSuite::create_multiOmicDataSet_from_files()](https://ccbr.github.io/MOSuite/reference/create_multiOmicDataSet_from_files.html)
+Runs `MOSuite::create_multiOmicDataSet_from_files()` - https://ccbr.github.io/MOSuite/reference/create_multiOmicDataSet_from_files.html`
 
 Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 
@@ -60,8 +60,8 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
+- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
+- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
 
 ]]></help>
     <citations>

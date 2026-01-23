@@ -1,13 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties" version="v0.2.1" profile="24.2">
+<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties" version="v0.2.1.9001_5808374" profile="24.2">
     <description>Writes the properties of a multiOmicDataSet object to disk as separate files in output_dir.
 Properties that are data frames are saved as CSV files, while all other objects are saved as RDS files.</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
@@ -18,6 +15,9 @@ cat 'cleaned_params.json' &&
 echo '' &&
 mosuite write_multiOmicDataSet_properties --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to the input multiOmicDataSet (MOO) RDS file."/>
         <section name="basic" title="Basic" expanded="false">
@@ -41,7 +41,7 @@ mosuite write_multiOmicDataSet_properties --json=cleaned_params.json
 
 **Write multiOmicDataSet Properties**
 
-Runs [MOSuite::write_multiOmicDataSet_properties()](https://ccbr.github.io/MOSuite/reference/write_multiOmicDataSet_properties.html)
+Runs `MOSuite::write_multiOmicDataSet_properties()` - https://ccbr.github.io/MOSuite/reference/write_multiOmicDataSet_properties.html`
 
 Writes the properties of a multiOmicDataSet object to disk as separate files in output_dir.
 Properties that are data frames are saved as CSV files, while all other objects are saved as RDS files.
@@ -55,8 +55,8 @@ Properties that are data frames are saved as CSV files, while all other objects 
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
+- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
+- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
 
 ]]></help>
     <citations>

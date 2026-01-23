@@ -87,15 +87,15 @@ class GalaxyXMLSynthesizer:
         container.set("type", "docker")
         container.text = self.docker_image
 
+        # Command (must come before configfiles per Galaxy best practices)
+        self._add_command(tool, tool_id)
+
         # Configfiles - Galaxy serializes inputs to JSON
         configfiles = ET.SubElement(tool, "configfiles")
         inputs_config = ET.SubElement(configfiles, "inputs")
         inputs_config.set("name", "params_json")
         inputs_config.set("filename", "galaxy_params.json")
         inputs_config.set("data_style", "paths")
-
-        # Command
-        self._add_command(tool, tool_id)
 
         # Inputs with section support
         self._add_inputs(tool)
@@ -715,7 +715,7 @@ class GalaxyXMLSynthesizer:
         help_lines = [f"**{title}**\n"]
         r_function = self.blueprint.get("r_function", "tool")
         help_lines.append(
-            f"Runs [{self.pkg_name}::{r_function}()](https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html)\n"
+            f"Runs `{self.pkg_name}::{r_function}()` - https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html`\n"
         )
         help_lines.append(desc)
 
@@ -773,7 +773,7 @@ class GalaxyXMLSynthesizer:
         )
         git_sha = self._get_git_short_sha()
         ref_line = (
-            f"- GitHub: [{self.repo_name}@{git_sha}](https://github.com/{self.repo_name}/tree/{git_sha})"
+            f"- GitHub: {self.repo_name} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
             if git_sha
             else ""
         )
@@ -833,6 +833,9 @@ def process_blueprint(
     output_dir: Path,
     docker_image: str = "nciccbr/mosuite:latest",
     citation_doi: str = "10.5281/zenodo.16371580",
+    repo_name: str = "CCBR/MOSuite-Galaxy",
+    cli_command: str = "mosuite",
+    pkg_name: str = "MOSuite",
 ):
     """Process a single blueprint to generate Galaxy XML."""
     print(f"Processing: {blueprint_path.name}")
@@ -843,7 +846,12 @@ def process_blueprint(
 
     # Generate XML
     synthesizer = GalaxyXMLSynthesizer(
-        blueprint=blueprint, docker_image=docker_image, citation_doi=citation_doi
+        blueprint=blueprint,
+        docker_image=docker_image,
+        citation_doi=citation_doi,
+        repo_name=repo_name,
+        cli_command=cli_command,
+        pkg_name=pkg_name,
     )
     xml_content = synthesizer.synthesize()
 
@@ -887,6 +895,9 @@ def batch_process(
     output_dir: str,
     docker_image: str = "nciccbr/mosuite:latest",
     citation_doi: str = "10.5281/zenodo.16371580",
+    repo_name: str = "CCBR/MOSuite-Galaxy",
+    cli_command: str = "mosuite",
+    pkg_name: str = "MOSuite",
 ):
     """Process multiple blueprint files matching a pattern."""
     input_path = Path(input_pattern)
@@ -918,7 +929,13 @@ def batch_process(
     for blueprint_file in sorted(blueprint_files):
         try:
             xml_file = process_blueprint(
-                blueprint_file, output_path, docker_image, citation_doi
+                blueprint_file,
+                output_path,
+                docker_image,
+                citation_doi,
+                repo_name,
+                cli_command,
+                pkg_name,
             )
             generated_files.append(xml_file)
 
@@ -965,7 +982,7 @@ def main():
     )
     parser.add_argument(
         "blueprint",
-        help="Path to blueprint JSON file or pattern (e.g., 'template_json_*.json')",
+        help="Path to blueprint JSON file or pattern (e.g., 'templates/3_galaxy-tools/*.json')",
     )
     parser.add_argument(
         "-o",
@@ -983,12 +1000,35 @@ def main():
         default="10.5281/zenodo.16371580",
         help="Citation DOI (default: 10.5281/zenodo.16371580)",
     )
+    parser.add_argument(
+        "--repo-name",
+        default="CCBR/MOSuite-Galaxy",
+        help="Repository name used for references (default: CCBR/MOSuite-Galaxy)",
+    )
+    parser.add_argument(
+        "--cli-command",
+        default="mosuite",
+        help="CLI command to invoke templates (default: mosuite)",
+    )
+    parser.add_argument(
+        "--pkg-name",
+        default="MOSuite",
+        help="R package name for documentation links (default: MOSuite)",
+    )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
     parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
 
-    return batch_process(args.blueprint, args.output, args.docker, args.citation)
+    return batch_process(
+        args.blueprint,
+        args.output,
+        args.docker,
+        args.citation,
+        args.repo_name,
+        args.cli_command,
+        args.pkg_name,
+    )
 
 
 if __name__ == "__main__":

@@ -1,13 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_filter_diff" name="DEG Gene List" version="v0.2.1" profile="24.2">
+<tool id="mosuite_filter_diff" name="Filter Differential Features" version="v0.2.1.9001_5808374" profile="24.2">
     <description>Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in additi</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
     </requirements>
-    <configfiles>
-        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
-    </configfiles>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
@@ -20,6 +17,9 @@ cat 'cleaned_params.json' &&
 echo '' &&
 mosuite filter_diff --json=cleaned_params.json
 ]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -45,8 +45,8 @@ equal to this cutoff threshold
 "/>
             <param name="filtering_mode" type="select" label="Filtering Mode" help="Accepted values: `&quot;any&quot;` or `&quot;all&quot;` to include features that meet the criteria in *any*contrast or in *all* contrasts
 ">
-                <option value="in any contrast">in any contrast</option>
-                <option value="in all contrasts">in all contrasts</option>
+                <option value="any" selected="true">any</option>
+                <option value="all">all</option>
             </param>
             <param name="feature_id_colname" type="text" label="Gene Names Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
 This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
@@ -69,11 +69,26 @@ used.)
 "/>
         </section>
         <section name="filter" title="Filter" expanded="false">
+            <param name="contrast_filter" type="select" label="Contrasts Filter" help="Whether to filter `contrasts` in or our of analysis. If `&quot;keep&quot;`, only the contrast names
+listed in `contrasts` will be included. If `&quot;remove`, the contrast names listed by `contrasts` will be removed. If
+`&quot;none&quot;`, all contrasts in the dataset are used. Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`">
+                <option value="none" selected="true">none</option>
+                <option value="keep">keep</option>
+                <option value="remove">remove</option>
+            </param>
             <repeat name="contrasts_repeat" title="Contrasts">
                 <param name="value" type="text" label="Value" help="Contrast names to filter by `contrast_filter`. If `contrast_filter` is `&quot;none&quot;`, this parameter has
 no effect.
 "/>
             </repeat>
+            <param name="groups_filter" type="select" label="Groups Filter" help="Whether to filter `groups` in or out of analysis. If `&quot;keep&quot;`, only the group names listed in
+`groups` will be included. If `&quot;remove&quot;`, the group names listed by `groups` will be removed. If `&quot;none&quot;`, all
+groups in the dataset are used.
+">
+                <option value="none" selected="true">none</option>
+                <option value="keep">keep</option>
+                <option value="remove">remove</option>
+            </param>
             <repeat name="groups_repeat" title="Groups">
                 <param name="value" type="text" label="Value" help="Group names to filter by `groups_filter`. If `groups_filter` is `&quot;none&quot;`, this parameter has no effect.
 Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
@@ -127,9 +142,9 @@ Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
     </outputs>
     <help><![CDATA[
 
-**DEG Gene List**
+**Filter Differential Features**
 
-Runs [MOSuite::filter_diff()](https://ccbr.github.io/MOSuite/reference/filter_diff.html)
+Runs `MOSuite::filter_diff()` - https://ccbr.github.io/MOSuite/reference/filter_diff.html`
 
 Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in addition allows for selection of DEG
@@ -142,8 +157,8 @@ estimates and for sub-setting of contrasts and groups included in the output gen
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1
-- GitHub: [CCBR/MOSuite-Galaxy@36aa29b](https://github.com/CCBR/MOSuite-Galaxy/tree/36aa29b)
+- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
+- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
 
 ]]></help>
     <citations>
