@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced" version="v0.2.1.9001_5808374" profile="24.2">
+<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced" version="v0.2.1.9001_b679a3b" profile="24.2">
     <description>Uses 
 list(list(&quot;https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html&quot;), list(&quot;Bioconductor's Enhanced Volcano Plot&quot;))
 .</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
@@ -126,8 +126,8 @@ list(list("https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.h
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
-- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
+- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
+- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
 
 ]]></help>
     <citations>

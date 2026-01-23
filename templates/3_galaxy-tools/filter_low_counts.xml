@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_filter_counts" name="Filter Low Counts" version="v0.2.1.9001_5808374" profile="24.2">
+<tool id="mosuite_filter_counts" name="Filter Low Counts" version="v0.2.1.9001_b679a3b" profile="24.2">
     <description>This is often the first step in the QC portion of an analysis to filter out
 features that have very low raw counts across most or all of your samples.
 This function takes a multiOmicDataSet containing</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1.9001_5808374</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
@@ -197,8 +197,8 @@ another based on unsupervised clustering.
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1.9001_5808374
-- GitHub: CCBR/MOSuite-Galaxy @ `3bf5456` - https://github.com/CCBR/MOSuite-Galaxy/tree/3bf5456
+- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
+- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
 
 ]]></help>
     <citations>
