@@ -1,25 +1,28 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_expr_heatmap" name="Plot Expression Heatmap
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_expr_heatmap" name="Plot Expression Heatmap" version="v0.2.1.9001_b679a3b" profile="24.2">
     <description>The samples (i.e. the columns) are clustered in an unsupervised fashion based
 on how similar their expression profiles are across the included genes. This
 can help identify samples that are non cluste</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values include_all_genes filter_top_genes_by_variance cluster_genes display_gene_dendrograms display_gene_names center_and_rescale_expression cluster_samples arrange_sample_columns order_by_gene_expression display_smpl_dendrograms reorder_dendrogram display_sample_names assign_group_colors autoscale_heatmap_color display_numbers save_plots
+    --list-values assign_color_to_sample_groups samples_to_include reorder_dendrogram_order group_colname &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite plot_expr_heatmap --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values include_all_genes filter_top_genes_by_variance cluster_genes display_gene_dendrograms display_gene_names center_and_rescale_expression cluster_samples arrange_sample_columns order_by_gene_expression display_smpl_dendrograms reorder_dendrogram display_sample_names assign_group_colors autoscale_heatmap_color display_numbers save_plots --list-values assign_color_to_sample_groups samples_to_include reorder_dendrogram_order group_colname --inject-outputs --outputs-config outputs_config.json && mosuite plot_expr_heatmap --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
-        <section name="basic" title="basic" expanded="false">
-            <param name="moo_output_rds" type="text" label="Plot output Rds" value="expr_heatmap_plot.rds" help="File path to output the plot object as an Rds file"/>
-        </section>
         <section name="basic" title="Basic" expanded="false">
             <param name="count_type" type="text" label="Count Type" value="" help="the type of counts to use. Must be a name in the counts slot (`names(moo@counts)`).
 "/>
@@ -133,18 +136,18 @@ ignored if &quot;Assign Colors&quot; is set to FALSE.
             </repeat>
             <param name="group_colors" type="select" label="Group Colors" multiple="true" optional="true" help="Set group annotation colors.
 ">
-                <option value="indigo">indigo</option>
-                <option value="carrot">carrot</option>
-                <option value="lipstick">lipstick</option>
-                <option value="turquoise">turquoise</option>
-                <option value="lavender">lavender</option>
-                <option value="jade">jade</option>
-                <option value="coral">coral</option>
-                <option value="azure">azure</option>
-                <option value="green">green</option>
-                <option value="rum">rum</option>
-                <option value="orange">orange</option>
-                <option value="olive">olive</option>
+                <option value="#5954d6">#5954d6</option>
+                <option value="#e1562c">#e1562c</option>
+                <option value="#b80058">#b80058</option>
+                <option value="#00c6f8">#00c6f8</option>
+                <option value="#d163e6">#d163e6</option>
+                <option value="#00a76c">#00a76c</option>
+                <option value="#ff9287">#ff9287</option>
+                <option value="#008cf9">#008cf9</option>
+                <option value="#006e00">#006e00</option>
+                <option value="#796880">#796880</option>
+                <option value="#FFA500">#FFA500</option>
+                <option value="#878500">#878500</option>
             </param>
             <repeat name="group_colname_repeat" title="Group Columns">
                 <param name="value" type="text" label="Value" help="The column from the sample metadata containing the sample group information. This is usually a
@@ -217,13 +220,14 @@ analysis downstream of this step. (Default: `NULL` - all sample IDs in `moo@samp
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="expr_heatmap_plot.rds" label="${tool.name} on ${on_string}: Analysis"/>
-        <data name="figures" format="png" from_work_dir="figures/heatmap/expr_heatmap.png" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="figures" format="png" from_work_dir="figures/heatmap/expr_heatmap.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**Plot Expression Heatmap
-**
+**Plot Expression Heatmap**
+
+Runs `MOSuite::plot_expr_heatmap()` - https://ccbr.github.io/MOSuite/reference/plot_expr_heatmap.html`
+
 The samples (i.e. the columns) are clustered in an unsupervised fashion based
 on how similar their expression profiles are across the included genes. This
 can help identify samples that are non clustering with their group as you
@@ -232,9 +236,15 @@ By default, the top 500 genes by variance are used, as these are
 generally going to include those genes that most distinguish your samples
 from one another. You can change this as well as many other parameters about
 this heatmap if you explore the advanced options.
+
 **Outputs:**
-- analysis: file (expr_heatmap_plot.rds)
+
 - figures: file (figures/heatmap/expr_heatmap.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
+- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
 
 ]]></help>
     <citations>

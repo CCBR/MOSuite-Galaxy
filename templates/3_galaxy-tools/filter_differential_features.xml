@@ -1,19 +1,25 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_filter_diff" name="DEG Gene List
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_filter_diff" name="Filter Differential Features" version="v0.2.1.9001_b679a3b" profile="24.2">
     <description>Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in additi</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values round_estimates pie_chart_in_3d draw_bar_border save_plots
+    --list-values contrasts groups &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite filter_diff --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values round_estimates pie_chart_in_3d draw_bar_border save_plots --list-values contrasts groups --inject-outputs --outputs-config outputs_config.json && mosuite filter_diff --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -39,8 +45,8 @@ equal to this cutoff threshold
 "/>
             <param name="filtering_mode" type="select" label="Filtering Mode" help="Accepted values: `&quot;any&quot;` or `&quot;all&quot;` to include features that meet the criteria in *any*contrast or in *all* contrasts
 ">
-                <option value="in any contrast">in any contrast</option>
-                <option value="in all contrasts">in all contrasts</option>
+                <option value="any" selected="true">any</option>
+                <option value="all">all</option>
             </param>
             <param name="feature_id_colname" type="text" label="Gene Names Column" help="The column from the counts data containing the Feature IDs (Usually Gene or Protein ID).
 This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
@@ -129,21 +135,30 @@ Options: `&quot;keep&quot;`, `&quot;remove&quot;`, or `&quot;none&quot;`"/>
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="analysis" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Analysis"/>
-        <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
+        <collection name="figures" type="list" label="${tool.name} on ${on_string}: figures">
             <discover_datasets pattern="__name_and_ext__" directory="figures/diff/filt/" recurse="true"/>
         </collection>
     </outputs>
     <help><![CDATA[
 
-**DEG Gene List
-**
+**Filter Differential Features**
+
+Runs `MOSuite::filter_diff()` - https://ccbr.github.io/MOSuite/reference/filter_diff.html`
+
 Outputs dataset of significant genes from DEG table; filters genes based on statistical significance (p-value or
 adjusted p-value) and change (fold change, log2 fold change, or t-statistic); in addition allows for selection of DEG
 estimates and for sub-setting of contrasts and groups included in the output gene list.
+
 **Outputs:**
-- analysis: file (moo.rds)
+
+- multiOmicDataSet: file (moo.rds)
 - figures: directory (figures/diff/filt/)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
+- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
 
 ]]></help>
     <citations>
