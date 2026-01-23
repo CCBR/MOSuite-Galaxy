@@ -840,6 +840,9 @@ def process_blueprint(
     """Process a single blueprint to generate Galaxy XML."""
     print(f"Processing: {blueprint_path.name}")
 
+    # Ensure output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
+
     # Load blueprint
     with open(blueprint_path, "r") as f:
         blueprint = json.load(f)
