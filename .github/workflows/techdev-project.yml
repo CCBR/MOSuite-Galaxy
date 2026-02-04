@@ -14,7 +14,13 @@ jobs:
   add-to-project:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/add-to-project@v1.0.2
+      - name: add to TechDev project
+        uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/CCBR/projects/17
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+      - name: add to MOSuite project
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/CCBR/projects/32
           github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
