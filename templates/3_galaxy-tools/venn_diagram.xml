@@ -23,7 +23,7 @@ mosuite plot_venn_diagram --json=cleaned_params.json
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="DataFrame input Rds" help="File path to read the summary dataframe (e.g. from plot_volcano_summary output)"/>
         <section name="basic" title="basic" expanded="false">
-            <param name="moo_output_rds" type="text" label="Venn diagram DataFrame Rds" value="venn_diagram_dataframe.rds" help="File path to output the venn diagram DataFrame as an Rds file"/>
+            <param name="moo_output_rds" type="text" label="Venn diagram DataFrame Rds" value="moo.rds" help="File path to output the venn diagram DataFrame as an Rds file"/>
         </section>
         <section name="advanced" title="Advanced" expanded="false">
             <repeat name="select_contrasts_repeat" title="Selected Categories">
@@ -874,7 +874,7 @@ specified intersections.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
+- GitHub: CCBR/MOSuite-Galaxy @ `cba8049` - https://github.com/CCBR/MOSuite-Galaxy/tree/cba8049
 
 ]]></help>
     <citations>
