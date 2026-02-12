@@ -53,6 +53,6 @@ galaxysynth --help
 
 ```bash
 galaxysynth  "templates/2_blueprints/*.json" \
-    --docker nciccbr/mosuite:v0.2.1 \
+    --docker nciccbr/mosuite:v0.3.0 \
     --output templates/3_galaxy-tools
 ```
