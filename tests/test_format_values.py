@@ -691,6 +691,83 @@ class TestMainCLI:
             assert result["another_nested"] == "value3"
             assert "section" not in result
 
+    def test_moo_output_rds_preservation(self):
+        """Test that moo_output_rds is preserved when provided in input."""
+        with TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            input_file = tmpdir / "input.json"
+            output_file = tmpdir / "output.json"
+
+            # Test case 1: moo_output_rds is provided
+            params = {
+                "moo_output_rds": "summary_dataframe.rds",
+                "other_param": "value",
+            }
+            with open(input_file, "w") as f:
+                json.dump(params, f)
+
+            with patch.object(
+                sys, "argv", ["format_values.py", str(input_file), str(output_file)]
+            ):
+                main()
+
+            with open(output_file) as f:
+                result = json.load(f)
+
+            assert result["moo_output_rds"] == "summary_dataframe.rds"
+            assert result["other_param"] == "value"
+
+    def test_moo_output_rds_defaults_when_missing(self):
+        """Test that moo_output_rds defaults to moo.rds when not provided."""
+        with TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            input_file = tmpdir / "input.json"
+            output_file = tmpdir / "output.json"
+
+            # Test case 2: moo_output_rds is missing
+            params = {
+                "other_param": "value",
+            }
+            with open(input_file, "w") as f:
+                json.dump(params, f)
+
+            with patch.object(
+                sys, "argv", ["format_values.py", str(input_file), str(output_file)]
+            ):
+                main()
+
+            with open(output_file) as f:
+                result = json.load(f)
+
+            assert result["moo_output_rds"] == "moo.rds"
+            assert result["other_param"] == "value"
+
+    def test_moo_output_rds_defaults_when_empty(self):
+        """Test that moo_output_rds defaults to moo.rds when empty string."""
+        with TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            input_file = tmpdir / "input.json"
+            output_file = tmpdir / "output.json"
+
+            # Test case 3: moo_output_rds is empty string
+            params = {
+                "moo_output_rds": "",
+                "other_param": "value",
+            }
+            with open(input_file, "w") as f:
+                json.dump(params, f)
+
+            with patch.object(
+                sys, "argv", ["format_values.py", str(input_file), str(output_file)]
+            ):
+                main()
+
+            with open(output_file) as f:
+                result = json.load(f)
+
+            assert result["moo_output_rds"] == "moo.rds"
+            assert result["other_param"] == "value"
+
 
 class TestEdgeCases:
     """Test edge cases and error conditions."""
