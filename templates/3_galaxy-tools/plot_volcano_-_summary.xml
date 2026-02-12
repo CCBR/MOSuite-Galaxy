@@ -4724,7 +4724,8 @@ B-A. Default: FALSE
 "/>
         </section>
         <section name="table" title="Table" expanded="false">
-            <param name="add_deg_columns" type="select" label="Add DEG Columns to Output Table" multiple="true" optional="true" help="Add additional columns from the DEG analysis to the output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;`">
+            <param name="add_deg_columns" type="select" label="Add DEG Columns to Output Table" multiple="true" optional="true" help="Add additional columns from the DEG analysis to the
+output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;`">
                 <option value="FC">FC</option>
                 <option value="logFC">logFC</option>
                 <option value="tstat">tstat</option>
@@ -4776,7 +4777,7 @@ useful to the Venn diagram template downstream.
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
+- GitHub: CCBR/MOSuite-Galaxy @ `373bb02` - https://github.com/CCBR/MOSuite-Galaxy/tree/373bb02
 
 ]]></help>
     <citations>
