@@ -56,3 +56,10 @@ galaxysynth  "templates/2_blueprints/*.json" \
     --docker nciccbr/mosuite:v0.2.1 \
     --output templates/3_galaxy-tools
 ```
+
+## Developer notes
+
+- Please view the [contributing guide](.github/CONTRIBUTING.md) before
+  opening a pull request.
+- Galaxy Tool XML documentation:
+  <https://docs.galaxyproject.org/en/master/dev/schema.html>
