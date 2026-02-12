@@ -405,8 +405,9 @@ def main():
     #     json.dump(cleaned_params, f, indent=2)
 
     # cleaned_params is already flattened and processed
-    # add output rds so MOSuite will save output
-    cleaned_params["moo_output_rds"] = "moo.rds"
+    # add output rds so MOSuite will save output (if not already provided)
+    if "moo_output_rds" not in cleaned_params or not cleaned_params["moo_output_rds"]:
+        cleaned_params["moo_output_rds"] = "moo.rds"
     # remove empty lists, empty strings, and null values from the final JSON for MOSuite compatibility
     keys_to_remove = []
     for key, value in cleaned_params.items():
