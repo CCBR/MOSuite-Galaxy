@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_pca_3d" name="PCA 3D" version="v0.2.1.9001_b679a3b" profile="24.2">
-    <description>3D PCA for counts dataframe</description>
+<tool id="mosuite_plot_pca_2d" name="PCA 2D" version="v0.2.1.9001_b679a3b" profile="24.2">
+    <description>Perform and plot a 2D Principal Components Analysis</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
     </requirements>
@@ -9,11 +9,11 @@ echo 'galaxy_params.json' &&
 cat 'galaxy_params.json' &&
 echo '' &&
 python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
-    --bool-values save_plots &&
+    --bool-values add_label interactive_plots save_plots &&
 echo 'cleaned_params.json' &&
 cat 'cleaned_params.json' &&
 echo '' &&
-mosuite plot_pca_3d --json=cleaned_params.json
+mosuite plot_pca_2d --json=cleaned_params.json
 ]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
@@ -21,11 +21,16 @@ mosuite plot_pca_3d --json=cleaned_params.json
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="Basic" expanded="false">
-            <param name="count_type" type="text" label="Count Type" value="" help="the type of counts to use -- must be a name in the counts slot (`moo@counts`)
-"/>
-            <param name="sub_count_type" type="text" label="Sub Count Type" value="" help="used if `count_type` is a list in the counts slot: specify the sub count type within the list.
-Must be a name in `names(moo@counts[[count_type]])`.
-"/>
+            <param name="count_type" type="text" label="Count Type" value="raw" help="The type of counts to use from the multiOmicDataSet counts slot"/>
+            <param name="sub_count_type" type="text" label="Sub Count Type" value="raw" help="Used if count_type is a list in the counts slot: specify the sub count type within the list (optional)"/>
+            <param name="principal_components" type="select" label="Principal Components" multiple="true" optional="true" help="vector with numbered principal components to plot
+">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </param>
             <param name="feature_id_colname" type="text" label="FeatureID Name Column" help="The column from the counts dataa containing the Feature IDs (Usually Gene or Protein ID).
 This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
 Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
@@ -47,7 +52,18 @@ column with your preferred Labels here. The selected column should contain uniqu
 "/>
         </section>
         <section name="visualization" title="Visualization" expanded="false">
-            <param name="point_size" type="float" label="Point Size" value="8" help="size for `ggplot2::geom_point()`"/>
+            <param name="point_size" type="float" label="Point Size" value="1" help="size for `ggplot2::geom_point()`"/>
+            <param name="add_label" type="boolean" label="Add Labels" truevalue="True" falsevalue="False" checked="true" help="whether to add text labels for the points
+"/>
+            <param name="label_font_size" type="float" label="Label Font Size" value="3" help="label font size for the PCA plot
+"/>
+            <param name="legend_position" type="select" label="Legend Position" help="passed to in `legend.position``ggplot2::theme()`">
+                <option value="top" selected="true">top</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="none">none</option>
+            </param>
             <param name="color_values" type="select" label="Color Values" multiple="true" optional="true" help="vector of colors as hex values or names recognized by R
 ">
                 <option value="slateblue3">slateblue3</option>
@@ -125,7 +141,9 @@ column with your preferred Labels here. The selected column should contain uniqu
                 <option value="gray80">gray80</option>
                 <option value="lightgrey">lightgrey</option>
             </param>
-            <param name="plot_title" type="text" label="Plot Title" value="PCA 3D" help="title for the plot
+            <param name="interactive_plots" type="boolean" label="Interactive Plots" truevalue="True" falsevalue="False" checked="false" help="set to TRUE to make PCA and Histogram plots interactive with `plotly`, allowing you to hover
+your mouse over a point or line to view sample information. The similarity heat map will not display if this toggle
+is set to `TRUE`. Default is `FALSE`.
 "/>
             <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
 "/>
@@ -134,19 +152,19 @@ column with your preferred Labels here. The selected column should contain uniqu
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="figures" format="auto" from_work_dir="figures/pca/pca_3D.html" label="${tool.name} on ${on_string}: figures"/>
+        <data name="figures" format="png" from_work_dir="figures/pca/pca_2D.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**PCA 3D**
+**PCA 2D**
 
-Runs `MOSuite::plot_pca_3d()` - https://ccbr.github.io/MOSuite/reference/plot_pca_3d.html`
+Runs `MOSuite::plot_pca_2d()` - https://ccbr.github.io/MOSuite/reference/plot_pca_2d.html`
 
-3D PCA for counts dataframe
+Perform and plot a 2D Principal Components Analysis
 
 **Outputs:**
 
-- figures: file (figures/pca/pca_3D.html)
+- figures: file (figures/pca/pca_2D.png)
 
 **Version info**
 

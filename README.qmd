@@ -8,6 +8,7 @@ format: gfm
 Galaxy workflow configuration for [MOSuite](https://github.com/CCBR/MOSuite)
 
 [![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
+[![codecov](https://codecov.io/gh/CCBR/MOSuite-Galaxy/graph/badge.svg?token=QV46CjB0Bg)](https://codecov.io/gh/CCBR/MOSuite-Galaxy)
 
 MOSuite Workflow on Galaxy:
 <http://k8s-galaxy-b671dd4f69-710212292.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite>

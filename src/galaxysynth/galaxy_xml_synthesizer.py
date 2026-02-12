@@ -28,6 +28,7 @@ from typing import Dict, List, Any, Optional
 import re
 import argparse
 import sys
+import subprocess
 from collections import OrderedDict
 
 from .util import get_version
@@ -53,10 +54,16 @@ class GalaxyXMLSynthesizer:
         blueprint: Dict[str, Any],
         docker_image: str = "nciccbr/mosuite:latest",
         citation_doi: str = "10.5281/zenodo.16371580",
+        repo_name: str = "CCBR/MOSuite-Galaxy",
+        cli_command: str = "mosuite",
+        pkg_name: str = "MOSuite",
     ):
         self.blueprint = blueprint
+        self.cli_command = cli_command
+        self.pkg_name = pkg_name
         self.docker_image = docker_image
         self.citation_doi = citation_doi
+        self.repo_name = repo_name
 
     def synthesize(self) -> str:
         """Generate Galaxy tool XML from blueprint."""
@@ -66,8 +73,8 @@ class GalaxyXMLSynthesizer:
         # tool_id = self._make_tool_id(self.blueprint.get('title', 'tool'))
         tool_id = self._make_tool_id(self.blueprint.get("r_function", "tool"))
         tool.set("id", tool_id)
-        tool.set("name", self.blueprint.get("title", "Tool"))
-        tool.set("version", "2.0.0")
+        tool.set("name", self.blueprint.get("title", "Tool").strip())
+        tool.set("version", self._extract_docker_tag(self.docker_image))
         tool.set("profile", "24.2")
 
         # Description
@@ -80,15 +87,15 @@ class GalaxyXMLSynthesizer:
         container.set("type", "docker")
         container.text = self.docker_image
 
+        # Command (must come before configfiles per Galaxy best practices)
+        self._add_command(tool, tool_id)
+
         # Configfiles - Galaxy serializes inputs to JSON
         configfiles = ET.SubElement(tool, "configfiles")
         inputs_config = ET.SubElement(configfiles, "inputs")
         inputs_config.set("name", "params_json")
         inputs_config.set("filename", "galaxy_params.json")
         inputs_config.set("data_style", "paths")
-
-        # Command
-        self._add_command(tool, tool_id)
 
         # Inputs with section support
         self._add_inputs(tool)
@@ -108,18 +115,47 @@ class GalaxyXMLSynthesizer:
 
         return self._format_xml(tool)
 
-    def _make_tool_id(self, title: str, tool_prefix: str = "mosuite") -> str:
+    def _make_tool_id(self, title: str) -> str:
         """Generate tool ID from title."""
         # Remove brackets and clean
         clean_title = re.sub(r"\[.*?\]", "", title).strip()
         tool_id = clean_title.lower().replace(" ", "_")
-        return f"{tool_prefix}_{tool_id}"
+        return f"{self.cli_command}_{tool_id}"
 
     def _clean_text(self, text: str) -> str:
         """Clean text from markdown and escapes."""
         text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
         text = text.replace("\\n", " ")
         return text.strip()
+
+    def _extract_docker_tag(self, docker_image: str) -> Optional[str]:
+        """Grab the tag portion from the docker image string."""
+        if not docker_image:
+            return None
+
+        last_segment = docker_image.split("/")[-1]
+        if ":" in last_segment:
+            tag = last_segment.split(":", 1)[1]
+            return tag or None
+
+        # No explicit tag present; assume latest
+        return "latest"
+
+    def _get_git_short_sha(self) -> Optional[str]:
+        """Return short git SHA for the repo; None if unavailable."""
+        repo_root = Path(__file__).resolve().parents[2]
+
+        try:
+            sha = (
+                subprocess.check_output(
+                    ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
+                )
+                .decode()
+                .strip()
+            )
+            return sha or None
+        except Exception:
+            return None
 
     def _add_sanitizer(
         self,
@@ -170,9 +206,7 @@ class GalaxyXMLSynthesizer:
             add_elem = ET.SubElement(valid, "add")
             add_elem.set("value", ";")
 
-    def _add_command(
-        self, tool: ET.Element, tool_id: str, tool_prefix: str = "mosuite"
-    ):
+    def _add_command(self, tool: ET.Element, tool_id: str):
         """Add command section - FIXED to use single-line commands."""
         # Collect parameter types for format_values.py
         bool_params = []
@@ -195,40 +229,46 @@ class GalaxyXMLSynthesizer:
                 list_params.append(column.get("key"))
 
         # Build command as a SINGLE LINE
-        template_name = tool_id.replace(f"{tool_prefix}_", "")
+        # Preserve the exact case of the R function name for the CLI subcommand
+        r_function_name = self.blueprint.get("r_function")
+        if isinstance(r_function_name, str) and r_function_name.strip():
+            template_name = r_function_name.strip()
+        else:
+            # Fallback to deriving from tool_id if r_function is missing
+            template_name = tool_id.replace(f"{self.cli_command}_", "")
 
         # Build command parts
-        cmd_parts = []
-
-        # Add output config creation if needed
-        # if 'outputs' in self.blueprint:
-        #     # Create JSON string with proper escaping for shell
-        #     outputs_json = json.dumps(self.blueprint['outputs'])
-        #     cmd_parts.append(f"echo '{outputs_json}' > outputs_config.json")
+        cmd_parts = ["echo 'galaxy_params.json'", "cat 'galaxy_params.json'", "echo ''"]
 
         # Build format_values.py command
         format_cmd = "python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'"
 
         if bool_params:
-            format_cmd += f" --bool-values {' '.join(bool_params)}"
+            format_cmd += f"\n    --bool-values {' '.join(bool_params)}"
         if list_params:
-            format_cmd += f" --list-values {' '.join(list_params)}"
+            format_cmd += f"\n    --list-values {' '.join(list_params)}"
 
         # Add output injection flags if outputs exist
-        if "outputs" in self.blueprint:
-            format_cmd += " --inject-outputs --outputs-config outputs_config.json"
+        # if "outputs" in self.blueprint:
+        #     format_cmd += "\n    --inject-outputs --outputs-config outputs_config.json"
 
         cmd_parts.append(format_cmd)
 
+        cmd_parts.extend(
+            ["echo 'cleaned_params.json'", "cat 'cleaned_params.json'", "echo ''"]
+        )
+
         # Add template command
-        cmd_parts.append(f"mosuite {template_name} --json=cleaned_params.json")
+        cmd_parts.append(
+            f"{self.cli_command} {template_name} --json=cleaned_params.json"
+        )
 
         # Join all parts with && on a SINGLE LINE
-        full_command = " && ".join(cmd_parts)
+        full_command = " &&\n".join(cmd_parts)
 
         command = ET.SubElement(tool, "command")
         command.set("detect_errors", "exit_code")
-        command.text = f"<![CDATA[\n\n{full_command}\n\n]]>"
+        command.text = f"<![CDATA[{full_command}]]>"
 
     def _group_parameters(self) -> Dict[Optional[str], List[Dict]]:
         """Group parameters by their paramGroup field."""
@@ -382,12 +422,12 @@ class GalaxyXMLSynthesizer:
         param.set("name", dataset["key"])
         param.set("type", "data")
 
-        # Map data types
-        data_type = dataset.get("dataType", "")
-        date_type_upper = data_type.upper()
-        if "DATAFRAME" in date_type_upper or "TABULAR" in date_type_upper:
+        # Map data types - check paramType first (from blueprints), then dataType (from other sources)
+        data_type = dataset.get("paramType") or dataset.get("dataType", "")
+        data_type_upper = data_type.upper()
+        if "TABULAR" in data_type_upper or "DATAFRAME" in data_type_upper:
             param.set("format", "tabular,csv,tsv,txt")
-        elif "PYTHON" in date_type_upper or "ANNDATA" in date_type_upper:
+        elif "PYTHON" in data_type_upper or "ANNDATA" in data_type_upper:
             param.set("format", "h5ad,binary,pickle")
         else:
             param.set("format", "binary")
@@ -639,9 +679,7 @@ class GalaxyXMLSynthesizer:
                 collection = ET.SubElement(outputs_elem, "collection")
                 collection.set("name", key)
                 collection.set("type", "list")
-                collection.set(
-                    "label", f"${{tool.name}} on ${{on_string}}: {key.title()}"
-                )
+                collection.set("label", f"${{tool.name}} on ${{on_string}}: {key}")
 
                 discover = ET.SubElement(collection, "discover_datasets")
                 discover.set("pattern", "__name_and_ext__")
@@ -667,14 +705,19 @@ class GalaxyXMLSynthesizer:
                     data.set("format", "auto")
 
                 data.set("from_work_dir", output_name)
-                data.set("label", f"${{tool.name}} on ${{on_string}}: {key.title()}")
+                data.set("label", f"${{tool.name}} on ${{on_string}}: {key}")
 
     def _generate_help(self) -> str:
         """Generate help text with sanitizer info for special parameters."""
-        title = self.blueprint.get("title", "Tool")
+        title = self.blueprint.get("title", "Tool").strip()
         desc = self._clean_text(self.blueprint.get("description", ""))
 
-        help_lines = [f"**{title}**", desc]
+        help_lines = [f"**{title}**\n"]
+        r_function = self.blueprint.get("r_function", "tool")
+        help_lines.append(
+            f"Runs `{self.pkg_name}::{r_function}()` - https://ccbr.github.io/{self.pkg_name}/reference/{r_function}.html`\n"
+        )
+        help_lines.append(desc)
 
         # Check if we have parameters that need special characters
         has_special_params = False
@@ -711,7 +754,7 @@ class GalaxyXMLSynthesizer:
                     ]
                 )
 
-        help_lines.extend(["**Outputs:**"])
+        help_lines.append("\n**Outputs:**\n")
 
         outputs = self.blueprint.get("outputs", {})
         for key, config in outputs.items():
@@ -721,6 +764,25 @@ class GalaxyXMLSynthesizer:
                 help_lines.append(f"- {key}: {output_type} ({output_name})")
             else:
                 help_lines.append(f"- {key}: {config}")
+
+        # Add docker and git ref info
+        docker_line = (
+            f"**Version info**\n\n- Docker: {self.docker_image}"
+            if self.docker_image
+            else None
+        )
+        git_sha = self._get_git_short_sha()
+        ref_line = (
+            f"- GitHub: {self.repo_name} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
+            if git_sha
+            else ""
+        )
+        if docker_line or ref_line:
+            help_lines.append("")
+        if docker_line:
+            help_lines.append(docker_line)
+        if ref_line:
+            help_lines.append(ref_line)
 
         return "\n".join(help_lines)
 
@@ -733,8 +795,8 @@ class GalaxyXMLSynthesizer:
         dom = minidom.parseString(rough)
         pretty = dom.toprettyxml(indent="    ")
 
-        # Clean up extra whitespace
-        lines = [line for line in pretty.split("\n") if line.strip()]
+        # Clean up extra whitespace while preserving blank lines
+        lines = pretty.split("\n")
 
         # Skip XML declaration
         if lines[0].startswith("<?xml"):
@@ -771,16 +833,29 @@ def process_blueprint(
     output_dir: Path,
     docker_image: str = "nciccbr/mosuite:latest",
     citation_doi: str = "10.5281/zenodo.16371580",
+    repo_name: str = "CCBR/MOSuite-Galaxy",
+    cli_command: str = "mosuite",
+    pkg_name: str = "MOSuite",
 ):
     """Process a single blueprint to generate Galaxy XML."""
     print(f"Processing: {blueprint_path.name}")
+
+    # Ensure output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Load blueprint
     with open(blueprint_path, "r") as f:
         blueprint = json.load(f)
 
     # Generate XML
-    synthesizer = GalaxyXMLSynthesizer(blueprint, docker_image, citation_doi)
+    synthesizer = GalaxyXMLSynthesizer(
+        blueprint=blueprint,
+        docker_image=docker_image,
+        citation_doi=citation_doi,
+        repo_name=repo_name,
+        cli_command=cli_command,
+        pkg_name=pkg_name,
+    )
     xml_content = synthesizer.synthesize()
 
     # Extract tool name from blueprint
@@ -823,6 +898,9 @@ def batch_process(
     output_dir: str,
     docker_image: str = "nciccbr/mosuite:latest",
     citation_doi: str = "10.5281/zenodo.16371580",
+    repo_name: str = "CCBR/MOSuite-Galaxy",
+    cli_command: str = "mosuite",
+    pkg_name: str = "MOSuite",
 ):
     """Process multiple blueprint files matching a pattern."""
     input_path = Path(input_pattern)
@@ -854,7 +932,13 @@ def batch_process(
     for blueprint_file in sorted(blueprint_files):
         try:
             xml_file = process_blueprint(
-                blueprint_file, output_path, docker_image, citation_doi
+                blueprint_file,
+                output_path,
+                docker_image,
+                citation_doi,
+                repo_name,
+                cli_command,
+                pkg_name,
             )
             generated_files.append(xml_file)
 
@@ -901,7 +985,7 @@ def main():
     )
     parser.add_argument(
         "blueprint",
-        help="Path to blueprint JSON file or pattern (e.g., 'template_json_*.json')",
+        help="Path to blueprint JSON file or pattern (e.g., 'templates/3_galaxy-tools/*.json')",
     )
     parser.add_argument(
         "-o",
@@ -919,12 +1003,35 @@ def main():
         default="10.5281/zenodo.16371580",
         help="Citation DOI (default: 10.5281/zenodo.16371580)",
     )
+    parser.add_argument(
+        "--repo-name",
+        default="CCBR/MOSuite-Galaxy",
+        help="Repository name used for references (default: CCBR/MOSuite-Galaxy)",
+    )
+    parser.add_argument(
+        "--cli-command",
+        default="mosuite",
+        help="CLI command to invoke templates (default: mosuite)",
+    )
+    parser.add_argument(
+        "--pkg-name",
+        default="MOSuite",
+        help="R package name for documentation links (default: MOSuite)",
+    )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
     parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
 
-    return batch_process(args.blueprint, args.output, args.docker, args.citation)
+    return batch_process(
+        args.blueprint,
+        args.output,
+        args.docker,
+        args.citation,
+        args.repo_name,
+        args.cli_command,
+        args.pkg_name,
+    )
 
 
 if __name__ == "__main__":

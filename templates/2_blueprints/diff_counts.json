@@ -1,6 +1,6 @@
 {
   "r_function": "diff_counts",
-  "title": "DEG Analysis\n",
+  "title": "Differential Analysis\n",
   "description": "Differential expression analysis\n",
   "columns": [
     {
@@ -169,7 +169,7 @@
     }
   ],
   "outputs": {
-    "analysis": {
+    "multiOmicDataSet": {
       "type": "file",
       "name": "moo.rds"
     },

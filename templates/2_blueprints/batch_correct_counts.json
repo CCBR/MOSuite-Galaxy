@@ -1,7 +1,7 @@
 {
   "r_function": "batch_correct_counts",
   "title": "Batch Correction\n",
-  "description": "using \nlist(\"sva::ComBat()\")\n",
+  "description": "Perform batch correction using sva::ComBat()\n",
   "columns": [
     {
       "key": "feature_id_colname",
@@ -118,18 +118,18 @@
       "paramType": "MULTISELECT",
       "paramGroup": "Visualization",
       "paramValues": [
-        "indigo",
-        "carrot",
-        "lipstick",
-        "turquoise",
-        "lavender",
-        "jade",
-        "coral",
-        "azure",
-        "green",
-        "rum",
-        "orange",
-        "olive"
+        "#5954d6",
+        "#e1562c",
+        "#b80058",
+        "#00c6f8",
+        "#d163e6",
+        "#00a76c",
+        "#ff9287",
+        "#008cf9",
+        "#006e00",
+        "#796880",
+        "#FFA500",
+        "#878500"
       ],
       "condition": null,
       "content": null,
@@ -149,7 +149,7 @@
     }
   ],
   "outputs": {
-    "analysis": {
+    "multiOmicDataSet": {
       "type": "file",
       "name": "moo.rds"
     },
