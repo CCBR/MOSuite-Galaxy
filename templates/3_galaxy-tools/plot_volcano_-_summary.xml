@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary" version="v0.2.1.9001_b679a3b" profile="24.2">
+<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary" version="v0.3.0" profile="24.2">
     <description>Produces one volcano plot for each tested contrast in the input DEG table.
 It can be sorted by either fold change, t-statistic, or p-value. The returned dataset includes one row for each
 significant g</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
@@ -4775,8 +4775,8 @@ useful to the Venn diagram template downstream.
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
-- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `aa2bf24` - https://github.com/CCBR/MOSuite-Galaxy/tree/aa2bf24
 
 ]]></help>
     <citations>
