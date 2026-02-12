@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.2.1.9001_b679a3b" profile="24.2">
+<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.3.0" profile="24.2">
     <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
@@ -60,8 +60,8 @@ Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
-- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `aa2bf24` - https://github.com/CCBR/MOSuite-Galaxy/tree/aa2bf24
 
 ]]></help>
     <citations>

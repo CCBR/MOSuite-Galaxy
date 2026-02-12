@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_clean_raw_counts" name="Clean Raw Counts" version="v0.2.1.9001_b679a3b" profile="24.2">
+<tool id="mosuite_clean_raw_counts" name="Clean Raw Counts" version="v0.3.0" profile="24.2">
     <description>This function checks the input raw counts matrix for common formatting problems with feature identifiers and sample
 names. If feature IDs contain multiple IDs separated by special characters (| - , or</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1.9001_b679a3b</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
 echo 'galaxy_params.json' &&
@@ -107,8 +107,8 @@ corrected. If your sample names are corrected here, be sure to make equivalent c
 
 **Version info**
 
-- Docker: nciccbr/mosuite:v0.2.1.9001_b679a3b
-- GitHub: CCBR/MOSuite-Galaxy @ `9702440` - https://github.com/CCBR/MOSuite-Galaxy/tree/9702440
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `aa2bf24` - https://github.com/CCBR/MOSuite-Galaxy/tree/aa2bf24
 
 ]]></help>
     <citations>
