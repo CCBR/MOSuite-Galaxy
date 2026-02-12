@@ -1,22 +1,26 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_create_multiomicdataset_from_files" name="Create Multi-Omic Dataset from Files" version="v0.3.0" profile="24.2">
     <description>Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite create_multiOmicDataSet_from_files --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite create_multiomicdataset_from_files --json=cleaned_params.json
-
-]]></command>
     <inputs>
-        <param name="sample_meta_filepath" type="data" format="binary" label="" help="path to text file with sample IDs and metadata for differential analysis.
+        <param name="sample_meta_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file with sample IDs and metadata for differential analysis.
 "/>
-        <param name="feature_counts_filepath" type="data" format="binary" label="" help="path to text file of expected feature counts (e.g. gene counts from RSEM).
+        <param name="feature_counts_filepath" type="data" format="tabular,csv,tsv,txt" label="" help="path to text file of expected feature counts (e.g. gene counts from RSEM).
 "/>
         <section name="basic" title="basic" expanded="false">
             <param name="moo_output_rds" type="text" label="MOO output Rds" value="moo.rds" help="File path to output the multiOmicDataSet object (MOO) as an Rds file"/>
@@ -40,15 +44,24 @@ If the files are in CSV format, set `delim = ','`; for TSV format, set `delim = 
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Multiomicdataset"/>
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
     </outputs>
     <help><![CDATA[
 
-**Create Multi-Omic Dataset from Files
-**
+**Create Multi-Omic Dataset from Files**
+
+Runs `MOSuite::create_multiOmicDataSet_from_files()` - https://ccbr.github.io/MOSuite/reference/create_multiOmicDataSet_from_files.html`
+
 Construct a multiOmicDataSet object from text files (e.g. TSV, CSV).
+
 **Outputs:**
+
 - multiOmicDataSet: file (moo.rds)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>

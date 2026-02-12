@@ -1,20 +1,25 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_volcano_summary" name="Plot Volcano - Summary" version="v0.3.0" profile="24.2">
     <description>Produces one volcano plot for each tested contrast in the input DEG table.
 It can be sorted by either fold change, t-statistic, or p-value. The returned dataset includes one row for each
 significant g</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit use_default_grid_layout save_plots &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite plot_volcano_summary --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values add_features label_features displace_feature_labels flip_vplot use_default_x_axis_limit use_default_y_axis_limit use_default_grid_layout save_plots --inject-outputs --outputs-config outputs_config.json && mosuite plot_volcano_summary --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -4719,8 +4724,7 @@ B-A. Default: FALSE
 "/>
         </section>
         <section name="table" title="Table" expanded="false">
-            <param name="add_deg_columns" type="select" label="Add DEG Columns to Output Table" multiple="true" optional="true" help="Add additional columns from the DEG analysis to the
-output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;`">
+            <param name="add_deg_columns" type="select" label="Add DEG Columns to Output Table" multiple="true" optional="true" help="Add additional columns from the DEG analysis to the output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, &quot;pval&quot;, &quot;adjpval&quot;`">
                 <option value="FC">FC</option>
                 <option value="logFC">logFC</option>
                 <option value="tstat">tstat</option>
@@ -4750,20 +4754,29 @@ output dataset. Default: `&quot;FC&quot;, &quot;logFC&quot;, &quot;tstat&quot;, 
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="DataFrame" format="rds" from_work_dir="summary_dataframe.rds" label="${tool.name} on ${on_string}: Dataframe"/>
-        <data name="figures" format="png" from_work_dir="figures/diff/volcano_summary.png" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="DataFrame" format="rds" from_work_dir="summary_dataframe.rds" label="${tool.name} on ${on_string}: DataFrame"/>
+        <data name="figures" format="png" from_work_dir="figures/diff/volcano_summary.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**Plot Volcano - Summary
-**
+**Plot Volcano - Summary**
+
+Runs `MOSuite::plot_volcano_summary()` - https://ccbr.github.io/MOSuite/reference/plot_volcano_summary.html`
+
 Produces one volcano plot for each tested contrast in the input DEG table.
 It can be sorted by either fold change, t-statistic, or p-value. The returned dataset includes one row for each
 significant gene in each contrast, and contains columns from the DEG analysis of that contrast as well as columns
 useful to the Venn diagram template downstream.
+
 **Outputs:**
+
 - DataFrame: file (summary_dataframe.rds)
 - figures: file (figures/diff/volcano_summary.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>

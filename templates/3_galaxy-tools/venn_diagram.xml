@@ -1,19 +1,25 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_venn_diagram" name="Venn Diagram
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_venn_diagram" name="Venn Diagram" version="v0.3.0" profile="24.2">
     <description>generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
 tested contrasts). This Venn diagram is available for up to five sets; Intersection plo</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values venn_force_unique display_empty_intersections save_plots
+    --list-values select_contrasts intersection_ids venn_category_names_distance venn_category_names_position &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite plot_venn_diagram --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values venn_force_unique display_empty_intersections save_plots --list-values select_contrasts intersection_ids venn_category_names_distance venn_category_names_position --inject-outputs --outputs-config outputs_config.json && mosuite plot_venn_diagram --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="DataFrame input Rds" help="File path to read the summary dataframe (e.g. from plot_volcano_summary output)"/>
         <section name="basic" title="basic" expanded="false">
@@ -846,20 +852,29 @@ used.)
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="DataFrame" format="rds" from_work_dir="venn_diagram_dataframe.rds" label="${tool.name} on ${on_string}: Dataframe"/>
-        <data name="figures" format="png" from_work_dir="figures/diff/venn_diagram.png" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="DataFrame" format="rds" from_work_dir="venn_diagram_dataframe.rds" label="${tool.name} on ${on_string}: DataFrame"/>
+        <data name="figures" format="png" from_work_dir="figures/diff/venn_diagram.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**Venn Diagram
-**
+**Venn Diagram**
+
+Runs `MOSuite::plot_venn_diagram()` - https://ccbr.github.io/MOSuite/reference/plot_venn_diagram.html`
+
 generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
 tested contrasts). This Venn diagram is available for up to five sets; Intersection plot is available for any number
 of sets. Specific sets can be selected for the visualizations and the returned dataset may include all (default) or
 specified intersections.
+
 **Outputs:**
+
 - DataFrame: file (venn_diagram_dataframe.rds)
 - figures: file (figures/diff/venn_diagram.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>

@@ -1,19 +1,23 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties" version="v0.3.0" profile="24.2">
     <description>Writes the properties of a multiOmicDataSet object to disk as separate files in output_dir.
 Properties that are data frames are saved as CSV files, while all other objects are saved as RDS files.</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite write_multiOmicDataSet_properties --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --inject-outputs --outputs-config outputs_config.json && mosuite write_multiomicdataset_properties --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to the input multiOmicDataSet (MOO) RDS file."/>
         <section name="basic" title="Basic" expanded="false">
@@ -24,26 +28,35 @@ python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_para
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="sample_metadata" format="csv" from_work_dir="sample_metadata.csv" label="${tool.name} on ${on_string}: Sample_Metadata"/>
-        <data name="feature_annotation" format="csv" from_work_dir="feature_annotation.csv" label="${tool.name} on ${on_string}: Feature_Annotation"/>
-        <collection name="counts" type="list" label="${tool.name} on ${on_string}: Counts">
+        <data name="sample_metadata" format="csv" from_work_dir="sample_metadata.csv" label="${tool.name} on ${on_string}: sample_metadata"/>
+        <data name="feature_annotation" format="csv" from_work_dir="feature_annotation.csv" label="${tool.name} on ${on_string}: feature_annotation"/>
+        <collection name="counts" type="list" label="${tool.name} on ${on_string}: counts">
             <discover_datasets pattern="__name_and_ext__" directory="counts/" recurse="true"/>
         </collection>
-        <collection name="analyses" type="list" label="${tool.name} on ${on_string}: Analyses">
+        <collection name="analyses" type="list" label="${tool.name} on ${on_string}: analyses">
             <discover_datasets pattern="__name_and_ext__" directory="analyses/" recurse="true"/>
         </collection>
     </outputs>
     <help><![CDATA[
 
-**Write multiOmicDataSet Properties
-**
+**Write multiOmicDataSet Properties**
+
+Runs `MOSuite::write_multiOmicDataSet_properties()` - https://ccbr.github.io/MOSuite/reference/write_multiOmicDataSet_properties.html`
+
 Writes the properties of a multiOmicDataSet object to disk as separate files in output_dir.
 Properties that are data frames are saved as CSV files, while all other objects are saved as RDS files.
+
 **Outputs:**
+
 - sample_metadata: file (sample_metadata.csv)
 - feature_annotation: file (feature_annotation.csv)
 - counts: directory (counts/)
 - analyses: directory (analyses/)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>

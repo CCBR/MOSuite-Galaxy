@@ -1,26 +1,28 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_pca_2d" name="PCA 2D
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_plot_pca_2d" name="PCA 2D" version="v0.3.0" profile="24.2">
     <description>Perform and plot a 2D Principal Components Analysis</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values add_label interactive_plots save_plots &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite plot_pca_2d --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values add_label interactive_plots save_plots --inject-outputs --outputs-config outputs_config.json && mosuite plot_pca_2d --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="Basic" expanded="false">
-            <param name="count_type" type="text" label="Count Type" value="" help="type to assign the values of `counts_dat` to in the `counts` slot
-"/>
-            <param name="sub_count_type" type="text" label="Sub Count Type" value="" help="used if `count_type` is a list in the counts slot: specify the sub count type within the list.
-Must be a name in `names(moo@counts[[count_type]])`.
-"/>
+            <param name="count_type" type="text" label="Count Type" value="raw" help="The type of counts to use from the multiOmicDataSet counts slot"/>
+            <param name="sub_count_type" type="text" label="Sub Count Type" value="raw" help="Used if count_type is a list in the counts slot: specify the sub count type within the list (optional)"/>
             <param name="principal_components" type="select" label="Principal Components" multiple="true" optional="true" help="vector with numbered principal components to plot
 ">
                 <option value="1">1</option>
@@ -150,15 +152,24 @@ is set to `TRUE`. Default is `FALSE`.
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="figures" format="png" from_work_dir="figures/pca/pca_2D.png" label="${tool.name} on ${on_string}: Figures"/>
+        <data name="figures" format="png" from_work_dir="figures/pca/pca_2D.png" label="${tool.name} on ${on_string}: figures"/>
     </outputs>
     <help><![CDATA[
 
-**PCA 2D
-**
+**PCA 2D**
+
+Runs `MOSuite::plot_pca_2d()` - https://ccbr.github.io/MOSuite/reference/plot_pca_2d.html`
+
 Perform and plot a 2D Principal Components Analysis
+
 **Outputs:**
+
 - figures: file (figures/pca/pca_2D.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>

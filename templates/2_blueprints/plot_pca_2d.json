@@ -60,10 +60,11 @@
     {
       "key": "count_type",
       "displayName": "Count Type",
-      "description": "type to assign the values of `counts_dat` to in the `counts` slot\n",
+      "description": "The type of counts to use from the multiOmicDataSet counts slot",
       "paramType": "STRING",
       "paramGroup": "Basic",
       "paramValues": null,
+      "defaultValue": "raw",
       "condition": null,
       "content": null,
       "objectPropertyReference": null
@@ -71,10 +72,11 @@
     {
       "key": "sub_count_type",
       "displayName": "Sub Count Type",
-      "description": "used if `count_type` is a list in the counts slot: specify the sub count type within the list.\nMust be a name in `names(moo@counts[[count_type]])`.\n",
+      "description": "Used if count_type is a list in the counts slot: specify the sub count type within the list (optional)",
       "paramType": "STRING",
       "paramGroup": "Basic",
       "paramValues": null,
+      "defaultValue": "raw",
       "condition": null,
       "content": null,
       "objectPropertyReference": null

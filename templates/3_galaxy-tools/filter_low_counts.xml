@@ -1,20 +1,26 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_filter_counts" name="Filter Low Counts
-" version="2.0.0" profile="24.2">
+<tool id="mosuite_filter_counts" name="Filter Low Counts" version="v0.3.0" profile="24.2">
     <description>This is often the first step in the QC portion of an analysis to filter out
 features that have very low raw counts across most or all of your samples.
 This function takes a multiOmicDataSet containing</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values use_cpm_counts_to_filter use_group_based_filtering add_label_to_pca color_histogram_by_group set_min_max_for_x_axis_for_histogram interactive_plots plot_corr_matrix_heatmap save_plots
+    --list-values samples_to_rename samples_to_include &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite filter_counts --json=cleaned_params.json
+]]></command>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
     </configfiles>
-    <command detect_errors="exit_code"><![CDATA[
-
-python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json' --bool-values use_cpm_counts_to_filter use_group_based_filtering add_label_to_pca color_histogram_by_group set_min_max_for_x_axis_for_histogram interactive_plots plot_corr_matrix_heatmap save_plots --list-values samples_to_rename samples_to_include --inject-outputs --outputs-config outputs_config.json && mosuite filter_counts --json=cleaned_params.json
-
-]]></command>
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="basic" expanded="false">
@@ -158,15 +164,17 @@ not be be created. Default is `TRUE`.
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: Multiomicdataset"/>
-        <collection name="figures" type="list" label="${tool.name} on ${on_string}: Figures">
+        <data name="multiOmicDataSet" format="rds" from_work_dir="moo.rds" label="${tool.name} on ${on_string}: multiOmicDataSet"/>
+        <collection name="figures" type="list" label="${tool.name} on ${on_string}: figures">
             <discover_datasets pattern="__name_and_ext__" directory="figures/filt/" recurse="true"/>
         </collection>
     </outputs>
     <help><![CDATA[
 
-**Filter Low Counts
-**
+**Filter Low Counts**
+
+Runs `MOSuite::filter_counts()` - https://ccbr.github.io/MOSuite/reference/filter_counts.html`
+
 This is often the first step in the QC portion of an analysis to filter out
 features that have very low raw counts across most or all of your samples.
 This function takes a multiOmicDataSet containing clean raw counts and a sample
@@ -181,9 +189,16 @@ between group variance in expression after dimensionality reduction; (2)
 Count Density Histogram: the dis/similarity of count distributions between
 samples; and (3) Similarity Heatmap: the overall similarity of samples to one
 another based on unsupervised clustering.
+
 **Outputs:**
+
 - multiOmicDataSet: file (moo.rds)
 - figures: directory (figures/filt/)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>
