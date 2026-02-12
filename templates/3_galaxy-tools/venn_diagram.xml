@@ -4,7 +4,7 @@
     <description>generates Venn diagram of intersections across a series of sets (e.g., intersections of significant genes across
 tested contrasts). This Venn diagram is available for up to five sets; Intersection plo</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
@@ -15,9 +15,9 @@ python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_para
 
 ]]></command>
     <inputs>
-        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <param name="moo_input_rds" type="data" format="binary" label="DataFrame input Rds" help="File path to read the summary dataframe (e.g. from plot_volcano_summary output)"/>
         <section name="basic" title="basic" expanded="false">
-            <param name="moo_output_rds" type="text" label="Plot output Rds" value="venn_diagram_plot.rds" help="File path to output the plot object as an Rds file"/>
+            <param name="moo_output_rds" type="text" label="Venn diagram DataFrame Rds" value="venn_diagram_dataframe.rds" help="File path to output the venn diagram DataFrame as an Rds file"/>
         </section>
         <section name="advanced" title="Advanced" expanded="false">
             <repeat name="select_contrasts_repeat" title="Selected Categories">
@@ -846,7 +846,7 @@ used.)
     <outputs>
         <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
         <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
-        <data name="multiOmicDataSet" format="rds" from_work_dir="plot.rds" label="${tool.name} on ${on_string}: Multiomicdataset"/>
+        <data name="DataFrame" format="rds" from_work_dir="venn_diagram_dataframe.rds" label="${tool.name} on ${on_string}: Dataframe"/>
         <data name="figures" format="png" from_work_dir="figures/diff/venn_diagram.png" label="${tool.name} on ${on_string}: Figures"/>
     </outputs>
     <help><![CDATA[
@@ -858,7 +858,7 @@ tested contrasts). This Venn diagram is available for up to five sets; Intersect
 of sets. Specific sets can be selected for the visualizations and the returned dataset may include all (default) or
 specified intersections.
 **Outputs:**
-- multiOmicDataSet: file (plot.rds)
+- DataFrame: file (venn_diagram_dataframe.rds)
 - figures: file (figures/diff/venn_diagram.png)
 
 ]]></help>

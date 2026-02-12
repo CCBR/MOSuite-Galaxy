@@ -4,7 +4,7 @@
     <description>This function checks the input raw counts matrix for common formatting problems with feature identifiers and sample
 names. If feature IDs contain multiple IDs separated by special characters (| - , or</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>

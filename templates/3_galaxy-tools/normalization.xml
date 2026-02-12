@@ -3,7 +3,7 @@
 " version="2.0.0" profile="24.2">
     <description>Normalize counts</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>

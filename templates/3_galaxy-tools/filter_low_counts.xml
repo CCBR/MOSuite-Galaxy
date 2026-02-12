@@ -5,7 +5,7 @@
 features that have very low raw counts across most or all of your samples.
 This function takes a multiOmicDataSet containing</description>
     <requirements>
-        <container type="docker">nciccbr/mosuite:v0.2.1</container>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
     </requirements>
     <configfiles>
         <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
