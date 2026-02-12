@@ -21,7 +21,7 @@ mosuite plot_pca_3d --json=cleaned_params.json
     <inputs>
         <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
         <section name="basic" title="Basic" expanded="false">
-            <param name="count_type" type="text" label="Count Type" value="" help="the type of counts to use -- must be a name in the counts slot (`moo@counts`)
+            <param name="count_type" type="text" label="Count Type" value="" help="type to assign the values of `counts_dat` to in the `counts` slot
 "/>
             <param name="sub_count_type" type="text" label="Sub Count Type" value="" help="used if `count_type` is a list in the counts slot: specify the sub count type within the list.
 Must be a name in `names(moo@counts[[count_type]])`.
@@ -151,7 +151,7 @@ Runs `MOSuite::plot_pca_3d()` - https://ccbr.github.io/MOSuite/reference/plot_pc
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `aa2bf24` - https://github.com/CCBR/MOSuite-Galaxy/tree/aa2bf24
+- GitHub: CCBR/MOSuite-Galaxy @ `722cd4e` - https://github.com/CCBR/MOSuite-Galaxy/tree/722cd4e
 
 ]]></help>
     <citations>
