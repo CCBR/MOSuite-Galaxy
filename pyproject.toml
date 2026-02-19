@@ -83,3 +83,8 @@ override_SS05 = [  # override SS05 to allow docstrings starting with these words
 [tool.setuptools.dynamic]
 version = {file = "src/galaxysynth/VERSION"}
 readme = {file = "README.md"}
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src", "templates"
+]

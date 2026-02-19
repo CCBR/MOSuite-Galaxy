@@ -75,18 +75,6 @@
   ],
   "parameters": [
     {
-      "key": "moo_output_rds",
-      "displayName": "Plot output Rds",
-      "description": "File path to output the plot object as an Rds file",
-      "paramType": "STRING",
-      "paramGroup": "basic",
-      "paramValues": null,
-      "defaultValue": "expr_heatmap_plot.rds",
-      "condition": null,
-      "content": null,
-      "objectPropertyReference": null
-    },
-    {
       "key": "count_type",
       "displayName": "Count Type",
       "description": "the type of counts to use. Must be a name in the counts slot (`names(moo@counts)`).\n",
@@ -415,18 +403,18 @@
       "paramType": "MULTISELECT",
       "paramGroup": "Annotation",
       "paramValues": [
-        "indigo",
-        "carrot",
-        "lipstick",
-        "turquoise",
-        "lavender",
-        "jade",
-        "coral",
-        "azure",
-        "green",
-        "rum",
-        "orange",
-        "olive"
+        "#5954d6",
+        "#e1562c",
+        "#b80058",
+        "#00c6f8",
+        "#d163e6",
+        "#00a76c",
+        "#ff9287",
+        "#008cf9",
+        "#006e00",
+        "#796880",
+        "#FFA500",
+        "#878500"
       ],
       "defaultValue": ["#5954d6", "#e1562c", "#b80058", "#00c6f8", "#d163e6", "#00a76c", "#ff9287", "#008cf9", "#006e00", "#796880", "#FFA500", "#878500"],
       "condition": null,
@@ -562,10 +550,6 @@
     }
   ],
   "outputs": {
-    "analysis": {
-      "type": "file",
-      "name": "expr_heatmap_plot.rds"
-    },
     "figures": {
       "type": "file",
       "name": "figures/heatmap/expr_heatmap.png"

@@ -1,0 +1,883 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "Workflow for differential analysis of multi-Omics data\n\nhttps://github.com/CCBR/MOSuite-Galaxy\n",
+    "comments": [
+        {
+            "child_steps": [
+                8,
+                9,
+                10
+            ],
+            "color": "blue",
+            "data": {
+                "title": "Visualizations"
+            },
+            "id": 1,
+            "position": [
+                1059.8820312500002,
+                728.6
+            ],
+            "size": [
+                768.6,
+                318.5
+            ],
+            "type": "frame"
+        },
+        {
+            "child_steps": [
+                6,
+                11
+            ],
+            "color": "lime",
+            "data": {
+                "title": "Differential Analysis"
+            },
+            "id": 2,
+            "position": [
+                2026.88203125,
+                54.50000000000001
+            ],
+            "size": [
+                490,
+                410
+            ],
+            "type": "frame"
+        },
+        {
+            "child_steps": [
+                12,
+                13,
+                14
+            ],
+            "color": "turquoise",
+            "data": {
+                "title": "Visualizations"
+            },
+            "id": 3,
+            "position": [
+                2567.18203125,
+                1.2000000000000028
+            ],
+            "size": [
+                500,
+                651
+            ],
+            "type": "frame"
+        },
+        {
+            "child_steps": [
+                2,
+                3,
+                4,
+                5,
+                7
+            ],
+            "color": "orange",
+            "data": {
+                "title": "Process Counts"
+            },
+            "id": 0,
+            "position": [
+                253.58203125,
+                0.0
+            ],
+            "size": [
+                1249,
+                577
+            ],
+            "type": "frame"
+        }
+    ],
+    "creator": [
+        {
+            "class": "Organization",
+            "name": "CCR Collaborative Bioinformatics Resource",
+            "url": "http://github.com/ccbr"
+        }
+    ],
+    "format-version": "0.1",
+    "license": "MIT",
+    "name": "MOSuite",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "CSV file containing sample metadata. The first column should contain the sample IDs corresponding to columns in the Raw Counts file. Additional columns can be included for labels, group information, batch information, etc.",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "CSV file containing sample metadata. The first column should contain the sample IDs corresponding to columns in the Raw Counts file. Additional columns can be included for labels, group information, batch information, etc.",
+                    "name": "Sample Metadata CSV"
+                }
+            ],
+            "label": "Sample Metadata CSV",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0.0,
+                "top": 1.7367187500000014
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"csv\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "03e6b8b8-aefb-4fe3-98d6-68d7187a4432",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "Raw Counts data, such as gene expression counts from RNA-seq. The first column should be a feature/gene ID. All remaining column names must be sample IDs.",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Raw Counts data, such as gene expression counts from RNA-seq. The first column should be a feature/gene ID. All remaining column names must be sample IDs.",
+                    "name": "Raw Counts CSV"
+                }
+            ],
+            "label": "Raw Counts CSV",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0.29296875,
+                "top": 97.09609375
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"csv\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "d2408553-618f-4f3d-96a2-b92fdf64ec40",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "mosuite_create_multiomicdataset_from_files",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "feature_counts_filepath": {
+                    "id": 1,
+                    "output_name": "output"
+                },
+                "sample_meta_filepath": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Create Multi-Omic Dataset from Files",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 273.58046875,
+                "top": 40.021875
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_create_multiomicdataset_from_files",
+            "tool_state": "{\"basic\": {\"moo_output_rds\": \"moo.rds\", \"sample_id_colname\": \"\", \"feature_id_colname\": \"\", \"delim\": \"\"}, \"feature_counts_filepath\": {\"__class__\": \"ConnectedValue\"}, \"sample_meta_filepath\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "2a6cf396-a1fe-4926-99aa-438931bcdf98",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "mosuite_clean_raw_counts",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 2,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Clean Raw Counts",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 523.58046875,
+                "top": 80.021875
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_clean_raw_counts",
+            "tool_state": "{\"advanced\": {\"samples_to_rename_repeat\": [{\"__index__\": 0, \"value\": \"\"}], \"cleanup_column_names\": true, \"split_gene_name\": true, \"aggregate_rows_with_duplicate_gene_names\": true, \"gene_name_column_to_use_for_collapsing_duplicates\": \"\"}, \"basic\": {\"count_type\": \"raw\", \"save_plots\": true, \"feature_id_colname\": null, \"sample_id_colname\": null}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "44934e27-f84d-4c59-881a-988501e41196",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "mosuite_filter_counts",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 3,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Filter Low Counts",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 773.58046875,
+                "top": 140.021875
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_filter_counts",
+            "tool_state": "{\"basic\": {\"count_type\": \"clean\", \"feature_id_colname\": null, \"samples_to_include_repeat\": [], \"sample_id_colname\": null, \"group_colname\": \"Group\", \"label_colname\": null}, \"filtering\": {\"use_cpm_counts_to_filter\": true, \"minimum_count_value_to_be_considered_nonzero\": \"8.0\", \"minimum_number_of_samples_with_nonzero_counts_in_total\": \"7.0\", \"use_group_based_filtering\": false, \"minimum_number_of_samples_with_nonzero_counts_in_a_group\": \"3.0\"}, \"histogram\": {\"color_histogram_by_group\": false, \"set_min_max_for_x_axis_for_histogram\": false, \"minimum_for_x_axis_for_histogram\": \"-1.0\", \"maximum_for_x_axis_for_histogram\": \"1.0\", \"legend_font_size_for_histogram\": \"10.0\", \"legend_position_for_histogram\": \"top\", \"number_of_histogram_legend_columns\": \"6.0\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"pca\": {\"principal_component_on_x_axis\": \"1.0\", \"principal_component_on_y_axis\": \"2.0\", \"legend_position_for_pca\": \"top\", \"point_size_for_pca\": \"1.0\", \"add_label_to_pca\": true, \"label_font_size\": \"3.0\", \"label_offset_x_\": \"2.0\", \"label_offset_y_\": \"2.0\", \"samples_to_rename_repeat\": []}, \"tcga\": {\"plot_corr_matrix_heatmap\": true}, \"visualization\": {\"colors_for_plots\": null, \"interactive_plots\": false, \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "8135bfcc-6b02-416b-a5e1-136849419824",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "mosuite_normalize_counts",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 4,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Normalization",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 1022.3396299277969,
+                "top": 215.37589793462698
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_normalize_counts",
+            "tool_state": "{\"basic\": {\"count_type\": \"filt\", \"norm_type\": \"voom\", \"feature_id_colname\": null, \"samples_to_include_repeat\": [], \"sample_id_colname\": null, \"group_colname\": \"Group\", \"label_colname\": null}, \"histogram\": {\"color_histogram_by_group\": true, \"maximum_for_x_axis_for_histogram\": \"1.0\", \"minimum_for_x_axis_for_histogram\": \"-1.0\", \"set_min_max_for_x_axis_for_histogram\": false, \"legend_font_size_for_histogram\": \"10.0\", \"legend_position_for_histogram\": \"top\", \"number_of_histogram_legend_columns\": \"6.0\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"normalization\": {\"input_in_log_counts\": false, \"voom_normalization_method\": \"quantile\"}, \"pca\": {\"samples_to_rename_repeat\": [], \"add_label_to_pca\": true, \"principal_component_on_x_axis\": \"1.0\", \"principal_component_on_y_axis\": \"2.0\", \"legend_position_for_pca\": \"top\", \"label_offset_x_\": \"2.0\", \"label_offset_y_\": \"2.0\", \"label_font_size\": \"3.0\", \"point_size_for_pca\": \"8.0\"}, \"tcga\": {\"plot_corr_matrix_heatmap\": true}, \"visualization\": {\"colors_for_plots\": null, \"interactive_plots\": false, \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "ae3dfd83-1882-4844-a49c-12c765b2c0b6",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "6": {
+            "annotation": "",
+            "content_id": "mosuite_diff_counts",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 4,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Differential Analysis",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 2046.922150689933,
+                "top": 94.44028919691894
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_diff_counts",
+            "tool_state": "{\"advanced\": {\"input_in_log_counts\": false, \"return_mean_and_sd\": false, \"voom_normalization_method\": \"quantile\"}, \"basic\": {\"count_type\": \"filt\", \"sub_count_type\": \"\", \"contrasts_repeat\": [{\"__index__\": 0, \"value\": \"B-A\"}, {\"__index__\": 1, \"value\": \"C-A\"}, {\"__index__\": 2, \"value\": \"B-C\"}], \"feature_id_colname\": null, \"sample_id_colname\": null, \"samples_to_include_repeat\": [], \"contrast_colname_repeat\": [{\"__index__\": 0, \"value\": \"Group\"}], \"covariates_colnames_repeat\": [{\"__index__\": 0, \"value\": \"Group\"}, {\"__index__\": 1, \"value\": \"Batch\"}]}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"visualization\": {\"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "74a8537a-e55c-4b3d-ad37-92635f0e130f",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "7": {
+            "annotation": "",
+            "content_id": "mosuite_batch_correct_counts",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 5,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Batch Correction",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 1266.1907745361327,
+                "top": 110.57852325439464
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_batch_correct_counts",
+            "tool_state": "{\"basic\": {\"count_type\": \"norm\", \"sub_count_type\": \"voom\", \"feature_id_colname\": null, \"samples_to_include_repeat\": [], \"sample_id_colname\": null, \"covariates_colnames_repeat\": [{\"__index__\": 0, \"value\": \"Group\"}], \"batch_colname\": \"Batch\", \"label_colname\": \"Label\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"visualization\": {\"colors_for_plots\": null, \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "21a1b689-263e-4593-bd0b-dfb2ac88bb46",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "mosuite_plot_expr_heatmap",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 5,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Plot Expression Heatmap",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "figures",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 1106.748306231946,
+                "top": 762.3787714220474
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_expr_heatmap",
+            "tool_state": "{\"annotation\": {\"assign_group_colors\": false, \"assign_color_to_sample_groups_repeat\": [], \"group_colors\": null, \"group_colname_repeat\": []}, \"basic\": {\"count_type\": \"norm\", \"sub_count_type\": \"voom\"}, \"data_setup\": {\"feature_id_colname\": null, \"sample_id_colname\": null, \"label_colname\": null, \"samples_to_include_repeat\": []}, \"gene\": {\"include_all_genes\": false, \"filter_top_genes_by_variance\": true, \"top_genes_by_variance_to_include\": \"500.0\", \"specific_genes_to_include_in_heatmap\": \"None\", \"cluster_genes\": true, \"gene_clustering_method\": \"average\", \"gene_distance_metric\": \"correlation\", \"display_gene_dendrograms\": true, \"display_gene_names\": false, \"center_and_rescale_expression\": true}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"sample\": {\"cluster_samples\": false, \"arrange_sample_columns\": true, \"order_by_gene_expression\": false, \"gene_to_order_columns\": \" \", \"gene_expression_order\": \"low_to_high\", \"smpl_clustering_method\": \"average\", \"smpl_distance_metric\": \"correlation\", \"display_smpl_dendrograms\": true, \"reorder_dendrogram\": false, \"display_sample_names\": true, \"reorder_dendrogram_order_repeat\": []}, \"visual\": {\"heatmap_color_scheme\": \"Default\", \"autoscale_heatmap_color\": true, \"set_max_heatmap_color\": \"2.0\", \"set_min_heatmap_color\": \"-2.0\", \"aspect_ratio\": \"Auto\", \"display_numbers\": false, \"gene_name_font_size\": \"4.0\", \"legend_font_size\": \"10.0\", \"sample_name_font_size\": \"8.0\"}, \"visualization\": {\"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "a1880dee-7764-443a-8cb4-0d09a8a462d0",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "9": {
+            "annotation": "",
+            "content_id": "mosuite_plot_pca_3d",
+            "errors": null,
+            "id": 9,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 5,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "PCA 3D",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "figures",
+                    "type": "auto"
+                }
+            ],
+            "position": {
+                "left": 1334.3928031562723,
+                "top": 770.1477239852787
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_pca_3d",
+            "tool_state": "{\"basic\": {\"count_type\": \"norm\", \"sub_count_type\": \"voom\", \"feature_id_colname\": null, \"sample_id_colname\": null, \"group_colname\": \"Group\", \"label_colname\": \"Label\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"visualization\": {\"point_size\": \"8.0\", \"color_values\": null, \"plot_title\": \"PCA 3D\", \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "f7d5f017-35d4-4018-82f1-89920e419fee",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "10": {
+            "annotation": "",
+            "content_id": "mosuite_plot_pca_2d",
+            "errors": null,
+            "id": 10,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 5,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "PCA 2D",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "figures",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 1575.8538077569765,
+                "top": 769.9877655549348
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_pca_2d",
+            "tool_state": "{\"basic\": {\"count_type\": \"norm\", \"sub_count_type\": \"voom\", \"principal_components\": null, \"feature_id_colname\": null, \"sample_id_colname\": null, \"group_colname\": \"Group\", \"label_colname\": \"Label\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"visualization\": {\"point_size\": \"1.0\", \"add_label\": true, \"label_font_size\": \"3.0\", \"legend_position\": \"top\", \"color_values\": null, \"interactive_plots\": false, \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "3bf310dd-3262-4d97-a86c-cc5dac559d1d",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "11": {
+            "annotation": "",
+            "content_id": "mosuite_filter_diff",
+            "errors": null,
+            "id": 11,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 6,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Filter Differential Features",
+            "outputs": [
+                {
+                    "name": "figures",
+                    "type": "input"
+                },
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "multiOmicDataSet",
+                    "type": "rds"
+                }
+            ],
+            "position": {
+                "left": 2296.922150689933,
+                "top": 154.44028919691888
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_filter_diff",
+            "tool_state": "{\"advanced\": {\"include_estimates\": null, \"round_estimates\": true, \"rounding_decimal_for_percent_cells\": \"0.0\"}, \"basic\": {\"significance_column\": \"adjpval\", \"significance_cutoff\": \"0.05\", \"change_column\": \"logFC\", \"change_cutoff\": \"1.0\", \"filtering_mode\": \"any\", \"feature_id_colname\": null}, \"filter\": {\"contrast_filter\": \"none\", \"contrasts_repeat\": [], \"groups_filter\": \"none\", \"groups_repeat\": []}, \"label\": {\"label_font_size\": \"6.0\", \"label_distance\": \"1.0\", \"plot_titles_fontsize\": \"12.0\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"visualization\": {\"y_axis_expansion\": \"0.08\", \"fill_colors\": null, \"pie_chart_in_3d\": true, \"bar_width\": \"0.4\", \"draw_bar_border\": true, \"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "97b3bab7-688e-4486-8d72-1c53167c7f5c",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "12": {
+            "annotation": "",
+            "content_id": "mosuite_plot_volcano_enhanced",
+            "errors": null,
+            "id": 12,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 11,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Plot Volcano - Enhanced",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "DataFrame",
+                    "type": "rds"
+                },
+                {
+                    "name": "figures",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 2587.274344305065,
+                "top": 41.104762080438796
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_volcano_enhanced",
+            "tool_state": "{\"basic\": {\"signif_threshold\": \"0.05\", \"change_threshold\": \"1.0\", \"feature_id_colname\": null, \"signif_colname_repeat\": [], \"change_colname_repeat\": []}, \"image\": {\"image_width\": \"3000.0\", \"image_height\": \"3000.0\", \"dpi\": \"300.0\"}, \"label\": {\"value_to_sort_the_output_dataset\": \"p-value\", \"num_features_to_label\": \"30.0\", \"use_only_addition_labels\": false, \"additional_labels\": \"\", \"lab_size\": \"4.0\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"plot\": {\"ylim\": \"0.0\", \"custom_xlim\": \"\", \"xlim_additional\": \"0.0\", \"ylim_additional\": \"0.0\", \"axis_lab_size\": \"24.0\", \"point_size\": \"2.0\"}, \"title_and_axis_labels\": {\"use_custom_lab\": false}, \"visualization\": {\"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "ca51541f-8bbc-4c86-8985-b0713e5142c0",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "13": {
+            "annotation": "",
+            "content_id": "mosuite_plot_volcano_summary",
+            "errors": null,
+            "id": 13,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 11,
+                    "output_name": "multiOmicDataSet"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Plot Volcano - Summary",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "DataFrame",
+                    "type": "rds"
+                },
+                {
+                    "name": "figures",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 2587.274344305065,
+                "top": 331.10476208043866
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_volcano_summary",
+            "tool_state": "{\"basic\": {\"signif_colname\": \"pval\", \"signif_threshold\": \"0.05\", \"change_threshold\": \"1.0\", \"feature_id_colname\": null}, \"gene_name_label\": {\"value_to_sort_the_output_dataset\": \"t-statistic\", \"num_features_to_label\": \"30.0\", \"add_features\": false, \"label_features\": false, \"custom_gene_list\": \"\", \"default_label_color\": \"black\", \"custom_label_color\": \"green3\", \"label_x_adj\": \"0.2\", \"label_y_adj\": \"0.2\", \"line_thickness\": \"0.5\", \"label_font_size\": \"4.0\", \"label_font_type\": \"1.0\", \"displace_feature_labels\": false, \"custom_gene_list_special_label_displacement\": \"\", \"special_label_displacement_x_axis\": \"2.0\", \"special_label_displacement_y_axis\": \"2.0\"}, \"image\": {\"image_width\": \"15.0\", \"image_height\": \"15.0\", \"dpi\": \"300.0\", \"use_default_grid_layout\": true, \"number_of_rows_in_grid_layout\": \"1.0\", \"aspect_ratio\": \"0.0\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"plot\": {\"color_of_signif_threshold_line\": \"blue\", \"color_of_non_significant_features\": \"black\", \"color_of_logfold_change_threshold_line\": \"red\", \"color_of_features_meeting_only_signif_threshold\": \"lightgoldenrod2\", \"color_for_features_meeting_pvalue_and_foldchange_thresholds\": \"red\", \"flip_vplot\": false, \"use_default_x_axis_limit\": true, \"x_axis_limit\": \"5.0\", \"use_default_y_axis_limit\": true, \"y_axis_limit\": \"10.0\", \"point_size\": \"2.0\"}, \"table\": {\"add_deg_columns\": false}, \"visualization\": {\"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "6cce7597-846e-42dc-a92f-08eabfb575ff",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "14": {
+            "annotation": "",
+            "content_id": "mosuite_plot_venn_diagram",
+            "errors": null,
+            "id": 14,
+            "input_connections": {
+                "moo_input_rds": {
+                    "id": 13,
+                    "output_name": "DataFrame"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Venn Diagram",
+            "outputs": [
+                {
+                    "name": "params_json_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "cleaned_params_debug",
+                    "type": "json"
+                },
+                {
+                    "name": "DataFrame",
+                    "type": "rds"
+                },
+                {
+                    "name": "figures",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 2837.274344305065,
+                "top": 371.10476208043866
+            },
+            "post_job_actions": {
+                "HideDatasetActioncleaned_params_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "cleaned_params_debug"
+                },
+                "HideDatasetActionparams_json_debug": {
+                    "action_arguments": {},
+                    "action_type": "HideDatasetAction",
+                    "output_name": "params_json_debug"
+                }
+            },
+            "tool_id": "mosuite_plot_venn_diagram",
+            "tool_state": "{\"advanced\": {\"select_contrasts_repeat\": [], \"plot_type\": \"Venn diagram\", \"intersection_ids_repeat\": []}, \"basic\": {\"feature_id_colname\": null, \"contrasts_colname\": \"Contrast\"}, \"image\": {\"dpi\": \"300.0\", \"image_height\": \"3000.0\", \"image_width\": \"4000.0\"}, \"intersection_plot\": {\"intersections_order\": \"degree\", \"display_empty_intersections\": false, \"intersection_bar_color\": \"steelblue4\", \"intersection_line_width\": \"0.7\", \"intersection_point_size\": \"2.2\"}, \"moo_input_rds\": {\"__class__\": \"ConnectedValue\"}, \"table\": {\"table_font_size\": \"0.7\", \"table_content\": \"all intersections\"}, \"venn_diagram\": {\"venn_force_unique\": true, \"venn_numbers_format\": \"raw\", \"venn_significant_digits\": \"2.0\", \"venn_fill_colors\": null, \"venn_fill_transparency\": \"0.2\", \"venn_border_colors\": \"fill colors\", \"venn_font_size_for_category_names\": \"3.0\", \"venn_category_names_distance_repeat\": [], \"venn_category_names_position_repeat\": [], \"venn_font_size_for_counts\": \"6.0\", \"venn_outer_margin\": \"0.0\"}, \"visualization\": {\"save_plots\": true}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_version": "v0.3.0",
+            "type": "tool",
+            "uuid": "a47bc2a5-5ca2-4110-b8a2-aaa215ddb6d7",
+            "when": null,
+            "workflow_outputs": []
+        }
+    },
+    "tags": [
+        "bulk-RNA-seq",
+        "R",
+        "differential-expression"
+    ],
+    "uuid": "e37fffdc-6976-41c1-9f6b-42b934ae887d",
+    "version": 67
+}

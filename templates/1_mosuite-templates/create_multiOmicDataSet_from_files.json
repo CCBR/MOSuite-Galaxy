@@ -8,7 +8,7 @@
             "key": "sample_meta_filepath",
             "displayName": "",
             "description": "",
-            "paramType": "STRING",
+            "paramType": "TABULAR",
             "paramGroup": "basic",
             "paramValues": null,
             "defaultValue": null,
@@ -20,7 +20,7 @@
             "key": "feature_counts_filepath",
             "displayName": "",
             "description": "",
-            "paramType": "STRING",
+            "paramType": "TABULAR",
             "paramGroup": "basic",
             "paramValues": null,
             "defaultValue": null,
@@ -78,5 +78,12 @@
             "content": null,
             "objectPropertyReference": null
         }
-    ]
+    ],
+    "outputDatasetName": "MultiOmics Dataset",
+    "outputs": {
+        "multiOmicDataSet": {
+            "type": "file",
+            "name": "moo.rds"
+        }
+    }
 }

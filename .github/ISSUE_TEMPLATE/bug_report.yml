@@ -20,26 +20,22 @@ body:
   - type: textarea
     id: command_used
     attributes:
-      label: Command used and terminal output
-      description: Steps to reproduce the behaviour. Please paste the code you used or describe what you were doing in the GUI
+      label: Command used and output
+      description: Steps to reproduce the behaviour. Please paste the code you used or describe what you were doing in the GUI. Paste screenshots of the Galaxy GUI if possible.
       render: console
       placeholder: |
-        $ galaxysynth ...
-
-        Some output where something broke
+        Describe the steps, including screenshots if using the Galaxy GUI.
 
   - type: textarea
     id: files
     attributes:
       label: Relevant files
       description: |
-        Please drag and drop any relevant files here. Create a `.zip` archive if the extension is not allowed.
+        Please drag and drop any relevant files here. If running on galaxy, please include any logs, cleaned_params.json, or output dataset files. Create a `.zip` archive if the extension is not allowed.
 
   - type: textarea
     id: system
     attributes:
       label: System information
       description: |
-        - Version of CCBR/MOSuite-Galaxy _(eg. 1.0, 1.8.2)_
-        - Python version _(eg. 3.11)_
-        - Environment _(eg. local macOS, github actions)_
+        - Version of MOSuite on Galaxy _(eg. 52, 53)_
