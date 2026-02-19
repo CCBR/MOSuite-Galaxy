@@ -11,13 +11,15 @@ Galaxy workflow configuration for
 MOSuite Workflow on Galaxy:
 <http://k8s-galaxy-b671dd4f69-710212292.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite>
 
-## Installation
+## Updating the Galaxy XML files for MOSuite
+
+### Installation
 
 ```bash
 pip install git+https://github.com/CCBR/MOSuite-Galaxy
 ```
 
-## Usage
+### Usage
 
 ```bash
 galaxysynth --help
@@ -57,7 +59,7 @@ galaxysynth  "templates/2_blueprints/*.json" \
     --output templates/3_galaxy-tools
 ```
 
-## Developer notes
+### Developer notes
 
 - Please view the [contributing guide](.github/CONTRIBUTING.md) before
   opening a pull request.
