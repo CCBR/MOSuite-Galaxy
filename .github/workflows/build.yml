@@ -1,6 +1,3 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: build
 
 on:
@@ -19,7 +16,7 @@ env:
 permissions: read-all
 
 jobs:
-  build:
+  build-python:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -45,7 +42,7 @@ jobs:
 
   build-status: # https://github.com/orgs/community/discussions/4324#discussioncomment-3477871
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build-python]
     if: always()
     steps:
       - name: Successful build

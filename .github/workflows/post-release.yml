@@ -22,3 +22,26 @@ jobs:
         with:
           github-token: ${{ github.token }}
           update-sliding-branch: true
+  fast-forward:
+    runs-on: ubuntu-latest
+    needs: cleanup
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: latest-release
+          persist-credentials: false
+      - name: Generate a token
+        id: generate-token
+        if: ${{ inputs.github-token == '' }}
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.CCBR_BOT_APP_ID }}
+          private-key: ${{ secrets.CCBR_BOT_PRIVATE_KEY }}
+          owner: CCBR
+      - name: Fast-forward
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git merge --ff-only ${{ github.ref_name }}
+          git push
