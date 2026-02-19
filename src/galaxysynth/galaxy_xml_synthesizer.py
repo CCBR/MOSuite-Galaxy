@@ -1,23 +1,6 @@
 #!/usr/bin/env python3
 """
 Galaxy XML Synthesizer - Generates Galaxy tool XML from blueprint JSON files.
-
-Version: 2.4 - Integrated sanitizer and section support
-Features:
-- Automatic section creation from paramGroup
-- Sanitizer support for special characters
-- Proper type mapping (INTEGER->integer, NUMBER->float, etc.)
-- Fixed commands with proper && chaining
-
-This synthesizer properly handles all parameter types with sanitizer support:
-- Numeric types with min/max bounds → Galaxy numeric types
-- Boolean parameters → Galaxy boolean checkboxes
-- SELECT dropdowns → Galaxy select with options
-- LIST parameters → Galaxy repeat structures with sanitizer support
-- Multi-value columns → Galaxy repeat structures
-- String parameters → Galaxy text inputs
-
-Author: FNLCR-DMAP Team
 """
 
 import json
@@ -74,7 +57,7 @@ class GalaxyXMLSynthesizer:
         tool_id = self._make_tool_id(self.blueprint.get("r_function", "tool"))
         tool.set("id", tool_id)
         tool.set("name", self.blueprint.get("title", "Tool").strip())
-        tool.set("version", self._extract_docker_tag(self.docker_image))
+        tool.set("version", get_version())
         tool.set("profile", "24.2")
 
         # Description
@@ -773,9 +756,9 @@ class GalaxyXMLSynthesizer:
         )
         git_sha = self._get_git_short_sha()
         ref_line = (
-            f"- GitHub: {self.repo_name} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
+            f"- GitHub: {self.repo_name} {get_version()} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
             if git_sha
-            else ""
+            else f"- GitHub: {self.repo_name} {get_version()}"
         )
         if docker_line or ref_line:
             help_lines.append("")

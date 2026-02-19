@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_batch_correct_counts" name="Batch Correction" version="v0.3.0" profile="24.2">
+<tool id="mosuite_batch_correct_counts" name="Batch Correction" version="0.1.0-alpha" profile="24.2">
     <description>Perform batch correction using sva::ComBat()</description>
     <requirements>
         <container type="docker">nciccbr/mosuite:v0.3.0</container>
@@ -111,7 +111,7 @@ Perform batch correction using sva::ComBat()
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `506c1ef` - https://github.com/CCBR/MOSuite-Galaxy/tree/506c1ef
+- GitHub: CCBR/MOSuite-Galaxy 0.1.0-alpha @ `8c448a0` - https://github.com/CCBR/MOSuite-Galaxy/tree/8c448a0
 
 ]]></help>
     <citations>

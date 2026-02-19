@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced" version="v0.3.0" profile="24.2">
+<tool id="mosuite_plot_volcano_enhanced" name="Plot Volcano - Enhanced" version="0.1.0-alpha" profile="24.2">
     <description>Uses 
 list(list(&quot;https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.html&quot;), list(&quot;Bioconductor's Enhanced Volcano Plot&quot;))
 .</description>
@@ -127,7 +127,7 @@ list(list("https://bioconductor.org/packages/release/bioc/html/EnhancedVolcano.h
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `506c1ef` - https://github.com/CCBR/MOSuite-Galaxy/tree/506c1ef
+- GitHub: CCBR/MOSuite-Galaxy 0.1.0-alpha @ `8c448a0` - https://github.com/CCBR/MOSuite-Galaxy/tree/8c448a0
 
 ]]></help>
     <citations>

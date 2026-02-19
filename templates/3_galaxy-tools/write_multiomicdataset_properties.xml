@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties" version="v0.3.0" profile="24.2">
+<tool id="mosuite_write_multiomicdataset_properties" name="Write multiOmicDataSet Properties" version="0.1.0-alpha" profile="24.2">
     <description>Writes the properties of a multiOmicDataSet object to disk as separate files in output_dir.
 Properties that are data frames are saved as CSV files, while all other objects are saved as RDS files.</description>
     <requirements>
@@ -56,7 +56,7 @@ Properties that are data frames are saved as CSV files, while all other objects 
 **Version info**
 
 - Docker: nciccbr/mosuite:v0.3.0
-- GitHub: CCBR/MOSuite-Galaxy @ `506c1ef` - https://github.com/CCBR/MOSuite-Galaxy/tree/506c1ef
+- GitHub: CCBR/MOSuite-Galaxy 0.1.0-alpha @ `8c448a0` - https://github.com/CCBR/MOSuite-Galaxy/tree/8c448a0
 
 ]]></help>
     <citations>

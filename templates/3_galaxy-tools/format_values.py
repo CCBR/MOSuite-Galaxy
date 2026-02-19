@@ -2,16 +2,6 @@
 """
 format_values.py - Utility to normalize Galaxy parameters JSON for template consumption.
 
-Version 3.0 - Clean version per supervisor guidance
-              NO parameter-specific hardcoding
-              Generic delimiter support via CLI flags
-
-Handles three main transformations:
-1. Converts Galaxy repeat structures to simple lists
-2. Converts boolean string values to actual Python booleans
-3. Supports delimited text fields (e.g., text areas with semicolons or newlines)
-4. Injects output configuration for template_utils
-
 Usage:
     # For repeat structures:
     python format_values.py galaxy_params.json cleaned_params.json \
@@ -22,7 +12,6 @@ Usage:
     python format_values.py galaxy_params.json cleaned_params.json \
         --list-sep '\\n' --list-fields Anchor_Neighbor_List
 
-This version is template-agnostic with no parameter name hardcoding.
 """
 
 import json
