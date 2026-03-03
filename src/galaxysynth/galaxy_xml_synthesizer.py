@@ -811,6 +811,71 @@ class GalaxyXMLSynthesizer:
         return '<?xml version="1.0" ?>\n' + result
 
 
+def needs_regeneration(
+    blueprint_path: Path,
+    xml_path: Path,
+    script_path: Path,
+    docker_image: str,
+) -> tuple[bool, str]:
+    """
+    Check if XML needs to be regenerated based on file modification times and docker image.
+
+    Parameters
+    ----------
+    blueprint_path : Path
+        Path to the blueprint JSON file
+    xml_path : Path
+        Path to the output XML file
+    script_path : Path
+        Path to this synthesizer script
+    docker_image : str
+        Docker image to use in the XML
+
+    Returns
+    -------
+    tuple[bool, str]
+        (needs_regen, reason) where needs_regen is True if regeneration is needed,
+        and reason explains why
+    """
+    # If XML doesn't exist, needs generation
+    if not xml_path.exists():
+        return True, "XML file does not exist"
+
+    # Check if docker image has changed by parsing the existing XML
+    try:
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        # Find the container element in requirements
+        container = root.find(".//requirements/container[@type='docker']")
+        if container is not None:
+            existing_docker_image = container.text.strip() if container.text else ""
+            if existing_docker_image != docker_image:
+                return True, "docker image has changed"
+        else:
+            # Container element is missing but we expect one
+            if docker_image:
+                return True, "docker image has changed"
+    except Exception:
+        # If we can't parse the XML, regenerate it
+        return True, "XML file is invalid or unreadable"
+
+    # Get modification times
+    xml_mtime = xml_path.stat().st_mtime
+    blueprint_mtime = blueprint_path.stat().st_mtime
+    script_mtime = script_path.stat().st_mtime
+
+    # Check if blueprint is newer than XML
+    if blueprint_mtime > xml_mtime:
+        return True, "blueprint has been modified"
+
+    # Check if script is newer than XML
+    if script_mtime > xml_mtime:
+        return True, "synthesizer script has been modified"
+
+    # No regeneration needed
+    return False, "up to date"
+
+
 def process_blueprint(
     blueprint_path: Path,
     output_dir: Path,
@@ -819,16 +884,56 @@ def process_blueprint(
     repo_name: str = "CCBR/MOSuite-Galaxy",
     cli_command: str = "mosuite",
     pkg_name: str = "MOSuite",
+    force: bool = False,
 ):
-    """Process a single blueprint to generate Galaxy XML."""
-    print(f"Processing: {blueprint_path.name}")
+    """
+    Process a single blueprint to generate Galaxy XML.
 
+    Parameters
+    ----------
+    blueprint_path : Path
+        Path to the blueprint JSON file
+    output_dir : Path
+        Directory to write XML files to
+    docker_image : str
+        Docker image name
+    citation_doi : str
+        DOI for citation
+    repo_name : str
+        Repository name for references
+    cli_command : str
+        CLI command to invoke templates
+    pkg_name : str
+        R package name for documentation links
+    force : bool
+        Force regeneration even if files are up to date
+    """
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Load blueprint
+    # Load blueprint to get tool name
     with open(blueprint_path, "r") as f:
         blueprint = json.load(f)
+
+    # Extract tool name from blueprint
+    title = blueprint.get("title", "tool")
+    clean_title = re.sub(r"\[.*?\]", "", title).strip()
+    tool_name = clean_title.lower().replace(" ", "_")
+
+    # Determine output path
+    xml_path = output_dir / f"{tool_name}.xml"
+
+    # Check if regeneration is needed
+    script_path = Path(__file__)
+    needs_regen, reason = needs_regeneration(
+        blueprint_path, xml_path, script_path, docker_image
+    )
+
+    if not needs_regen and not force:
+        print(f"Skipping: {blueprint_path.name} ({reason})")
+        return xml_path
+
+    print(f"Processing: {blueprint_path.name} ({reason})")
 
     # Generate XML
     synthesizer = GalaxyXMLSynthesizer(
@@ -841,13 +946,7 @@ def process_blueprint(
     )
     xml_content = synthesizer.synthesize()
 
-    # Extract tool name from blueprint
-    title = blueprint.get("title", "tool")
-    clean_title = re.sub(r"\[.*?\]", "", title).strip()
-    tool_name = clean_title.lower().replace(" ", "_")
-
     # Write XML file
-    xml_path = output_dir / f"{tool_name}.xml"
     with open(xml_path, "w") as f:
         f.write(xml_content)
 
@@ -884,6 +983,7 @@ def batch_process(
     repo_name: str = "CCBR/MOSuite-Galaxy",
     cli_command: str = "mosuite",
     pkg_name: str = "MOSuite",
+    force: bool = False,
 ):
     """Process multiple blueprint files matching a pattern."""
     input_path = Path(input_pattern)
@@ -922,6 +1022,7 @@ def batch_process(
                 repo_name,
                 cli_command,
                 pkg_name,
+                force,
             )
             generated_files.append(xml_file)
 
@@ -944,7 +1045,7 @@ def batch_process(
             traceback.print_exc()
 
     print("=" * 60)
-    print(f"Successfully generated {len(generated_files)} Galaxy XML files")
+    print(f"Successfully processed {len(generated_files)} Galaxy XML files")
 
     # Print feature summary
     if any(feature_summary.values()):
@@ -1002,6 +1103,12 @@ def main():
         help="R package name for documentation links (default: MOSuite)",
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Force regeneration even if files are up to date",
+    )
     parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
@@ -1014,6 +1121,7 @@ def main():
         args.repo_name,
         args.cli_command,
         args.pkg_name,
+        args.force,
     )
 
 
