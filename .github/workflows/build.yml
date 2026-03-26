@@ -35,7 +35,7 @@ jobs:
           python -m pip install .[dev,test] --upgrade pip
       - name: Test
         run: |
-          python -m pytest --cov
+          python -m pytest --cov galaxysynth
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
