@@ -27,7 +27,7 @@ galaxysynth --help
 
     usage: galaxysynth [-h] [-o OUTPUT] [--docker DOCKER] [--citation CITATION]
                        [--repo-name REPO_NAME] [--cli-command CLI_COMMAND]
-                       [--pkg-name PKG_NAME] [--debug] [-v]
+                       [--pkg-name PKG_NAME] [--debug] [-f] [-v]
                        blueprint
 
     Generate Galaxy tool XML from blueprint JSON files with sanitizer and section
@@ -51,6 +51,7 @@ galaxysynth --help
       --pkg-name PKG_NAME   R package name for documentation links (default:
                             MOSuite)
       --debug               Enable debug output
+      -f, --force           Force regeneration even if files are up to date
       -v, --version         show program's version number and exit
 
 ```bash

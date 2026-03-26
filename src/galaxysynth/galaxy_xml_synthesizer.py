@@ -8,13 +8,14 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-import re
 import argparse
+import os
+import re
 import sys
 import subprocess
 from collections import OrderedDict
 
-from .util import get_version
+from .util import get_version, match_semver
 
 
 class GalaxyXMLSynthesizer:
@@ -125,20 +126,41 @@ class GalaxyXMLSynthesizer:
         return "latest"
 
     def _get_git_short_sha(self) -> Optional[str]:
-        """Return short git SHA for the repo; None if unavailable."""
-        repo_root = Path(__file__).resolve().parents[2]
+        """Return short git SHA using repo root, cwd, then GITHUB_SHA fallback."""
 
-        try:
-            sha = (
-                subprocess.check_output(
-                    ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
-                )
-                .decode()
-                .strip()
-            )
-            return sha or None
-        except Exception:
+        def normalize_short_sha(value: Optional[str]) -> Optional[str]:
+            if not value:
+                return None
+            candidate = value.strip()
+            if re.fullmatch(r"[0-9a-fA-F]{7,40}", candidate):
+                return candidate[:7].lower()
             return None
+
+        # 1) Primary lookup: repository root inferred from this module path.
+        repo_root = Path(__file__).resolve().parents[2]
+        try:
+            sha = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
+            ).decode()
+            normalized = normalize_short_sha(sha)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
+
+        # 2) Secondary lookup: current working directory (useful in installed-package CI runs).
+        try:
+            sha = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"]
+            ).decode()
+            normalized = normalize_short_sha(sha)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
+
+        # 3) Final fallback: GitHub Actions environment variable.
+        return normalize_short_sha(os.getenv("GITHUB_SHA"))
 
     def _add_sanitizer(
         self,
@@ -754,11 +776,14 @@ class GalaxyXMLSynthesizer:
             if self.docker_image
             else None
         )
+        tool_version = get_version()
+        is_release = match_semver(tool_version.lstrip("v")).group("prerelease") is None
         git_sha = self._get_git_short_sha()
+        git_tree_ref = tool_version if is_release else git_sha
         ref_line = (
-            f"- GitHub: {self.repo_name} {get_version()} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
+            f"- GitHub: [{self.repo_name} {tool_version}](https://github.com/{self.repo_name}/tree/{git_tree_ref})"
             if git_sha
-            else f"- GitHub: {self.repo_name} {get_version()}"
+            else f"- GitHub: {self.repo_name} {tool_version}"
         )
         if docker_line or ref_line:
             help_lines.append("")
@@ -811,6 +836,71 @@ class GalaxyXMLSynthesizer:
         return '<?xml version="1.0" ?>\n' + result
 
 
+def needs_regeneration(
+    blueprint_path: Path,
+    xml_path: Path,
+    script_path: Path,
+    docker_image: str,
+) -> tuple[bool, str]:
+    """
+    Check if XML needs to be regenerated based on file modification times and docker image.
+
+    Parameters
+    ----------
+    blueprint_path : Path
+        Path to the blueprint JSON file
+    xml_path : Path
+        Path to the output XML file
+    script_path : Path
+        Path to this synthesizer script
+    docker_image : str
+        Docker image to use in the XML
+
+    Returns
+    -------
+    tuple[bool, str]
+        (needs_regen, reason) where needs_regen is True if regeneration is needed,
+        and reason explains why
+    """
+    # If XML doesn't exist, needs generation
+    if not xml_path.exists():
+        return True, "XML file does not exist"
+
+    # Check if docker image has changed by parsing the existing XML
+    try:
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        # Find the container element in requirements
+        container = root.find(".//requirements/container[@type='docker']")
+        if container is not None:
+            existing_docker_image = container.text.strip() if container.text else ""
+            if existing_docker_image != docker_image:
+                return True, "docker image has changed"
+        else:
+            # Container element is missing but we expect one
+            if docker_image:
+                return True, "docker image has changed"
+    except Exception:
+        # If we can't parse the XML, regenerate it
+        return True, "XML file is invalid or unreadable"
+
+    # Get modification times
+    xml_mtime = xml_path.stat().st_mtime
+    blueprint_mtime = blueprint_path.stat().st_mtime
+    script_mtime = script_path.stat().st_mtime
+
+    # Check if blueprint is newer than XML
+    if blueprint_mtime > xml_mtime:
+        return True, "blueprint has been modified"
+
+    # Check if script is newer than XML
+    if script_mtime > xml_mtime:
+        return True, "synthesizer script has been modified"
+
+    # No regeneration needed
+    return False, "up to date"
+
+
 def process_blueprint(
     blueprint_path: Path,
     output_dir: Path,
@@ -819,16 +909,56 @@ def process_blueprint(
     repo_name: str = "CCBR/MOSuite-Galaxy",
     cli_command: str = "mosuite",
     pkg_name: str = "MOSuite",
+    force: bool = False,
 ):
-    """Process a single blueprint to generate Galaxy XML."""
-    print(f"Processing: {blueprint_path.name}")
+    """
+    Process a single blueprint to generate Galaxy XML.
 
+    Parameters
+    ----------
+    blueprint_path : Path
+        Path to the blueprint JSON file
+    output_dir : Path
+        Directory to write XML files to
+    docker_image : str
+        Docker image name
+    citation_doi : str
+        DOI for citation
+    repo_name : str
+        Repository name for references
+    cli_command : str
+        CLI command to invoke templates
+    pkg_name : str
+        R package name for documentation links
+    force : bool
+        Force regeneration even if files are up to date
+    """
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Load blueprint
+    # Load blueprint to get tool name
     with open(blueprint_path, "r") as f:
         blueprint = json.load(f)
+
+    # Extract tool name from blueprint
+    title = blueprint.get("title", "tool")
+    clean_title = re.sub(r"\[.*?\]", "", title).strip()
+    tool_name = clean_title.lower().replace(" ", "_")
+
+    # Determine output path
+    xml_path = output_dir / f"{tool_name}.xml"
+
+    # Check if regeneration is needed
+    script_path = Path(__file__)
+    needs_regen, reason = needs_regeneration(
+        blueprint_path, xml_path, script_path, docker_image
+    )
+
+    if not needs_regen and not force:
+        print(f"Skipping: {blueprint_path.name} ({reason})")
+        return xml_path
+
+    print(f"Processing: {blueprint_path.name} ({reason})")
 
     # Generate XML
     synthesizer = GalaxyXMLSynthesizer(
@@ -841,13 +971,7 @@ def process_blueprint(
     )
     xml_content = synthesizer.synthesize()
 
-    # Extract tool name from blueprint
-    title = blueprint.get("title", "tool")
-    clean_title = re.sub(r"\[.*?\]", "", title).strip()
-    tool_name = clean_title.lower().replace(" ", "_")
-
     # Write XML file
-    xml_path = output_dir / f"{tool_name}.xml"
     with open(xml_path, "w") as f:
         f.write(xml_content)
 
@@ -884,6 +1008,7 @@ def batch_process(
     repo_name: str = "CCBR/MOSuite-Galaxy",
     cli_command: str = "mosuite",
     pkg_name: str = "MOSuite",
+    force: bool = False,
 ):
     """Process multiple blueprint files matching a pattern."""
     input_path = Path(input_pattern)
@@ -922,6 +1047,7 @@ def batch_process(
                 repo_name,
                 cli_command,
                 pkg_name,
+                force,
             )
             generated_files.append(xml_file)
 
@@ -944,7 +1070,7 @@ def batch_process(
             traceback.print_exc()
 
     print("=" * 60)
-    print(f"Successfully generated {len(generated_files)} Galaxy XML files")
+    print(f"Successfully processed {len(generated_files)} Galaxy XML files")
 
     # Print feature summary
     if any(feature_summary.values()):
@@ -1002,6 +1128,12 @@ def main():
         help="R package name for documentation links (default: MOSuite)",
     )
     parser.add_argument("--debug", action="store_true", help="Enable debug output")
+    parser.add_argument(
+        "-f",
+        "--force",
+        action="store_true",
+        help="Force regeneration even if files are up to date",
+    )
     parser.add_argument("-v", "--version", action="version", version=f"{get_version()}")
 
     args = parser.parse_args()
@@ -1014,6 +1146,7 @@ def main():
         args.repo_name,
         args.cli_command,
         args.pkg_name,
+        args.force,
     )
 
 

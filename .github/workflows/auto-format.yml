@@ -6,6 +6,7 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
+  TOOL_DOCKER: nciccbr/mosuite:v0.3.0
 
 permissions:
   contents: write
@@ -27,7 +28,7 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.head_ref }}
 
       - uses: actions/checkout@v4
         if: github.event_name != 'pull_request'
@@ -57,6 +58,11 @@ jobs:
       #     source('inst/extdata/galaxy/galaxy.R') # TODO refactor
       #     write_package_json_blueprints()
 
+      - name: Update Galaxy XML files
+        run: |
+          galaxysynth  "templates/2_blueprints/*.json" \
+            --docker ${{ env.TOOL_DOCKER }} \
+            --output templates/3_galaxy-tools
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.4.515

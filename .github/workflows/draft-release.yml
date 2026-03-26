@@ -30,3 +30,14 @@ jobs:
           github-token: ${{ github.token }}
           version-tag: ${{ github.event.inputs.version-tag }}
           ccbr-actions-version: main
+      - name: trigger auto-format on release-draft branch
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'auto-format.yml',
+              ref: 'release-draft'
+            })
