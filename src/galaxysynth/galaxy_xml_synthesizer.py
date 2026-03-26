@@ -8,13 +8,13 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-import re
 import argparse
+import re
 import sys
 import subprocess
 from collections import OrderedDict
 
-from .util import get_version
+from .util import get_version, match_semver
 
 
 class GalaxyXMLSynthesizer:
@@ -754,11 +754,14 @@ class GalaxyXMLSynthesizer:
             if self.docker_image
             else None
         )
+        tool_version = get_version()
+        is_release = match_semver(tool_version.lstrip("v")).group("prerelease") is None
         git_sha = self._get_git_short_sha()
+        git_tree_ref = tool_version if is_release else git_sha
         ref_line = (
-            f"- GitHub: {self.repo_name} {get_version()} @ `{git_sha}` - https://github.com/{self.repo_name}/tree/{git_sha}"
+            f"- GitHub: [{self.repo_name} {tool_version}](https://github.com/{self.repo_name}/tree/{git_tree_ref})"
             if git_sha
-            else f"- GitHub: {self.repo_name} {get_version()}"
+            else f"- GitHub: {self.repo_name} {tool_version}"
         )
         if docker_line or ref_line:
             help_lines.append("")

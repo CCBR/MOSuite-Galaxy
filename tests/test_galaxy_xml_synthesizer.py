@@ -562,6 +562,116 @@ class TestHelperMethods:
         assert synth._get_galaxy_param_type("SELECT") == "select"
 
 
+class TestGenerateHelp:
+    """Test _generate_help() version metadata behavior."""
+
+    def test_generate_help_release_links_to_version_tag(self, monkeypatch):
+        """Release versions should link to tree/<version>, not tree/<sha>."""
+
+        class _MatchNoPrerelease:
+            def group(self, name):
+                if name == "prerelease":
+                    return None
+                return None
+
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3"
+        )
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.match_semver",
+            lambda _version: _MatchNoPrerelease(),
+        )
+
+        synth = GalaxyXMLSynthesizer(
+            {
+                "title": "Help Test",
+                "description": "desc",
+                "r_function": "fn",
+                "outputs": {},
+            },
+            repo_name="CCBR/MOSuite-Galaxy",
+        )
+        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
+        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: "abc1234")
+
+        help_text = synth._generate_help()
+
+        assert (
+            "- GitHub: [CCBR/MOSuite-Galaxy 1.2.3]"
+            "(https://github.com/CCBR/MOSuite-Galaxy/tree/1.2.3)" in help_text
+        )
+
+    def test_generate_help_prerelease_links_to_git_sha(self, monkeypatch):
+        """Prerelease versions should link to tree/<git_sha>."""
+
+        class _MatchWithPrerelease:
+            def group(self, name):
+                if name == "prerelease":
+                    return "rc.1"
+                return None
+
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3-rc.1"
+        )
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.match_semver",
+            lambda _version: _MatchWithPrerelease(),
+        )
+
+        synth = GalaxyXMLSynthesizer(
+            {
+                "title": "Help Test",
+                "description": "desc",
+                "r_function": "fn",
+                "outputs": {},
+            },
+            repo_name="CCBR/MOSuite-Galaxy",
+        )
+        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
+        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: "def5678")
+
+        help_text = synth._generate_help()
+
+        assert (
+            "- GitHub: [CCBR/MOSuite-Galaxy 1.2.3-rc.1]"
+            "(https://github.com/CCBR/MOSuite-Galaxy/tree/def5678)" in help_text
+        )
+
+    def test_generate_help_without_git_sha_uses_plain_text(self, monkeypatch):
+        """When git SHA is unavailable, help should not render a GitHub link."""
+
+        class _MatchNoPrerelease:
+            def group(self, name):
+                if name == "prerelease":
+                    return None
+                return None
+
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3"
+        )
+        monkeypatch.setattr(
+            "galaxysynth.galaxy_xml_synthesizer.match_semver",
+            lambda _version: _MatchNoPrerelease(),
+        )
+
+        synth = GalaxyXMLSynthesizer(
+            {
+                "title": "Help Test",
+                "description": "desc",
+                "r_function": "fn",
+                "outputs": {},
+            },
+            repo_name="CCBR/MOSuite-Galaxy",
+        )
+        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
+        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: None)
+
+        help_text = synth._generate_help()
+
+        assert "- GitHub: CCBR/MOSuite-Galaxy 1.2.3" in help_text
+        assert "https://github.com/CCBR/MOSuite-Galaxy/tree/" not in help_text
+
+
 class TestSanitizerSupport:
     """Test sanitizer configuration."""
 
