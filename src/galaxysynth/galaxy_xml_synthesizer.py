@@ -9,6 +9,7 @@ from xml.dom import minidom
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 import argparse
+import os
 import re
 import sys
 import subprocess
@@ -125,20 +126,41 @@ class GalaxyXMLSynthesizer:
         return "latest"
 
     def _get_git_short_sha(self) -> Optional[str]:
-        """Return short git SHA for the repo; None if unavailable."""
-        repo_root = Path(__file__).resolve().parents[2]
+        """Return short git SHA using repo root, cwd, then GITHUB_SHA fallback."""
 
-        try:
-            sha = (
-                subprocess.check_output(
-                    ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
-                )
-                .decode()
-                .strip()
-            )
-            return sha or None
-        except Exception:
+        def normalize_short_sha(value: Optional[str]) -> Optional[str]:
+            if not value:
+                return None
+            candidate = value.strip()
+            if re.fullmatch(r"[0-9a-fA-F]{7,40}", candidate):
+                return candidate[:7].lower()
             return None
+
+        # 1) Primary lookup: repository root inferred from this module path.
+        repo_root = Path(__file__).resolve().parents[2]
+        try:
+            sha = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"], cwd=repo_root
+            ).decode()
+            normalized = normalize_short_sha(sha)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
+
+        # 2) Secondary lookup: current working directory (useful in installed-package CI runs).
+        try:
+            sha = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"]
+            ).decode()
+            normalized = normalize_short_sha(sha)
+            if normalized:
+                return normalized
+        except Exception:
+            pass
+
+        # 3) Final fallback: GitHub Actions environment variable.
+        return normalize_short_sha(os.getenv("GITHUB_SHA"))
 
     def _add_sanitizer(
         self,

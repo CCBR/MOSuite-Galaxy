@@ -17,6 +17,7 @@ import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from galaxysynth.galaxy_xml_synthesizer import (
     GalaxyXMLSynthesizer,
@@ -565,7 +566,7 @@ class TestHelperMethods:
 class TestGenerateHelp:
     """Test _generate_help() version metadata behavior."""
 
-    def test_generate_help_release_links_to_version_tag(self, monkeypatch):
+    def test_generate_help_release_links_to_version_tag(self):
         """Release versions should link to tree/<version>, not tree/<sha>."""
 
         class _MatchNoPrerelease:
@@ -574,14 +575,6 @@ class TestGenerateHelp:
                     return None
                 return None
 
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3"
-        )
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.match_semver",
-            lambda _version: _MatchNoPrerelease(),
-        )
-
         synth = GalaxyXMLSynthesizer(
             {
                 "title": "Help Test",
@@ -591,17 +584,26 @@ class TestGenerateHelp:
             },
             repo_name="CCBR/MOSuite-Galaxy",
         )
-        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
-        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: "abc1234")
 
-        help_text = synth._generate_help()
+        with (
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.get_version", return_value="1.2.3"
+            ),
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.match_semver",
+                return_value=_MatchNoPrerelease(),
+            ),
+            patch.object(synth, "_clean_text", side_effect=lambda text: text),
+            patch.object(synth, "_get_git_short_sha", return_value="abc1234"),
+        ):
+            help_text = synth._generate_help()
 
         assert (
             "- GitHub: [CCBR/MOSuite-Galaxy 1.2.3]"
             "(https://github.com/CCBR/MOSuite-Galaxy/tree/1.2.3)" in help_text
         )
 
-    def test_generate_help_prerelease_links_to_git_sha(self, monkeypatch):
+    def test_generate_help_prerelease_links_to_git_sha(self):
         """Prerelease versions should link to tree/<git_sha>."""
 
         class _MatchWithPrerelease:
@@ -610,14 +612,6 @@ class TestGenerateHelp:
                     return "rc.1"
                 return None
 
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3-rc.1"
-        )
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.match_semver",
-            lambda _version: _MatchWithPrerelease(),
-        )
-
         synth = GalaxyXMLSynthesizer(
             {
                 "title": "Help Test",
@@ -627,17 +621,27 @@ class TestGenerateHelp:
             },
             repo_name="CCBR/MOSuite-Galaxy",
         )
-        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
-        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: "def5678")
 
-        help_text = synth._generate_help()
+        with (
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.get_version",
+                return_value="1.2.3-rc.1",
+            ),
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.match_semver",
+                return_value=_MatchWithPrerelease(),
+            ),
+            patch.object(synth, "_clean_text", side_effect=lambda text: text),
+            patch.object(synth, "_get_git_short_sha", return_value="def5678"),
+        ):
+            help_text = synth._generate_help()
 
         assert (
             "- GitHub: [CCBR/MOSuite-Galaxy 1.2.3-rc.1]"
             "(https://github.com/CCBR/MOSuite-Galaxy/tree/def5678)" in help_text
         )
 
-    def test_generate_help_without_git_sha_uses_plain_text(self, monkeypatch):
+    def test_generate_help_without_git_sha_uses_plain_text(self):
         """When git SHA is unavailable, help should not render a GitHub link."""
 
         class _MatchNoPrerelease:
@@ -646,14 +650,6 @@ class TestGenerateHelp:
                     return None
                 return None
 
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.get_version", lambda: "1.2.3"
-        )
-        monkeypatch.setattr(
-            "galaxysynth.galaxy_xml_synthesizer.match_semver",
-            lambda _version: _MatchNoPrerelease(),
-        )
-
         synth = GalaxyXMLSynthesizer(
             {
                 "title": "Help Test",
@@ -663,13 +659,99 @@ class TestGenerateHelp:
             },
             repo_name="CCBR/MOSuite-Galaxy",
         )
-        monkeypatch.setattr(synth, "_clean_text", lambda text: text)
-        monkeypatch.setattr(synth, "_get_git_short_sha", lambda: None)
 
-        help_text = synth._generate_help()
+        with (
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.get_version", return_value="1.2.3"
+            ),
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.match_semver",
+                return_value=_MatchNoPrerelease(),
+            ),
+            patch.object(synth, "_clean_text", side_effect=lambda text: text),
+            patch.object(synth, "_get_git_short_sha", return_value=None),
+        ):
+            help_text = synth._generate_help()
 
         assert "- GitHub: CCBR/MOSuite-Galaxy 1.2.3" in help_text
         assert "https://github.com/CCBR/MOSuite-Galaxy/tree/" not in help_text
+
+
+class TestGitShaResolution:
+    """Test _get_git_short_sha() fallback behavior."""
+
+    def test_get_git_short_sha_from_repo_root(self):
+        """Primary lookup should use repo root and return git short SHA."""
+        synth = GalaxyXMLSynthesizer({})
+        calls = []
+
+        def fake_check_output(cmd, cwd=None):
+            calls.append(cwd)
+            return b"abc1234\n"
+
+        with patch(
+            "galaxysynth.galaxy_xml_synthesizer.subprocess.check_output",
+            side_effect=fake_check_output,
+        ):
+            sha = synth._get_git_short_sha()
+
+        assert sha == "abc1234"
+        assert len(calls) == 1
+        assert calls[0] is not None
+
+    def test_get_git_short_sha_falls_back_to_cwd(self):
+        """If repo-root lookup fails, fallback should try current working directory."""
+        synth = GalaxyXMLSynthesizer({})
+        calls = []
+
+        def fake_check_output(cmd, cwd=None):
+            calls.append(cwd)
+            if cwd is not None:
+                raise RuntimeError("repo-root git unavailable")
+            return b"def5678\n"
+
+        with patch(
+            "galaxysynth.galaxy_xml_synthesizer.subprocess.check_output",
+            side_effect=fake_check_output,
+        ):
+            sha = synth._get_git_short_sha()
+
+        assert sha == "def5678"
+        assert len(calls) == 2
+        assert calls[0] is not None
+        assert calls[1] is None
+
+    def test_get_git_short_sha_falls_back_to_github_sha(self):
+        """If git lookups fail, fallback should use GITHUB_SHA."""
+        synth = GalaxyXMLSynthesizer({})
+
+        with (
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.subprocess.check_output",
+                side_effect=RuntimeError("git unavailable"),
+            ),
+            patch.dict(
+                "os.environ", {"GITHUB_SHA": "0123456789abcdef0123456789abcdef01234567"}
+            ),
+        ):
+            sha = synth._get_git_short_sha()
+
+        assert sha == "0123456"
+
+    def test_get_git_short_sha_returns_none_for_invalid_env_sha(self):
+        """Invalid environment SHA should not be used."""
+        synth = GalaxyXMLSynthesizer({})
+
+        with (
+            patch(
+                "galaxysynth.galaxy_xml_synthesizer.subprocess.check_output",
+                side_effect=RuntimeError("git unavailable"),
+            ),
+            patch.dict("os.environ", {"GITHUB_SHA": "not-a-valid-sha"}),
+        ):
+            sha = synth._get_git_short_sha()
+
+        assert sha is None
 
 
 class TestSanitizerSupport:
