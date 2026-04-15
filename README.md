@@ -2,8 +2,7 @@
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-Galaxy workflow configuration for
-[MOSuite](https://github.com/CCBR/MOSuite)
+Galaxy workflow for [MOSuite](https://github.com/CCBR/MOSuite)
 
 [![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
 [![codecov](https://codecov.io/gh/CCBR/MOSuite-Galaxy/graph/badge.svg?token=QV46CjB0Bg)](https://codecov.io/gh/CCBR/MOSuite-Galaxy)
@@ -12,6 +11,19 @@ Galaxy workflow configuration for
   Galaxy](http://k8s-galaxy-ffd82cb77f-464836041.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite)
 - [NIDAP training dataset on
   Galaxy](http://k8s-galaxy-ffd82cb77f-464836041.us-east-1.elb.amazonaws.com/u/kelly-sovacool/h/nidap-bulk-rna-seq-training-dataset)
+- [Documentation website](https://ccbr.github.io/MOSuite-Galaxy/)
+
+## Help & Contributing
+
+Come across a **bug**? Open an
+[issue](https://github.com/CCBR/MOSuite-Galaxy/issues) and include a
+minimal reproducible example.
+
+Have a **question**? Ask it in
+[discussions](https://github.com/CCBR/MOSuite-Galaxy/discussions).
+
+Want to **contribute** to this project? Check out the [contributing
+guidelines](https://CCBR.github.io/MOSuite-Galaxy/CONTRIBUTING).
 
 ## Updating the Galaxy XML files for MOSuite
 
