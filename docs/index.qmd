@@ -1,0 +1,9 @@
+---
+title: MOSuite Galaxy Workflow
+---
+
+{{< include _intro.qmd >}}
+
+{{< include _workflow-embed.qmd >}}
+
+{{< include _help.qmd >}}

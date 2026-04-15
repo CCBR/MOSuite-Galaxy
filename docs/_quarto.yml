@@ -1,0 +1,50 @@
+# see: https://github.com/rstudio/vetiver-python/blob/main/docs/_quarto.yml
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "CCBR MOSuite-Galaxy"
+  site-url: https://ccbr.github.io/MOSuite-Galaxy
+  repo-url: https://github.com/CCBR/MOSuite-Galaxy
+  repo-actions: [edit, issue]
+  search:
+    location: navbar
+    type: textbox
+  page-navigation: true
+  sidebar:
+    - id: docs
+      title: Docs
+      style: docked
+      contents:
+        - text: Home
+          href: index.qmd
+        - section: Project information
+          contents:
+            - text: Citation
+              href: cite.qmd
+            - text: License
+              href: LICENSE.md
+            - text: Changelog
+              href: CHANGELOG.md
+
+  navbar:
+    right:
+      - sidebar:docs
+      - icon: github
+        href: https://github.com/CCBR/MOSuite-Galaxy
+        aria-label: CCBR/MOSuite-Galaxy GitHub
+
+  page-footer:
+    background: black
+    foreground: white
+    left: |
+      Created by the
+      [CCR Collaborative Bioinformatics Resource](https://github.com/CCBR)
+
+execute:
+  freeze: auto
+  eval: true
+  echo: true
+
+format: fnl-html
