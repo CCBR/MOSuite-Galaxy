@@ -4,14 +4,13 @@
 
 Galaxy workflow for [MOSuite](https://github.com/CCBR/MOSuite)
 
-[![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build-python.yml)
+[![](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build.yml/badge.svg)](https://github.com/CCBR/MOSuite-Galaxy/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/CCBR/MOSuite-Galaxy/graph/badge.svg?token=QV46CjB0Bg)](https://codecov.io/gh/CCBR/MOSuite-Galaxy)
 
-- [MOSuite Workflow on
+- [▶️ MOSuite Workflow on
   Galaxy](http://k8s-galaxy-ffd82cb77f-464836041.us-east-1.elb.amazonaws.com/u/kelly-sovacool/w/mosuite)
-- [NIDAP training dataset on
+- [🧬 NIDAP training dataset on
   Galaxy](http://k8s-galaxy-ffd82cb77f-464836041.us-east-1.elb.amazonaws.com/u/kelly-sovacool/h/nidap-bulk-rna-seq-training-dataset)
-- [Documentation website](https://ccbr.github.io/MOSuite-Galaxy/)
 
 ## Help & Contributing
 
