@@ -4,6 +4,11 @@ title: MOSuite Galaxy Workflow
 
 {{< include _intro.qmd >}}
 
+<!--
+Workflow embed fails to render: "<server url> refused to connect"
+```{=html}
 {{< include _workflow-embed.qmd >}}
+```
+-->
 
 {{< include _help.qmd >}}
