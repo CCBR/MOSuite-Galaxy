@@ -28,28 +28,6 @@
     "text": "GitHub Flow\nsemantic versioning guidelines\nchangelog guidelines\ntidyverse code review principles\nreproducible examples"
   },
   {
-    "objectID": "CHANGELOG.html",
-    "href": "CHANGELOG.html",
-    "title": "CCBR MOSuite-Galaxy",
-    "section": "",
-    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
-    "crumbs": [
-      "Project information",
-      "Changelog"
-    ]
-  },
-  {
-    "objectID": "CHANGELOG.html#mosuite-galaxy-development-version",
-    "href": "CHANGELOG.html#mosuite-galaxy-development-version",
-    "title": "CCBR MOSuite-Galaxy",
-    "section": "",
-    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
-    "crumbs": [
-      "Project information",
-      "Changelog"
-    ]
-  },
-  {
     "objectID": "LICENSE.html",
     "href": "LICENSE.html",
     "title": "CCBR MOSuite-Galaxy",
@@ -78,6 +56,28 @@
     "text": "Help & Contributing\nCome across a bug? Open an issue and include a minimal reproducible example.\nHave a question? Ask it in discussions.\nWant to contribute to this project? Check out the contributing guidelines.",
     "crumbs": [
       "Home"
+    ]
+  },
+  {
+    "objectID": "CHANGELOG.html",
+    "href": "CHANGELOG.html",
+    "title": "CCBR MOSuite-Galaxy",
+    "section": "",
+    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
+    "crumbs": [
+      "Project information",
+      "Changelog"
+    ]
+  },
+  {
+    "objectID": "CHANGELOG.html#mosuite-galaxy-development-version",
+    "href": "CHANGELOG.html#mosuite-galaxy-development-version",
+    "title": "CCBR MOSuite-Galaxy",
+    "section": "",
+    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
+    "crumbs": [
+      "Project information",
+      "Changelog"
     ]
   }
 ]
