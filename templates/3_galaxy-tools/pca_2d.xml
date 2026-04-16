@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+<tool id="mosuite_plot_pca_2d" name="PCA 2D" version="0.1.0-alpha" profile="24.2">
+    <description>Perform and plot a 2D Principal Components Analysis</description>
+    <requirements>
+        <container type="docker">nciccbr/mosuite:v0.3.0</container>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+echo 'galaxy_params.json' &&
+cat 'galaxy_params.json' &&
+echo '' &&
+python '$__tool_directory__/format_values.py' 'galaxy_params.json' 'cleaned_params.json'
+    --bool-values add_label interactive_plots save_plots &&
+echo 'cleaned_params.json' &&
+cat 'cleaned_params.json' &&
+echo '' &&
+mosuite plot_pca_2d --json=cleaned_params.json
+]]></command>
+    <configfiles>
+        <inputs name="params_json" filename="galaxy_params.json" data_style="paths"/>
+    </configfiles>
+    <inputs>
+        <param name="moo_input_rds" type="data" format="binary" label="MOO input Rds" help="File path to read the input multiOmicDataSet object (MOO)"/>
+        <section name="basic" title="Basic" expanded="false">
+            <param name="count_type" type="text" label="Count Type" value="" help="type to assign the values of `counts_dat` to in the `counts` slot
+"/>
+            <param name="sub_count_type" type="text" label="Sub Count Type" value="" help="used if `count_type` is a list in the counts slot: specify the sub count type within the list.
+Must be a name in `names(moo@counts[[count_type]])`.
+"/>
+            <param name="principal_components" type="select" label="Principal Components" multiple="true" optional="true" help="vector with numbered principal components to plot
+">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </param>
+            <param name="feature_id_colname" type="text" label="FeatureID Name Column" help="The column from the counts dataa containing the Feature IDs (Usually Gene or Protein ID).
+This is usually the first column of your input Counts Matrix. Only columns of Text type from your input Counts
+Matrix will be available to select for this parameter. (Default: `NULL` - first column in the counts matrix will be
+used.)
+"/>
+            <param name="sample_id_colname" type="text" label="Sample Names Column" help="The column from the sample metadata containing the sample names. The names in this column
+must exactly match the names used as the sample column names of your input Counts Matrix. (Default: `NULL` - first
+column in the sample metadata will be used.)
+"/>
+            <param name="group_colname" type="text" label="Group Column" value="Group" help="The column from the sample metadata containing the sample group information. This is usually a
+column showing to which experimental treatments each sample belongs (e.g. WildType, Knockout, Tumor, Normal,
+Before, After, etc.).
+"/>
+            <param name="label_colname" type="text" label="Plot Labels Column" value="Label" help="The column from the sample metadata containing the sample labels as you wish them to appear in
+the plots produced by this template. This can be the same Sample Names Column. However, you may desire different
+labels to display on your figure (e.g. shorter labels are sometimes preferred on plots). In that case, select the
+column with your preferred Labels here. The selected column should contain unique names for each sample. (Default:
+`NULL` -- `sample_id_colname` will be used.)
+"/>
+        </section>
+        <section name="visualization" title="Visualization" expanded="false">
+            <param name="point_size" type="float" label="Point Size" value="1" help="size for `ggplot2::geom_point()`"/>
+            <param name="add_label" type="boolean" label="Add Labels" truevalue="True" falsevalue="False" checked="true" help="whether to add text labels for the points
+"/>
+            <param name="label_font_size" type="float" label="Label Font Size" value="3" help="label font size for the PCA plot
+"/>
+            <param name="legend_position" type="select" label="Legend Position" help="passed to in `legend.position``ggplot2::theme()`">
+                <option value="top" selected="true">top</option>
+                <option value="bottom">bottom</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+                <option value="none">none</option>
+            </param>
+            <param name="color_values" type="select" label="Color Values" multiple="true" optional="true" help="vector of colors as hex values or names recognized by R
+">
+                <option value="slateblue3">slateblue3</option>
+                <option value="tomato2">tomato2</option>
+                <option value="maroon">maroon</option>
+                <option value="deepskyblue">deepskyblue</option>
+                <option value="mediumorchid2">mediumorchid2</option>
+                <option value="mediumseagreen">mediumseagreen</option>
+                <option value="salmon">salmon</option>
+                <option value="dodgerblue">dodgerblue</option>
+                <option value="darkgreen">darkgreen</option>
+                <option value="plum4">plum4</option>
+                <option value="orange">orange</option>
+                <option value="yellow4">yellow4</option>
+                <option value="aquamarine3">aquamarine3</option>
+                <option value="salmon1">salmon1</option>
+                <option value="lightskyblue3">lightskyblue3</option>
+                <option value="plum3">plum3</option>
+                <option value="firebrick">firebrick</option>
+                <option value="darkolivegreen3">darkolivegreen3</option>
+                <option value="goldenrod1">goldenrod1</option>
+                <option value="burlywood2">burlywood2</option>
+                <option value="gray70">gray70</option>
+                <option value="firebrick2">firebrick2</option>
+                <option value="steelblue">steelblue</option>
+                <option value="palegreen4">palegreen4</option>
+                <option value="orchid4">orchid4</option>
+                <option value="darkorange1">darkorange1</option>
+                <option value="yellow">yellow</option>
+                <option value="sienna">sienna</option>
+                <option value="palevioletred1">palevioletred1</option>
+                <option value="gray60">gray60</option>
+                <option value="cyan4">cyan4</option>
+                <option value="darkorange3">darkorange3</option>
+                <option value="mediumpurple3">mediumpurple3</option>
+                <option value="violetred2">violetred2</option>
+                <option value="olivedrab">olivedrab</option>
+                <option value="darkgoldenrod2">darkgoldenrod2</option>
+                <option value="darkgoldenrod">darkgoldenrod</option>
+                <option value="gray40">gray40</option>
+                <option value="palegreen3">palegreen3</option>
+                <option value="thistle3">thistle3</option>
+                <option value="khaki1">khaki1</option>
+                <option value="deeppink2">deeppink2</option>
+                <option value="chocolate3">chocolate3</option>
+                <option value="paleturquoise3">paleturquoise3</option>
+                <option value="wheat1">wheat1</option>
+                <option value="lightsteelblue">lightsteelblue</option>
+                <option value="sandybrown">sandybrown</option>
+                <option value="darkolivegreen2">darkolivegreen2</option>
+                <option value="thistle2">thistle2</option>
+                <option value="gray85">gray85</option>
+                <option value="orchid3">orchid3</option>
+                <option value="darkseagreen1">darkseagreen1</option>
+                <option value="lightgoldenrod1">lightgoldenrod1</option>
+                <option value="lightskyblue2">lightskyblue2</option>
+                <option value="dodgerblue3">dodgerblue3</option>
+                <option value="darkseagreen3">darkseagreen3</option>
+                <option value="forestgreen">forestgreen</option>
+                <option value="lightpink2">lightpink2</option>
+                <option value="mediumpurple4">mediumpurple4</option>
+                <option value="lightpink1">lightpink1</option>
+                <option value="thistle">thistle</option>
+                <option value="navajowhite">navajowhite</option>
+                <option value="lemonchiffon">lemonchiffon</option>
+                <option value="bisque2">bisque2</option>
+                <option value="mistyrose">mistyrose</option>
+                <option value="gray95">gray95</option>
+                <option value="lightcyan3">lightcyan3</option>
+                <option value="peachpuff2">peachpuff2</option>
+                <option value="lightsteelblue2">lightsteelblue2</option>
+                <option value="lightyellow2">lightyellow2</option>
+                <option value="moccasin">moccasin</option>
+                <option value="antiquewhite2">antiquewhite2</option>
+                <option value="gray80">gray80</option>
+                <option value="lightgrey">lightgrey</option>
+            </param>
+            <param name="interactive_plots" type="boolean" label="Interactive Plots" truevalue="True" falsevalue="False" checked="false" help="set to TRUE to make PCA and Histogram plots interactive with `plotly`, allowing you to hover
+your mouse over a point or line to view sample information. The similarity heat map will not display if this toggle
+is set to `TRUE`. Default is `FALSE`.
+"/>
+            <param name="save_plots" type="boolean" label="Save Plots" truevalue="True" falsevalue="False" checked="true" help="Whether to save plots to files during analysis (Defaults to `TRUE`, overwritable using option 'moo_save_plots' or environment variable 'MOO_SAVE_PLOTS')
+"/>
+        </section>
+    </inputs>
+    <outputs>
+        <data name="params_json_debug" format="json" from_work_dir="galaxy_params.json" label="${tool.name} on ${on_string}: Raw Parameters"/>
+        <data name="cleaned_params_debug" format="json" from_work_dir="cleaned_params.json" label="${tool.name} on ${on_string}: Cleaned Parameters"/>
+        <data name="figures" format="png" from_work_dir="figures/pca/pca_2D.png" label="${tool.name} on ${on_string}: figures"/>
+    </outputs>
+    <help><![CDATA[
+
+**PCA 2D**
+
+Runs `MOSuite::plot_pca_2d()` - https://ccbr.github.io/MOSuite/reference/plot_pca_2d.html`
+
+Perform and plot a 2D Principal Components Analysis
+
+**Outputs:**
+
+- figures: file (figures/pca/pca_2D.png)
+
+**Version info**
+
+- Docker: nciccbr/mosuite:v0.3.0
+- GitHub: [CCBR/MOSuite-Galaxy 0.1.0-alpha](https://github.com/CCBR/MOSuite-Galaxy/tree/8748560)
+
+]]></help>
+    <citations>
+        <citation type="doi">10.5281/zenodo.16371580</citation>
+    </citations>
+</tool>
