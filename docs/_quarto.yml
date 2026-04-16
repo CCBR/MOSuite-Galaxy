@@ -12,25 +12,19 @@ website:
     location: navbar
     type: textbox
   page-navigation: true
-  sidebar:
-    - id: docs
-      title: Docs
-      style: docked
-      contents:
-        - text: Home
-          href: index.qmd
-        - section: Project information
-          contents:
-            - text: Citation
-              href: cite.qmd
-            - text: License
-              href: LICENSE.md
-            - text: Changelog
-              href: CHANGELOG.md
 
   navbar:
     right:
-      - sidebar:docs
+      - text: Home
+        href: index.qmd
+      - text: Docs
+        menu:
+          - text: Citation
+            href: cite.qmd
+          - text: License
+            href: LICENSE.md
+          - text: Changelog
+            href: CHANGELOG.md
       - icon: github
         href: https://github.com/CCBR/MOSuite-Galaxy
         aria-label: CCBR/MOSuite-Galaxy GitHub
