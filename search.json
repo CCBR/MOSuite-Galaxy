@@ -32,52 +32,41 @@
     "href": "LICENSE.html",
     "title": "CCBR MOSuite-Galaxy",
     "section": "",
-    "text": "MIT License\nCopyright (c) 2025 CCR Collaborative Bioinformatics Resource\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-    "crumbs": [
-      "Project information",
-      "License"
-    ]
+    "text": "MIT License\nCopyright (c) 2025 CCR Collaborative Bioinformatics Resource\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "cite.html",
+    "href": "cite.html",
+    "title": "CCBR MOSuite-Galaxy",
+    "section": "",
+    "text": "Please cite the MOSuite R package if you use the MOSuite tools or workflow via Galaxy. See up to date citation information for MOSuite on the package website."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "MOSuite Galaxy Workflow",
     "section": "",
-    "text": "Galaxy workflow for MOSuite",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "Galaxy workflow for MOSuite"
   },
   {
     "objectID": "index.html#help-contributing",
     "href": "index.html#help-contributing",
     "title": "MOSuite Galaxy Workflow",
     "section": "Help & Contributing",
-    "text": "Help & Contributing\nCome across a bug? Open an issue and include a minimal reproducible example.\nHave a question? Ask it in discussions.\nWant to contribute to this project? Check out the contributing guidelines.",
-    "crumbs": [
-      "Home"
-    ]
+    "text": "Help & Contributing\nCome across a bug? Open an issue and include a minimal reproducible example.\nHave a question? Ask it in discussions.\nWant to contribute to this project? Check out the contributing guidelines."
   },
   {
     "objectID": "CHANGELOG.html",
     "href": "CHANGELOG.html",
     "title": "CCBR MOSuite-Galaxy",
     "section": "",
-    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
-    "crumbs": [
-      "Project information",
-      "Changelog"
-    ]
+    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth."
   },
   {
     "objectID": "CHANGELOG.html#mosuite-galaxy-development-version",
     "href": "CHANGELOG.html#mosuite-galaxy-development-version",
     "title": "CCBR MOSuite-Galaxy",
     "section": "",
-    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth.",
-    "crumbs": [
-      "Project information",
-      "Changelog"
-    ]
+    "text": "This is the first release of the Galaxy Tools & Workflow configuration for MOSuite.\nBlueprints for MOSuite are stored in templates/.\nThe Galaxy XML Synthesizer, originally created by @abombin, is now organized as a Python package: galaxysynth."
   }
 ]
