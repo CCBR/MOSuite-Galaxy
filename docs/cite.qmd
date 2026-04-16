@@ -1,0 +1,3 @@
+Please cite the MOSuite R package if you use the MOSuite tools or workflow via Galaxy.
+See up to date citation information for MOSuite on the
+[package website](https://ccbr.github.io/MOSuite/authors.html#citation).
