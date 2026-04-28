@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ccbr.github.io/MOSuite-Galaxy/CONTRIBUTING.html</loc>
-    <lastmod>2026-04-16T15:26:37.195Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ccbr.github.io/MOSuite-Galaxy/LICENSE.html</loc>
-    <lastmod>2026-04-16T15:26:37.196Z</lastmod>
-  </url>
-  <url>
     <loc>https://ccbr.github.io/MOSuite-Galaxy/cite.html</loc>
-    <lastmod>2026-04-16T15:26:37.197Z</lastmod>
+    <lastmod>2026-04-28T18:57:40.731Z</lastmod>
   </url>
   <url>
     <loc>https://ccbr.github.io/MOSuite-Galaxy/index.html</loc>
-    <lastmod>2026-04-16T15:26:37.197Z</lastmod>
+    <lastmod>2026-04-28T18:57:40.731Z</lastmod>
   </url>
   <url>
     <loc>https://ccbr.github.io/MOSuite-Galaxy/CHANGELOG.html</loc>
-    <lastmod>2026-04-16T15:26:37.196Z</lastmod>
+    <lastmod>2026-04-28T18:57:40.730Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ccbr.github.io/MOSuite-Galaxy/LICENSE.html</loc>
+    <lastmod>2026-04-28T18:57:40.730Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ccbr.github.io/MOSuite-Galaxy/CONTRIBUTING.html</loc>
+    <lastmod>2026-04-28T18:57:40.728Z</lastmod>
   </url>
 </urlset>
