@@ -15,13 +15,13 @@ repos:
       - id: check-json
   # spell check
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
       - id: codespell
         args: [-I, .github/WORDLIST]
   # Python formatting
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.16.0
     hooks:
       - id: ruff-check
         args: [--fix]
