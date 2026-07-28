@@ -6,7 +6,7 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
-  TOOL_DOCKER: nciccbr/mosuite:v0.3.0
+  TOOL_DOCKER: nciccbr/mosuite:v0.4.0
 
 permissions:
   contents: write
@@ -21,24 +21,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.14"]
 
     steps:
-      - uses: actions/checkout@v4
-        if: github.event_name == 'pull_request'
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
         with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          app-id: ${{ vars.CCBR_BOT_APP_ID }}
+          private-key: ${{ secrets.CCBR_BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
 
-      - uses: actions/checkout@v4
-        if: github.event_name != 'pull_request'
+      - uses: actions/checkout@v7
         with:
+          token: ${{ steps.generate-token.outputs.token }}
           fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref ||
+            github.ref_name }}
 
       - name: git config
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "CCBR-bot"
+          git config --global user.email "258092125+ccbr-bot@users.noreply.github.com"
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -52,17 +56,19 @@ jobs:
       - name: Format R code with air
         uses: rstudio/shiny-workflows/format-r-code@v1
 
-      # - name: update Galaxy blueprints
-      #   shell: Rscript {0}
-      #   run: |
-      #     source('inst/extdata/galaxy/galaxy.R') # TODO refactor
-      #     write_package_json_blueprints()
+      - name: update Galaxy blueprints
+        shell: Rscript {0}
+        container: ${{ env.TOOL_DOCKER }}
+        run: |
+          source('inst/extdata/galaxy/galaxy.R') # TODO refactor
+          write_package_json_blueprints()
 
       - name: Update Galaxy XML files
         run: |
           galaxysynth  "templates/2_blueprints/*.json" \
             --docker ${{ env.TOOL_DOCKER }} \
             --output templates/3_galaxy-tools
+
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.4.515
