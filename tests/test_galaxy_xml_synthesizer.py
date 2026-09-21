@@ -12,17 +12,18 @@ Tests cover:
 - Edge cases
 """
 
-import pytest
 import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+import pytest
+
 from galaxysynth.galaxy_xml_synthesizer import (
     GalaxyXMLSynthesizer,
-    process_blueprint,
     batch_process,
+    process_blueprint,
 )
 
 
@@ -572,8 +573,8 @@ class TestGenerateHelp:
         class _MatchNoPrerelease:
             def group(self, name):
                 if name == "prerelease":
-                    return None
-                return None
+                    return
+                return
 
         synth = GalaxyXMLSynthesizer(
             {
@@ -647,8 +648,8 @@ class TestGenerateHelp:
         class _MatchNoPrerelease:
             def group(self, name):
                 if name == "prerelease":
-                    return None
-                return None
+                    return
+                return
 
         synth = GalaxyXMLSynthesizer(
             {

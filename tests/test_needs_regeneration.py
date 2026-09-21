@@ -9,12 +9,13 @@ Tests cover:
 - Edge cases and error handling
 """
 
-import pytest
 import json
+import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from tempfile import TemporaryDirectory
-import time
+
+import pytest
 
 from galaxysynth.galaxy_xml_synthesizer import (
     needs_regeneration,
