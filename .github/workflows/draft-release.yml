@@ -22,7 +22,7 @@ jobs:
   draft-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # required to include tags
       - uses: CCBR/actions/draft-release@main
@@ -31,7 +31,7 @@ jobs:
           version-tag: ${{ github.event.inputs.version-tag }}
           ccbr-actions-version: main
       - name: trigger auto-format on release-draft branch
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           github-token: ${{ github.token }}
           script: |
