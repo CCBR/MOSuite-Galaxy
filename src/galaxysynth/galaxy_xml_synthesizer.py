@@ -3,17 +3,17 @@
 Galaxy XML Synthesizer - Generates Galaxy tool XML from blueprint JSON files.
 """
 
-import json
-import xml.etree.ElementTree as ET
-from xml.dom import minidom
-from pathlib import Path
-from typing import Dict, List, Any, Optional
 import argparse
+import json
 import os
 import re
-import sys
 import subprocess
+import sys
+import xml.etree.ElementTree as ET
 from collections import OrderedDict
+from pathlib import Path
+from typing import Any
+from xml.dom import minidom
 
 from .util import get_version, match_semver
 
@@ -35,7 +35,7 @@ class GalaxyXMLSynthesizer:
 
     def __init__(
         self,
-        blueprint: Dict[str, Any],
+        blueprint: dict[str, Any],
         docker_image: str = "nciccbr/mosuite:latest",
         citation_doi: str = "10.5281/zenodo.16371580",
         repo_name: str = "CCBR/MOSuite-Galaxy",
@@ -112,7 +112,7 @@ class GalaxyXMLSynthesizer:
         text = text.replace("\\n", " ")
         return text.strip()
 
-    def _extract_docker_tag(self, docker_image: str) -> Optional[str]:
+    def _extract_docker_tag(self, docker_image: str) -> str | None:
         """Grab the tag portion from the docker image string."""
         if not docker_image:
             return None
@@ -125,10 +125,10 @@ class GalaxyXMLSynthesizer:
         # No explicit tag present; assume latest
         return "latest"
 
-    def _get_git_short_sha(self) -> Optional[str]:
+    def _get_git_short_sha(self) -> str | None:
         """Return short git SHA using repo root, cwd, then GITHUB_SHA fallback."""
 
-        def normalize_short_sha(value: Optional[str]) -> Optional[str]:
+        def normalize_short_sha(value: str | None) -> str | None:
             if not value:
                 return None
             candidate = value.strip()
@@ -166,7 +166,7 @@ class GalaxyXMLSynthesizer:
         self,
         param: ET.Element,
         param_key: str,
-        custom_config: Optional[Dict[str, Any]] = None,
+        custom_config: dict[str, Any] | None = None,
     ):
         """
         Add sanitizer configuration to a parameter.
@@ -275,7 +275,7 @@ class GalaxyXMLSynthesizer:
         command.set("detect_errors", "exit_code")
         command.text = f"<![CDATA[{full_command}]]>"
 
-    def _group_parameters(self) -> Dict[Optional[str], List[Dict]]:
+    def _group_parameters(self) -> dict[str | None, list[dict]]:
         """Group parameters by their paramGroup field."""
         groups = OrderedDict()
 
@@ -421,7 +421,7 @@ class GalaxyXMLSynthesizer:
                 elif item_type == "column":
                     self._add_column(section, item)
 
-    def _add_dataset_param(self, parent: ET.Element, dataset: Dict[str, Any]):
+    def _add_dataset_param(self, parent: ET.Element, dataset: dict[str, Any]):
         """Add dataset parameter."""
         param = ET.SubElement(parent, "param")
         param.set("name", dataset["key"])
@@ -441,7 +441,7 @@ class GalaxyXMLSynthesizer:
         if dataset.get("description"):
             param.set("help", dataset["description"])
 
-    def _add_parameter(self, parent: ET.Element, param_def: Dict[str, Any]):
+    def _add_parameter(self, parent: ET.Element, param_def: dict[str, Any]):
         """Add parameter based on type with proper datatype handling and sanitizer support."""
         param_type = param_def.get("paramType", "STRING")
         param_key = param_def.get("key")
@@ -599,7 +599,7 @@ class GalaxyXMLSynthesizer:
             # Check if this STRING parameter needs special sanitizer
             self._add_sanitizer(param, param_key, sanitizer_config)
 
-    def _add_column(self, parent: ET.Element, column: Dict[str, Any]):
+    def _add_column(self, parent: ET.Element, column: dict[str, Any]):
         """Add column parameter - using repeat for multi-value columns with sanitizer support."""
         param_key = column.get("key")
         display_name = column.get("displayName", param_key)
