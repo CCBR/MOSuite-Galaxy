@@ -2,8 +2,8 @@
 Utility functions for the package
 """
 
-import re
 import pathlib
+import re
 
 
 def repo_base(*paths):
