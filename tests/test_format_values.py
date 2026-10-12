@@ -14,22 +14,23 @@ Tests cover:
 """
 
 import json
-import pytest
 import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+import pytest
+
 # Import the format_values module
 sys.path.insert(0, str(Path(__file__).parent.parent / "templates" / "3_galaxy-tools"))
 from format_values import (
-    normalize_boolean,
     extract_list_from_repeat,
-    parse_delimited_text,
-    inject_output_configuration,
-    process_galaxy_params,
     flatten_json,
+    inject_output_configuration,
     main,
+    normalize_boolean,
+    parse_delimited_text,
+    process_galaxy_params,
 )
 
 
