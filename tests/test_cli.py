@@ -1,7 +1,7 @@
 # tests/test_cli.py
+import shutil
 import subprocess
 import sys
-import shutil
 
 from galaxysynth.util import get_version
 
